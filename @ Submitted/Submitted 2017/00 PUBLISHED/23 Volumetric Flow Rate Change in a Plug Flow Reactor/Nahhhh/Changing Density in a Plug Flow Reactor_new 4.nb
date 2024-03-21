@@ -1,0 +1,1876 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     75524,       1868]
+NotebookOptionsPosition[     66469,       1639]
+NotebookOutlinePosition[     68601,       1705]
+CellTagsIndexPosition[     68273,       1693]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Changing Density in a Plug Flow Reactor", "DemoTitle",
+ CellChangeTimes->{3.701432902290871*^9}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "r", ",", "A", ",", "T", ",", "Rc", ",", "R", ",", "Ca0", ",", "Ea", 
+       ",", "A1", ",", "k1", ",", "A2", ",", "k2", ",", "A3", ",", "k3", ",", 
+       "k", ",", "vin", ",", "fA0", ",", "L", ",", "sol", ",", "max", ",", 
+       "fAsol", ",", "fBsol", ",", "fT", ",", "v", ",", "xa", ",", "h", ",", 
+       "ptsA", ",", "ptsB"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"r", "=", "1.5"}], ";", 
+      RowBox[{"(*", "cm", "*)"}], 
+      RowBox[{"A", "=", 
+       RowBox[{"\[Pi]", "*", 
+        SuperscriptBox["r", "2"]}]}], ";", 
+      RowBox[{"(*", "cm2", "*)"}], 
+      RowBox[{"T", "=", "650"}], ";", 
+      RowBox[{"(*", "K", "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Rc", "=", "8.314"}], " ", ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"J", "/", "mol"}], "/", "K"}], "*)"}], 
+      RowBox[{"R", "=", "83.14"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"cm3", " ", 
+        RowBox[{
+         RowBox[{"bar", "/", "mol"}], "/", "K"}]}], "*)"}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Ca0", "=", 
+       FractionBox["10", 
+        RowBox[{"R", "*", "T"}]]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Ea", "=", "3.15*^4"}], ";", 
+      RowBox[{"A1", "=", "50"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"k1", "=", 
+       RowBox[{"A1", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"-", 
+          FractionBox["Ea", 
+           RowBox[{"Rc", "*", "T"}]]}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"A2", "=", 
+       RowBox[{"\[Alpha]", "/.", 
+        RowBox[{"Quiet", "@", 
+         RowBox[{
+          RowBox[{"Solve", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"A1", "*", "Ca0"}], "\[Equal]", 
+             RowBox[{"\[Alpha]", "*", 
+              SuperscriptBox["Ca0", "2"]}]}], ",", "\[Alpha]"}], "]"}], "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}]}]}], ";", 
+      RowBox[{"k2", "=", 
+       RowBox[{"A2", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"-", 
+          FractionBox["Ea", 
+           RowBox[{"Rc", "*", "T"}]]}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"A3", "=", 
+       RowBox[{"\[Alpha]", "/.", 
+        RowBox[{"Quiet", "@", 
+         RowBox[{
+          RowBox[{"Solve", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"A2", "*", 
+              SuperscriptBox["Ca0", "2"]}], "\[Equal]", 
+             RowBox[{"\[Alpha]", "*", 
+              SuperscriptBox["Ca0", 
+               RowBox[{"1", "/", "2"}]]}]}], ",", "\[Alpha]"}], "]"}], "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}]}]}], ";", 
+      RowBox[{"k3", "=", 
+       RowBox[{"A3", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"-", 
+          FractionBox["Ea", 
+           RowBox[{"Rc", "*", "T"}]]}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"k", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{
+         RowBox[{"n", "\[Equal]", "1"}], ",", "k1", ",", 
+         RowBox[{"n", "\[Equal]", "2"}], ",", "k2", ",", 
+         RowBox[{"n", "\[Equal]", "0.5"}], ",", "k3"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"vin", "=", "10"}], " ", ";", 
+      RowBox[{"(*", 
+       RowBox[{"cm3", "/", "s"}], "*)"}], 
+      RowBox[{"fA0", "=", 
+       RowBox[{
+        FractionBox["P", 
+         RowBox[{"R", "*", "T"}]], "*", "vin"}]}], ";", 
+      RowBox[{"L", "=", "15.94"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"sol", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Flatten", "@", 
+         RowBox[{"NDSolve", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"fA", "'"}], "[", "x", "]"}], "\[Equal]", 
+              RowBox[{
+               RowBox[{"-", "A"}], "*", "k", "*", 
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{
+                  FractionBox["P", 
+                   RowBox[{"R", "*", "T"}]], "*", 
+                  FractionBox[
+                   RowBox[{"fA", "[", "x", "]"}], 
+                   RowBox[{
+                    RowBox[{"fA", "[", "x", "]"}], "+", 
+                    RowBox[{"fB", "[", "x", "]"}]}]]}], ")"}], "n"]}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"fB", "'"}], "[", "x", "]"}], "\[Equal]", 
+              RowBox[{"A", "*", "m", "*", "k", "*", 
+               SuperscriptBox[
+                RowBox[{"(", 
+                 RowBox[{
+                  FractionBox["P", 
+                   RowBox[{"R", "*", "T"}]], "*", 
+                  FractionBox[
+                   RowBox[{"fA", "[", "x", "]"}], 
+                   RowBox[{
+                    RowBox[{"fA", "[", "x", "]"}], "+", 
+                    RowBox[{"fB", "[", "x", "]"}]}]]}], ")"}], "n"]}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"fA", "[", "0", "]"}], "\[Equal]", "fA0"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"fB", "[", "0", "]"}], "\[Equal]", "0"}]}], 
+            "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"fA", ",", "fB"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", "0", ",", "L"}], "}"}]}], "]"}]}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"fAsol", "=", 
+       RowBox[{"fA", "/.", "sol"}]}], ";", 
+      RowBox[{"fBsol", "=", 
+       RowBox[{"fB", "/.", "sol"}]}], ";", 
+      RowBox[{
+       RowBox[{"fT", "[", "x_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"fAsol", "[", "x", "]"}], "+", 
+        RowBox[{"fBsol", "[", "x", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"v", "[", "x_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"fT", "[", "x", "]"}], "*", 
+        FractionBox[
+         RowBox[{"R", "*", "T"}], "P"]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"xa", "[", "x_", "]"}], ":=", 
+       FractionBox[
+        RowBox[{"fA0", "-", 
+         RowBox[{"fAsol", "[", "x", "]"}]}], "fA0"]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"vel", "=", 
+       RowBox[{
+        RowBox[{"v", "[", "z", "]"}], "/", "A"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"h", "=", "8"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"ptsA", "=", 
+       RowBox[{"RandomPoint", "[", 
+        RowBox[{
+         RowBox[{"Rectangle", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"z", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"z", "+", 
+              RowBox[{
+               RowBox[{"v", "[", "z", "]"}], "/", "A"}]}], ",", "h"}], 
+            "}"}]}], "]"}], ",", 
+         RowBox[{"Round", "[", 
+          RowBox[{"5*^4", "*", 
+           RowBox[{"fT", "[", "z", "]"}], "*", 
+           RowBox[{"(", 
+            RowBox[{"1", "-", 
+             RowBox[{"xa", "[", "z", "]"}]}], ")"}]}], "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ptsB", "=", 
+       RowBox[{"RandomPoint", "[", 
+        RowBox[{
+         RowBox[{"Rectangle", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"z", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"z", "+", 
+              RowBox[{
+               RowBox[{"v", "[", "z", "]"}], "/", "A"}]}], ",", "h"}], 
+            "}"}]}], "]"}], ",", 
+         RowBox[{"Round", "[", 
+          RowBox[{"5*^4", "*", 
+           RowBox[{"fT", "[", "z", "]"}], "*", 
+           RowBox[{"xa", "[", "z", "]"}]}], "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Graphics", "[", 
+       RowBox[{
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"EdgeForm", "@", "Thick"}], ",", 
+            RowBox[{"FaceForm", "@", 
+             RowBox[{"GrayLevel", "@", "0.9"}]}], ",", 
+            RowBox[{"Rectangle", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"vin", "/", "A"}], ",", "0"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"L", ",", "h"}], "}"}]}], "]"}]}], "}"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"PointSize", "@", "0.007"}], ",", "Blue", ",", 
+            RowBox[{"Point", "@", "ptsA"}], ",", 
+            RowBox[{"RGBColor", "[", 
+             RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+            RowBox[{"Point", "@", "ptsB"}]}], "}"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"Line", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", 
+                    RowBox[{"vin", "/", "A"}]}], ",", "#"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", "vel"}], ",", "#"}], "}"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", 
+                    RowBox[{"vin", "/", "A"}]}], ",", 
+                   RowBox[{"#", "+", "0.5"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", 
+                    RowBox[{"vin", "/", "A"}]}], ",", 
+                   RowBox[{"#", "-", "0.5"}]}], "}"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", 
+                    RowBox[{
+                    RowBox[{"v", "[", "z", "]"}], "/", "A"}]}], ",", 
+                   RowBox[{"#", "-", "0.5"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"z", "+", 
+                    RowBox[{
+                    RowBox[{"v", "[", "z", "]"}], "/", "A"}]}], ",", 
+                   RowBox[{"#", "+", "0.5"}]}], "}"}]}], "}"}]}], "}"}], 
+             "&"}], "@", 
+            RowBox[{"(", 
+             RowBox[{"h", "+", "1.25"}], ")"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Arrowheads", "@", "0.025"}], ",", 
+            RowBox[{"Arrow", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"z", ",", 
+                 RowBox[{"-", "1.5"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"z", "+", "vel"}], ",", 
+                 RowBox[{"-", "1.5"}]}], "}"}]}], "}"}], "]"}]}], "}"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{"\"\<flow rate = \>\"", ",", 
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{
+                   RowBox[{"v", "[", "z", "]"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"5", ",", "1"}], "}"}]}], "]"}], ",", 
+                 "\"\< mL/s\>\""}], "}"}]}], ",", "18"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"z", ",", "0"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Rescale", "[", 
+                RowBox[{"z", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "18"}], "}"}]}], "]"}], "-", "1"}], ",", 
+              "4.5"}], "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{"\"\<\[CapitalDelta]\>\"", ",", 
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}], ",", 
+                 "\"\< = \>\"", ",", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"m", "\[Equal]", "1"}], ",", "0", ",", 
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"-", "1*^-4"}], "<", "#", "<", "1*^-4"}], ",", 
+                    "0", ",", "#"}], "]"}], "&"}], "@", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"v", "[", "z", "]"}], "-", "vin"}], ")"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"5", ",", "1"}], "}"}]}], "]"}]}], "]"}], ",", 
+                 "\"\< mL\>\""}], "}"}]}], ",", "20"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"z", "+", 
+               RowBox[{"vin", "/", "A"}]}], ",", "h"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Rescale", "[", 
+                RowBox[{"z", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "18"}], "}"}]}], "]"}], "-", "1"}], ",", 
+              RowBox[{"-", "4"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Row", "@", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<stoichiometry: \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<A\>\"", ",", "Blue"}], "]"}], ",", 
+                    "\"\< \[Rule] \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Which", "[", 
+                    RowBox[{
+                    RowBox[{"m", "\[Equal]", "1"}], ",", "\"\<B\>\"", ",", 
+                    RowBox[{"m", "\[Equal]", "2"}], ",", "\"\<2 B\>\"", ",", 
+                    RowBox[{"m", "\[Equal]", "0.5"}], ",", "\"\<1/2 B\>\""}], 
+                    "]"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "]"}]}], 
+                   "}"}]}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"Row", "@", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<reaction rate = \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"n", "\[Equal]", "0.5"}], ",", "\"\<1/2\>\"", ",",
+                     "n"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Superscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\< [A]\>\"", ",", "Blue"}], "]"}], ",", 
+                    RowBox[{"Which", "[", 
+                    RowBox[{
+                    RowBox[{"n", "\[Equal]", "0.5"}], ",", "\"\<1/2\>\"", ",", 
+                    RowBox[{"n", "\[Equal]", "1"}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"1", ",", "White"}], "]"}], ",", 
+                    RowBox[{"n", "\[Equal]", "2"}], ",", "2"}], "]"}]}], 
+                    RowBox[{"(*", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"n", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"n", "\[Equal]", "2"}], ",", "Black", ",", 
+                    "White"}], "]"}]}], "]"}], "*)"}], "]"}]}], "}"}]}]}], 
+                "\[IndentingNewLine]", "}"}], "]"}], ",", "20"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"1", ",", 
+              RowBox[{"h", "+", "8"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1"}], ",", "0"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Row", "@", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<control volume = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"v", "[", "z", "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< mL\>\""}], "}"}]}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"Row", "@", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<conversion = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"z", "\[Equal]", "0"}], ",", "0", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"100", "*", 
+                    RowBox[{"xa", "[", "z", "]"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}]}], "]"}], ",", 
+                    "\"\<%\>\""}], "}"}]}]}], "\[IndentingNewLine]", "}"}], 
+               "]"}], ",", "20"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"15", ",", 
+              RowBox[{"h", "+", "8"}]}], "}"}]}], "]"}]}], 
+         "\[IndentingNewLine]", "}"}], ",", 
+        RowBox[{"ImageSize", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"600", ",", "350"}], "}"}]}], ",", 
+        RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+        RowBox[{"PlotRange", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"-", "0.3"}], ",", "19.3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"-", "4"}], ",", "19"}], "}"}]}], "}"}]}]}], "]"}], ";", 
+      RowBox[{"{", 
+       RowBox[{"k1", ",", "k2", ",", "k3"}], "}"}]}]}], "\[IndentingNewLine]",
+     "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "m", ",", "2", ",", "\"\<(moles product)/(moles reactant)\>\""}],
+              "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"0.5", "\[Rule]", "\"\< 1/2 \>\""}], ",", 
+              RowBox[{"1", "\[Rule]", "\"\< 1 \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< 2 \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", 
+         RowBox[{"Spacer", "@", "15"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"n", ",", "1", ",", "\"\<reaction order \>\""}], "}"}], 
+            ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"0.5", "\[Rule]", "\"\< 1/2 \>\""}], ",", 
+              RowBox[{"1", "\[Rule]", "\"\< 1 \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< 2 \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"P", ",", "20", ",", "\"\<pressure (bar)\>\""}], "}"}], 
+            ",", "15", ",", "30", ",", "1", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], 
+          "]"}], ",", "SpanFromLeft", ",", "SpanFromLeft", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"z", ",", "0", ",", "\"\<run reaction\>\""}], "}"}], ",",
+             "0", ",", "15.94", ",", "Trigger", ",", 
+            RowBox[{"AnimationRate", "\[Rule]", "vel"}], ",", 
+            RowBox[{"AppearanceElements", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"\"\<PlayPauseButton\>\"", ",", "\"\<ResetButton\>\""}],
+               "}"}]}]}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"vel", ",", "1", ",", "\"\<\>\""}], "}"}], ",", "None"}],
+            "}"}], "]"}]}], "}"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.7014324305144625`*^9, 3.701432500019025*^9}, {
+   3.7014325729228077`*^9, 3.701432597526931*^9}, {3.7014326403339496`*^9, 
+   3.701432785560296*^9}, {3.7014328216178694`*^9, 3.701432828471713*^9}, {
+   3.7014328695135107`*^9, 3.7014328718379145`*^9}, {3.7014329716066256`*^9, 
+   3.701432978854285*^9}, {3.7017035387174597`*^9, 3.701703567435606*^9}, 
+   3.7017103011541734`*^9, {3.7017108862638826`*^9, 3.701710891413107*^9}, {
+   3.7017791779249105`*^9, 3.701779188626771*^9}, {3.701779286062461*^9, 
+   3.701779376047907*^9}, {3.7017794062824593`*^9, 3.7017794073424764`*^9}, {
+   3.701779460553942*^9, 3.701779590752096*^9}, {3.701779634011723*^9, 
+   3.7017796341365232`*^9}, {3.7022948852036896`*^9, 
+   3.7022949438483963`*^9}, {3.702295035526903*^9, 3.702295105113449*^9}, {
+   3.702295295459507*^9, 3.702295302263749*^9}, {3.7022953402469406`*^9, 
+   3.702295344941368*^9}, {3.7022954835365696`*^9, 3.70229549676085*^9}, {
+   3.70229565213916*^9, 3.702295694532177*^9}, {3.702295743437867*^9, 
+   3.7022958336359854`*^9}, {3.7022958815894656`*^9, 
+   3.7022959116902475`*^9}, {3.702296003669938*^9, 3.7022960178660145`*^9}, {
+   3.7022961371273108`*^9, 3.702296138674713*^9}, {3.702296178529525*^9, 
+   3.7022962755408545`*^9}, {3.7022964354270587`*^9, 
+   3.7022964764258976`*^9}, {3.703430443348727*^9, 
+   3.7034304509433804`*^9}},ExpressionUUID->"c1ed0682-b80a-4f59-bb7a-\
+195014275ba4"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`m$$ = 2, $CellContext`n$$ = 
+    1, $CellContext`P$$ = 23, $CellContext`vel$$ = 
+    1.4147106052612923`, $CellContext`z$$ = 0, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`m$$], 2, "(moles product)/(moles reactant)"}, {
+      0.5 -> " 1/2 ", 1 -> " 1 ", 2 -> " 2 "}}, {{
+       Hold[$CellContext`n$$], 1, "reaction order "}, {
+      0.5 -> " 1/2 ", 1 -> " 1 ", 2 -> " 2 "}}, {{
+       Hold[$CellContext`P$$], 20, "pressure (bar)"}, 15, 30, 1}, {{
+       Hold[$CellContext`z$$], 0, "run reaction"}, 0, 15.94}, {{
+       Hold[$CellContext`vel$$], 1, ""}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[15], 
+          Manipulate`Place[2]}, {
+          Manipulate`Place[3], SpanFromLeft, SpanFromLeft, 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {169., {2., 8.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`m$58869$$ = False, $CellContext`n$58870$$ = 
+    False, $CellContext`P$58871$$ = 0, $CellContext`z$58872$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`m$$ = 2, $CellContext`n$$ = 
+        1, $CellContext`P$$ = 20, $CellContext`vel$$ = 1, $CellContext`z$$ = 
+        0}, "ControllerVariables" :> {
+        Hold[$CellContext`m$$, $CellContext`m$58869$$, False], 
+        Hold[$CellContext`n$$, $CellContext`n$58870$$, False], 
+        Hold[$CellContext`P$$, $CellContext`P$58871$$, 0], 
+        Hold[$CellContext`z$$, $CellContext`z$58872$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`r$, $CellContext`A$, $CellContext`T$, \
+$CellContext`Rc$, $CellContext`R$, $CellContext`Ca0$, $CellContext`Ea$, \
+$CellContext`A1$, $CellContext`k1$, $CellContext`A2$, $CellContext`k2$, \
+$CellContext`A3$, $CellContext`k3$, $CellContext`k$, $CellContext`vin$, \
+$CellContext`fA0$, $CellContext`L$, $CellContext`sol$, $CellContext`max$, \
+$CellContext`fAsol$, $CellContext`fBsol$, $CellContext`fT$, $CellContext`v$, \
+$CellContext`xa$, $CellContext`h$, $CellContext`ptsA$, $CellContext`ptsB$}, \
+$CellContext`r$ = 1.5; $CellContext`A$ = 
+         Pi $CellContext`r$^2; $CellContext`T$ = 650; $CellContext`Rc$ = 
+         8.314; $CellContext`R$ = 83.14; $CellContext`Ca0$ = 
+         10/($CellContext`R$ $CellContext`T$); $CellContext`Ea$ = 
+         31500.; $CellContext`A1$ = 
+         50; $CellContext`k1$ = $CellContext`A1$ 
+          Exp[-($CellContext`Ea$/($CellContext`Rc$ $CellContext`T$))]; \
+$CellContext`A2$ = ReplaceAll[$CellContext`\[Alpha], 
+           Quiet[
+            Part[
+             
+             Solve[$CellContext`A1$ $CellContext`Ca0$ == \
+$CellContext`\[Alpha] $CellContext`Ca0$^2, $CellContext`\[Alpha]], 
+             1]]]; $CellContext`k2$ = $CellContext`A2$ 
+          Exp[-($CellContext`Ea$/($CellContext`Rc$ $CellContext`T$))]; \
+$CellContext`A3$ = ReplaceAll[$CellContext`\[Alpha], 
+           Quiet[
+            Part[
+             
+             Solve[$CellContext`A2$ $CellContext`Ca0$^2 == $CellContext`\
+\[Alpha] $CellContext`Ca0$^(1/2), $CellContext`\[Alpha]], 
+             1]]]; $CellContext`k3$ = $CellContext`A3$ 
+          Exp[-($CellContext`Ea$/($CellContext`Rc$ $CellContext`T$))]; \
+$CellContext`k$ = 
+         Which[$CellContext`n$$ == 1, $CellContext`k1$, $CellContext`n$$ == 
+           2, $CellContext`k2$, $CellContext`n$$ == 
+           0.5, $CellContext`k3$]; $CellContext`vin$ = 
+         10; $CellContext`fA0$ = ($CellContext`P$$/($CellContext`R$ \
+$CellContext`T$)) $CellContext`vin$; $CellContext`L$ = 
+         15.94; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`fA][$CellContext`x] == ((-$CellContext`A$) \
+$CellContext`k$) (($CellContext`P$$/($CellContext`R$ $CellContext`T$)) \
+($CellContext`fA[$CellContext`x]/($CellContext`fA[$CellContext`x] + \
+$CellContext`fB[$CellContext`x])))^$CellContext`n$$, 
+              Derivative[
+               1][$CellContext`fB][$CellContext`x] == (($CellContext`A$ \
+$CellContext`m$$) $CellContext`k$) (($CellContext`P$$/($CellContext`R$ \
+$CellContext`T$)) \
+($CellContext`fA[$CellContext`x]/($CellContext`fA[$CellContext`x] + \
+$CellContext`fB[$CellContext`x])))^$CellContext`n$$, $CellContext`fA[
+               0] == $CellContext`fA0$, $CellContext`fB[0] == 
+              0}, {$CellContext`fA, $CellContext`fB}, {$CellContext`x, 
+              0, $CellContext`L$}]]]; $CellContext`fAsol$ = 
+         ReplaceAll[$CellContext`fA, $CellContext`sol$]; $CellContext`fBsol$ = 
+         ReplaceAll[$CellContext`fB, $CellContext`sol$]; $CellContext`fT$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] := $CellContext`fAsol$[$CellContext`x$] + \
+$CellContext`fBsol$[$CellContext`x$]; $CellContext`v$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] := $CellContext`fT$[$CellContext`x$] ($CellContext`R$ \
+($CellContext`T$/$CellContext`P$$)); $CellContext`xa$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] := ($CellContext`fA0$ - \
+$CellContext`fAsol$[$CellContext`x$])/$CellContext`fA0$; $CellContext`vel$$ = \
+$CellContext`v$[$CellContext`z$$]/$CellContext`A$; $CellContext`h$ = 
+         8; $CellContext`ptsA$ = RandomPoint[
+           
+           Rectangle[{$CellContext`z$$, 
+             0}, {$CellContext`z$$ + \
+$CellContext`v$[$CellContext`z$$]/$CellContext`A$, $CellContext`h$}], 
+           
+           Round[(50000 $CellContext`fT$[$CellContext`z$$]) (
+             1 - $CellContext`xa$[$CellContext`z$$])]]; $CellContext`ptsB$ = 
+         RandomPoint[
+           
+           Rectangle[{$CellContext`z$$, 
+             
+             0}, {$CellContext`z$$ + \
+$CellContext`v$[$CellContext`z$$]/$CellContext`A$, $CellContext`h$}], 
+           
+           Round[(50000 $CellContext`fT$[$CellContext`z$$]) \
+$CellContext`xa$[$CellContext`z$$]]]; Graphics[{{
+            EdgeForm[Thick], 
+            FaceForm[
+             GrayLevel[0.9]], 
+            
+            Rectangle[{$CellContext`vin$/$CellContext`A$, 
+              0}, {$CellContext`L$, $CellContext`h$}]}, {
+            PointSize[0.007], Blue, 
+            Point[$CellContext`ptsA$], 
+            RGBColor[0, 0.6, 0], 
+            Point[$CellContext`ptsB$]}, 
+           Line[
+            ({{{$CellContext`z$$ + $CellContext`vin$/$CellContext`A$, #}, \
+{$CellContext`z$$ + $CellContext`vel$$, #}}, {{$CellContext`z$$ + \
+$CellContext`vin$/$CellContext`A$, # + 
+               0.5}, {$CellContext`z$$ + $CellContext`vin$/$CellContext`A$, # - 
+               0.5}}, {{$CellContext`z$$ + \
+$CellContext`v$[$CellContext`z$$]/$CellContext`A$, # - 
+               0.5}, {$CellContext`z$$ + \
+$CellContext`v$[$CellContext`z$$]/$CellContext`A$, # + 
+               0.5}}}& )[$CellContext`h$ + 1.25]], {
+            Arrowheads[0.025], 
+            
+            Arrow[{{$CellContext`z$$, -1.5}, {$CellContext`z$$ + \
+$CellContext`vel$$, -1.5}}]}, 
+           Text[
+            Style[
+             Row[{"flow rate = ", 
+               NumberForm[
+                $CellContext`v$[$CellContext`z$$], {5, 1}], " mL/s"}], 
+             18], {$CellContext`z$$, 0}, {
+            Rescale[$CellContext`z$$, {0, 18}] - 1, 4.5}], 
+           Text[
+            Style[
+             Row[{"\[CapitalDelta]", 
+               Style["V", Italic], " = ", 
+               If[$CellContext`m$$ == 1, 0, 
+                NumberForm[
+                 (
+                 If[-Rational[1, 10000] < # < Rational[1, 10000], 
+                  0, #]& )[$CellContext`v$[$CellContext`z$$] - \
+$CellContext`vin$], {5, 1}]], " mL"}], 
+             20], {$CellContext`z$$ + $CellContext`vin$/$CellContext`A$, \
+$CellContext`h$}, {Rescale[$CellContext`z$$, {0, 18}] - 1, -4}], 
+           Text[
+            Style[
+             Column[{
+               Row[{"stoichiometry: ", 
+                 Style["A", Blue], " \[Rule] ", 
+                 Style[
+                  
+                  Which[$CellContext`m$$ == 1, "B", $CellContext`m$$ == 2, 
+                   "2 B", $CellContext`m$$ == 0.5, "1/2 B"], 
+                  RGBColor[0, 0.6, 0]]}], 
+               Row[{"reaction rate = ", 
+                 Subscript[
+                  Style["k", Italic], 
+                  If[$CellContext`n$$ == 0.5, "1/2", $CellContext`n$$]], 
+                 Superscript[
+                  Style[" [A]", Blue], 
+                  Which[$CellContext`n$$ == 0.5, "1/2", $CellContext`n$$ == 1, 
+                   Style[1, White], $CellContext`n$$ == 2, 2]]}]}], 20], {
+            1, $CellContext`h$ + 8}, {-1, 0}], 
+           Text[
+            Style[
+             Column[{
+               Row[{"control volume = ", 
+                 NumberForm[
+                  $CellContext`v$[$CellContext`z$$], {3, 1}], " mL"}], 
+               Row[{"conversion = ", 
+                 If[$CellContext`z$$ == 0, 0, 
+                  NumberForm[100 $CellContext`xa$[$CellContext`z$$], {3, 1}]],
+                  "%"}]}], 20], {15, $CellContext`h$ + 8}]}, 
+          ImageSize -> {600, 350}, AspectRatio -> Full, 
+          PlotRange -> {{-0.3, 19.3}, {-4, 
+            19}}]; {$CellContext`k1$, $CellContext`k2$, $CellContext`k3$}], 
+      "Specifications" :> {{{$CellContext`m$$, 2, 
+          "(moles product)/(moles reactant)"}, {
+         0.5 -> " 1/2 ", 1 -> " 1 ", 2 -> " 2 "}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`n$$, 1, "reaction order "}, {
+         0.5 -> " 1/2 ", 1 -> " 1 ", 2 -> " 2 "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`P$$, 20, "pressure (bar)"}, 
+         15, 30, 1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`z$$, 0, "run reaction"}, 0, 15.94, ControlType -> 
+         Trigger, AnimationRate -> Dynamic[$CellContext`vel$$], 
+         AppearanceElements -> {"PlayPauseButton", "ResetButton"}, 
+         ControlPlacement -> 4}, {{$CellContext`vel$$, 1, ""}, 0, ControlType -> 
+         None, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[15], 
+           Manipulate`Place[2]}, {
+           Manipulate`Place[3], SpanFromLeft, SpanFromLeft, 
+           Manipulate`Place[4], 
+           Manipulate`Place[5]}}, Alignment -> Left]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{583., {61., 68.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.701432431200864*^9, 3.7014325010798273`*^9}, {
+   3.701432583189859*^9, 3.701432791427122*^9}, 3.7014328298289156`*^9, 
+   3.701432872774132*^9, {3.701432975601664*^9, 3.7014329820230904`*^9}, 
+   3.7016173156416216`*^9, 3.701703568685608*^9, 3.701710302107775*^9, 
+   3.7017108921307087`*^9, {3.7017791837167363`*^9, 3.7017791890967717`*^9}, 
+   3.701779287282479*^9, {3.7017793198928337`*^9, 3.701779377950727*^9}, 
+   3.7017794089532795`*^9, {3.7017794671854725`*^9, 3.701779527507391*^9}, {
+   3.7017795632171683`*^9, 3.7017795863566732`*^9}, 3.701779650919601*^9, {
+   3.7022949166002607`*^9, 3.702294928983721*^9}, {3.7022950898983707`*^9, 
+   3.7022951057764654`*^9}, 3.7022953031709514`*^9, 3.7022953456799793`*^9, {
+   3.7022955023142786`*^9, 3.702295514082333*^9}, {3.7022956586945906`*^9, 
+   3.7022958342141867`*^9}, {3.702295896622569*^9, 3.702295912161852*^9}, 
+   3.7022960203172193`*^9, 3.702296139626315*^9, 3.7022961725254927`*^9, {
+   3.7022962604207773`*^9, 3.702296281652285*^9}, {3.7022964520340405`*^9, 
+   3.7022964897263846`*^9}, 3.7022965354480095`*^9, 3.7034304514581814`*^9},
+ CellID->82906212,ExpressionUUID->"f2b89535-d69f-41fc-b7af-caf913a5d351"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection",ExpressionUUID->"4332b0b9-11da-4948-a47d-e87179e361e1"],
+
+Cell[TextData[{
+ "A gas-phase reaction ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["A",
+     FontSlant->"Plain"], "\[Rule]", 
+    RowBox[{"n", " ", 
+     StyleBox["B",
+      FontSlant->"Plain"]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"b6da207f-3c60-4fb0-be5e-67ef6c94e20f"],
+ " takes place in an isothermal, constant-pressure, plug flow reactor (PFR). \
+The Demonstration visualizes how the reaction stoichiometry affects \
+volumetric flow rate of the material in the reactor by following a control \
+volume (initially 10 mL of A) through the reactor. The reactant A (blue) \
+reacts to form ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["B",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "f474e747-81e3-47e6-9995-f97d0f826987"],
+ " (green). Change the reaction stoichiometry and reaction order using \
+buttons. The rate constants are chosen so that the initial rate is the same \
+for all orders at a pressure of 10 bar. Change the pressure in the reactor \
+with the slider. The inlet velocity is fixed at 1.4 cm/s,  independent of \
+pressure, so the feed molar flow rates change when pressure changes."
+}], "ManipulateCaption",
+ CellChangeTimes->{
+  3.701432911435712*^9, {3.701432998622184*^9, 3.7014330212914896`*^9}, {
+   3.702829412647781*^9, 3.702829417344264*^9}, {3.7029009038645477`*^9, 
+   3.7029009075915704`*^9}, {3.703098506378005*^9, 3.7030986443686504`*^9}, {
+   3.7030986778811*^9, 3.703098696473068*^9}, {3.703098738126965*^9, 
+   3.7030987603181934`*^9}, {3.7034307979217033`*^9, 
+   3.703430807949653*^9}},ExpressionUUID->"0a8cdc9b-3e7d-41b6-a0c6-\
+503957e1c231"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Thumbnail Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Snapshot Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ " The molar flow rate for species ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"j", "=", 
+    RowBox[{"(", 
+     RowBox[{
+      StyleBox["A",
+       FontSlant->"Plain"], ",", 
+      StyleBox["B",
+       FontSlant->"Plain"]}], ")"}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"9e0d47fa-f553-44df-b7a9-ff31048d9d21"],
+ " through the reactor is related to the volumetric flow rate using the ideal \
+gas law:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+  3.692559592865903*^9, 3.692559592866023*^9}, {3.692560310273551*^9, 
+  3.692560380457252*^9}, {3.6954055173919945`*^9, 3.695405532464673*^9}, {
+  3.6954063052959604`*^9, 3.6954063059511614`*^9}, {3.6954197423014774`*^9, 
+  3.6954197715718527`*^9}, {3.6981581440603657`*^9, 3.6981581440603657`*^9}, {
+  3.7030990281804333`*^9, 3.703099038493643*^9}, {3.703099392742894*^9, 
+  3.7030993934481554`*^9}},
+ CellID->1100948772,ExpressionUUID->"bacfb09c-f49f-4d8e-93b1-45d260471e35"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["F", "j"], "=", 
+    RowBox[{
+     SubscriptBox["x", "j"], " ", 
+     FractionBox[
+      RowBox[{"P", " ", "v"}], 
+      RowBox[{"R", " ", "T"}]]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"c7d11e3f-72de-4ffa-a955-59011aa233be"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+  3.692559592865903*^9, 3.692559592866023*^9}, {3.692560310273551*^9, 
+  3.692560380457252*^9}, {3.6954055173919945`*^9, 3.695405543700529*^9}, {
+  3.6954055791293087`*^9, 3.6954055791293087`*^9}, {3.6981581462443695`*^9, 
+  3.698158148625389*^9}, {3.7030989628559403`*^9, 3.7030989641262407`*^9}},
+ CellID->536552528,ExpressionUUID->"35d79d66-a64b-4593-81df-7a182922d730"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["F", 
+     StyleBox["T",
+      FontSlant->"Plain"]], "=", 
+    FractionBox[
+     RowBox[{"P", " ", "v"}], 
+     RowBox[{"R", " ", "T"}]]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"f4cdcf2a-041e-46fa-a407-0f018e6e25da"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+  3.692559592865903*^9, 3.692559592866023*^9}, {3.692560310273551*^9, 
+  3.692560380457252*^9}, {3.6954055173919945`*^9, 3.695405543700529*^9}, {
+  3.69540557995811*^9, 3.695405604981636*^9}, {3.6954198478677096`*^9, 
+  3.6954198580227633`*^9}, {3.6981581696852922`*^9, 3.698158169812093*^9}, {
+  3.7030989693758817`*^9, 3.703098970784606*^9}},
+ CellID->130558331,ExpressionUUID->"ea6774f5-e4b9-4b23-916a-03945beabefb"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["F", 
+    StyleBox["T",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "5002799a-2421-4eec-9614-a52e68dc8325"],
+ " is the total molar flow rate, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "j"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "6ad43269-3402-4647-9128-603cc9560e85"],
+ " is conversion, ",
+ Cell[BoxData[
+  FormBox["P", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "c458442f-0425-4281-b104-9da522fc4f3c"],
+ " is reactor pressure, and v is volumetric flow rate."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+   3.6925597199916077`*^9, 3.6925597348348293`*^9}, {3.69255978319234*^9, 
+   3.6925597907499847`*^9}, {3.692559890975731*^9, 3.692559899846407*^9}, {
+   3.692560056751998*^9, 3.692560075692214*^9}, {3.6925601633379583`*^9, 
+   3.692560164891708*^9}, 3.6925606101840267`*^9, {3.69257010155092*^9, 
+   3.692570102904151*^9}, {3.695405667267382*^9, 3.695405734938138*^9}, {
+   3.7030989177723227`*^9, 3.703098923334944*^9}, {3.7030989553100567`*^9, 
+   3.7030989574311237`*^9}},
+ CellID->429245330,ExpressionUUID->"489ef15f-cc1c-4019-83b3-5820e5dbd6be"],
+
+Cell["\<\
+Mass balances are used to calculate the molar flow rates of A and B down the \
+reactor:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+   3.6925597199916077`*^9, 3.6925597348348293`*^9}, {3.69255978319234*^9, 
+   3.6925597907499847`*^9}, {3.692559890975731*^9, 3.692559899846407*^9}, {
+   3.692560056751998*^9, 3.692560075692214*^9}, {3.6925601633379583`*^9, 
+   3.692560164891708*^9}, 3.6925606101840267`*^9, {3.69257010155092*^9, 
+   3.692570102904151*^9}, {3.695405667267382*^9, 3.6954057962434444`*^9}, {
+   3.695419874790571*^9, 3.695419913766715*^9}, {3.697297010752984*^9, 
+   3.6972970122505865`*^9}, {3.7030990651345544`*^9, 3.7030991071984777`*^9}},
+ CellID->234623046,ExpressionUUID->"260acd51-09f3-44cd-9052-775b590eec0b"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["F", 
+       StyleBox["A",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "z"}]], "=", 
+    RowBox[{
+     RowBox[{"-", "A"}], " ", "k", " ", 
+     SubsuperscriptBox["C", 
+      StyleBox["A",
+       FontSlant->"Plain"], "n"]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+   3.6925597199916077`*^9, 3.6925597348348293`*^9}, {3.69255978319234*^9, 
+   3.6925597907499847`*^9}, {3.692559890975731*^9, 3.692559899846407*^9}, {
+   3.692560056751998*^9, 3.692560075692214*^9}, {3.6925601633379583`*^9, 
+   3.692560164891708*^9}, 3.6925606101840267`*^9, {3.69257010155092*^9, 
+   3.692570102904151*^9}, {3.695405667267382*^9, 3.695405828008415*^9}},
+ CellID->378317961],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["F", 
+       StyleBox["B",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "z"}]], "=", 
+    RowBox[{"m", " ", "A", " ", "k", " ", 
+     SubsuperscriptBox["C", 
+      StyleBox["A",
+       FontSlant->"Plain"], "n"]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"c9693fb6-a124-4efb-8540-57c9d32faa85"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+  3.6925597199916077`*^9, 3.6925597348348293`*^9}, {3.69255978319234*^9, 
+  3.6925597907499847`*^9}, {3.692559890975731*^9, 3.692559899846407*^9}, {
+  3.692560056751998*^9, 3.692560140575645*^9}, {3.692569373034072*^9, 
+  3.692569408062627*^9}, {3.692569457387137*^9, 3.692569464398958*^9}, {
+  3.692576957848856*^9, 3.692576958157426*^9}, {3.6954058546985626`*^9, 
+  3.6954058567647667`*^9}},
+ CellID->1155971764,ExpressionUUID->"4921ccf6-b9d5-4a43-9a47-bcac25189bba"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "211168e7-135f-4180-a17a-a76c957ff542"],
+ " is the reaction order, ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "85878c19-8c2b-47ce-bda4-2f418428b8f7"],
+ " is the moles of ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["B",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "febec631-1bfe-4a91-8706-82a6a7ce1625"],
+ " formed for each mole of ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["A",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "455e9a62-2704-4e0e-8686-bea20156a458"],
+ " reacted, z is distance down the reactor, and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "j"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "f7c28465-0ecd-46df-9610-8333e2e0e0b2"],
+ " is concentration. The rate constants are chosen so the rate at the reactor \
+inlet is the same for each reaction order at a pressure of 10 bar."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+   3.6925597199916077`*^9, 3.692559765472781*^9}, {3.692559815898828*^9, 
+   3.6925598427752533`*^9}, {3.6925599076412582`*^9, 3.692559930098155*^9}, 
+   3.692560047613236*^9, {3.692569522208021*^9, 3.692569666558743*^9}, {
+   3.692569705058667*^9, 3.692569727990704*^9}, {3.692569794453012*^9, 
+   3.692569798475177*^9}, {3.692570085459297*^9, 3.692570107013481*^9}, {
+   3.692576967866601*^9, 3.692576998586671*^9}, {3.6954058591507864`*^9, 
+   3.695405886523722*^9}, {3.6954199212616453`*^9, 3.6954199567327356`*^9}, {
+   3.6972970256830597`*^9, 3.6972970297714825`*^9}, {3.698158196388022*^9, 
+   3.6981581968962364`*^9}, {3.7030991309107933`*^9, 
+   3.7030991399076724`*^9}, {3.7030994205156136`*^9, 3.70309942181785*^9}, {
+   3.7033413284993715`*^9, 3.7033413286997757`*^9}},
+ CellID->1713040675,ExpressionUUID->"e2a53115-2cd7-485c-a4a3-89ffc71e315a"],
+
+Cell[TextData[{
+ "The concentration of ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[Cell[TextData[Cell[BoxData[
+     FormBox[
+      StyleBox["A",
+       FontSlant->"Plain"], TraditionalForm]], "InlineMath",ExpressionUUID->
+     "3d63db11-3ae5-4e15-8693-b5a5cc602580"]], "InlineMath",ExpressionUUID->
+     "a2fd2679-1445-45fa-a060-dad8d4996ffc"],
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "df81e0c7-2d21-4718-b9ae-0d80d80d5152"],
+ " is related to molar flow rates using the ideal gas law:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.692559347807947*^9, 3.692559469540082*^9}, {
+   3.6925597199916077`*^9, 3.692559765472781*^9}, {3.692559815898828*^9, 
+   3.6925598427752533`*^9}, {3.6925599076412582`*^9, 3.692559930098155*^9}, 
+   3.692560047613236*^9, {3.692569522208021*^9, 3.692569666558743*^9}, {
+   3.692569705058667*^9, 3.692569727990704*^9}, {3.692569794453012*^9, 
+   3.692569798475177*^9}, {3.692570085459297*^9, 3.692570107013481*^9}, {
+   3.692576967866601*^9, 3.692576998586671*^9}, {3.6954058591507864`*^9, 
+   3.695405870463039*^9}, {3.6954059013106003`*^9, 3.6954059223271303`*^9}, {
+   3.6954199676365423`*^9, 3.6954199991078463`*^9}, {3.6972970347813067`*^9, 
+   3.697297037670312*^9}, {3.703099169325272*^9, 3.7030992060226655`*^9}},
+ CellID->334400537,ExpressionUUID->"e4a77c77-865b-4a35-aca2-115f63744e82"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", 
+     StyleBox["A",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{
+     RowBox[{
+      FractionBox[
+       SubscriptBox["F", 
+        StyleBox["A",
+         FontSlant->"Plain"]], 
+       RowBox[{
+        SubscriptBox["F", 
+         StyleBox["A",
+          FontSlant->"Plain"]], "+", 
+        SubscriptBox["F", 
+         StyleBox["B",
+          FontSlant->"Plain"]]}]], " ", 
+      FractionBox["P", 
+       RowBox[{"R", " ", "T"}]]}], "=", 
+     RowBox[{
+      SubscriptBox["x", 
+       StyleBox["A",
+        FontSlant->"Plain"]], " ", 
+      FractionBox["P", 
+       RowBox[{"R", " ", "T"}]]}]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"b55dacc9-7dfa-4226-ad5b-b0d9cd49afd1"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692570116030113*^9, 3.692570123333325*^9}, {
+  3.692574091098168*^9, 3.692574106050838*^9}, {3.6954059633227615`*^9, 
+  3.6954059633227615`*^9}, {3.6954061843477197`*^9, 3.69540618461392*^9}},
+ CellID->707928107,ExpressionUUID->"133051d6-3835-4090-ae59-afc126b94de4"],
+
+Cell[TextData[{
+ "The conversion of ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["A",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath"],
+ " is:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6954060501776114`*^9, 3.6954060635706854`*^9}},
+ CellID->321390900],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["x", 
+     StyleBox["A",
+      FontSlant->"Plain"]], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["F", 
+       RowBox[{
+        StyleBox["A",
+         FontSlant->"Plain"], ",", "0"}]], "-", 
+      SubscriptBox["F", 
+       StyleBox["A",
+        FontSlant->"Plain"]]}], 
+     SubscriptBox["F", 
+      RowBox[{
+       StyleBox["A",
+        FontSlant->"Plain"], ",", "0"}]]]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.692570116030113*^9, 3.692570123333325*^9}, {
+  3.692574091098168*^9, 3.692574106050838*^9}, {3.6954059647921643`*^9, 
+  3.6954059948365154`*^9}},
+ CellID->262339247],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["F", 
+    RowBox[{
+     StyleBox["A",
+      FontSlant->"Plain"], ",", "0"}]], TraditionalForm]], "InlineMath"],
+ " is the inlet molar flow rate of ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["A",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692570126257203*^9, 3.6925701362417173`*^9}, {
+  3.692574001124316*^9, 3.692574074780175*^9}, {3.6954060202342443`*^9, 
+  3.695406023033675*^9}, {3.697297062876439*^9, 3.697297068434265*^9}},
+ CellID->320559157],
+
+Cell["\<\
+The change in the control volume is the control volume at any location minus \
+the initial control volume (10 mL):\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.6954060687541103`*^9, 3.695406104321311*^9}, {
+  3.6954200300300226`*^9, 3.6954200348382583`*^9}, {3.703099229654725*^9, 
+  3.703099272982375*^9}},
+ CellID->735822625,ExpressionUUID->"9a41375e-86ef-4966-8586-f8e798de15e9"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"\[CapitalDelta]", "\[InvisibleSpace]", "V"}], "=", 
+    RowBox[{"V", "-", 
+     SubscriptBox["V", "0"]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"d2169bb5-7e52-4413-8d1a-97d10ebe7c5a"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692570126257203*^9, 3.6925701362417173`*^9}, {
+  3.692574001124316*^9, 3.692574062972741*^9}, {3.692574121843891*^9, 
+  3.692574125730897*^9}, {3.6925742488301687`*^9, 3.692574452323683*^9}, {
+  3.695406120167392*^9, 3.6954061357344685`*^9}, {3.6972971161505075`*^9, 
+  3.6972971162753077`*^9}, {3.703099293293171*^9, 3.703099297637113*^9}},
+ CellID->77150958,ExpressionUUID->"ac32d621-d36c-4766-810c-88d80f2f2186"],
+
+Cell["\<\
+For more information on solving plug flow reactor problems, view the \
+screencast videos at [2] and [3].\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.692570126257203*^9, 3.6925701362417173`*^9}, {
+   3.692574001124316*^9, 3.692574062972741*^9}, {3.692574121843891*^9, 
+   3.692574125730897*^9}, {3.6925742488301687`*^9, 3.692574468800323*^9}, {
+   3.6925755645535517`*^9, 3.6925755645537863`*^9}, {3.692575756608448*^9, 
+   3.692575797060968*^9}, {3.6925761061131687`*^9, 3.692576115695969*^9}, 
+   3.695402114924162*^9, {3.6954061606797967`*^9, 3.6954061652778215`*^9}, 
+   3.6954201059886894`*^9, {3.697297106757058*^9, 3.697297112416885*^9}},
+ CellID->1242926748],
+
+Cell["References", "DetailNotes",
+ CellChangeTimes->{{3.692570126257203*^9, 3.6925701362417173`*^9}, {
+  3.692574001124316*^9, 3.692574062972741*^9}, {3.692574121843891*^9, 
+  3.692574125730897*^9}, {3.6925742488301687`*^9, 3.692574468800323*^9}, {
+  3.6925755704228477`*^9, 3.69257557306572*^9}},
+ CellID->1164338564],
+
+Cell[TextData[{
+ "[1] H.S. Fogler, ",
+ StyleBox["Essentials of Chemical Reaction Engineering",
+  FontSlant->"Italic"],
+ ", Boston: Pearson Education Inc., 2011."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692570126257203*^9, 3.6925701362417173`*^9}, {
+  3.692574001124316*^9, 3.692574062972741*^9}, {3.692574121843891*^9, 
+  3.692574125730897*^9}, {3.6925742488301687`*^9, 3.692574468800323*^9}, {
+  3.6925755704228477`*^9, 3.692575585463414*^9}, {3.692576088608549*^9, 
+  3.6925761005984983`*^9}, {3.692576279236198*^9, 3.692576282026956*^9}, {
+  3.6954063497155204`*^9, 3.695406412997695*^9}},
+ CellID->984375478],
+
+Cell[TextData[{
+ "[2] ",
+ StyleBox["Mole Balance on a Plug Flow Reactor",
+  FontSlant->"Italic"],
+ " [Video]. (May 30, 2013) ",
+ ButtonBox["www.youtube.com/watch?v=MqHvapTy21I",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["https://www.youtube.com/watch?v=MqHvapTy21I"], None},
+  ButtonNote->"https://www.youtube.com/watch?v=MqHvapTy21I"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6925758046128483`*^9, 3.6925758050002947`*^9}, {
+  3.692575944024556*^9, 3.692576008808991*^9}, {3.6954062028081174`*^9, 
+  3.695406213455225*^9}},
+ CellID->18987788],
+
+Cell[TextData[{
+ "[3] ",
+ StyleBox["Effect of Ignoring Density Change in PFR",
+  FontSlant->"Italic"],
+ " [Video]. (Nov 28, 2011) ",
+ ButtonBox["www.youtube.com/watch?v=_MsM8 _jq6Yo",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["https://www.youtube.com/watch?v=_MsM8_jq6Yo"], None},
+  ButtonNote->"https://www.youtube.com/watch?v=_MsM8_jq6Yo"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.692576012442669*^9, 3.692576046936186*^9}, {
+  3.6954062198834915`*^9, 3.695406231495571*^9}},
+ CellID->1641127922]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.7014329251513987`*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{{3.7014329277000184`*^9, 3.701432929186021*^9}},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.70143292842162*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.701432930793824*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["PFR", "SearchTerms",
+ CellChangeTimes->{{3.692573858921865*^9, 3.6925738643357983`*^9}, {
+   3.693752273149703*^9, 3.693752278150309*^9}, {3.69540643255058*^9, 
+   3.695406433071196*^9}, 3.703099308630333*^9},
+ CellID->2128443678,ExpressionUUID->"863a010c-975a-4ab4-996f-7b65601792f6"],
+
+Cell["density change", "SearchTerms",
+ CellChangeTimes->{{3.692573858921865*^9, 3.692573869339848*^9}, {
+  3.692573900148038*^9, 3.692573940933015*^9}, {3.692573981310071*^9, 
+  3.692573982884082*^9}, {3.693752282853668*^9, 3.69375228417636*^9}, {
+  3.702829199462843*^9, 3.702829199973199*^9}},
+ CellID->1523641227,ExpressionUUID->"1a9f61f2-4ecc-48e5-aff9-3fd21fb1ff6d"],
+
+Cell["chemical engineering ", "SearchTerms",
+ CellChangeTimes->{{3.692573858921865*^9, 3.692573889298251*^9}, {
+  3.693752285403508*^9, 3.693752286653284*^9}},
+ CellID->599613442,ExpressionUUID->"2b0037bc-51ef-4c81-8b27-e935173e533d"],
+
+Cell["chemical kinetics", "SearchTerms",
+ CellChangeTimes->{{3.692573858921865*^9, 3.692573876780571*^9}, {
+  3.692573931400136*^9, 3.6925739431842546`*^9}, {3.693752287717408*^9, 
+  3.693752291263136*^9}},
+ CellID->1162428228,ExpressionUUID->"2ee18b27-a69a-4386-a084-332d8a1cad12"],
+
+Cell["reaction kinetics", "SearchTerms",
+ CellChangeTimes->{{3.692573962966939*^9, 3.692573965091365*^9}, {
+  3.69257514403061*^9, 3.6925751450725937`*^9}, {3.693752294373263*^9, 
+  3.693752294551052*^9}, {3.6954194738509536`*^9, 3.695419474751771*^9}},
+ CellID->471249720]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "RelatedLinksSection"],
+
+Cell[TextData[ButtonBox["Why Density Change Cannot Be Ignored in a Plug Flow \
+Reactor (PFR)",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+WhyDensityChangeCannotBeIgnoredInAPlugFlowReactorPFR/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+WhyDensityChangeCannotBeIgnoredInAPlugFlowReactorPFR/"]], "RelatedLinks",
+ CellChangeTimes->{{3.692575481835548*^9, 3.6925754990667152`*^9}, {
+  3.695419594661971*^9, 3.6954195951729965`*^9}},
+ CellID->1547739723]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"],
+ " and ",
+ ButtonBox["Adam J. Johnston",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Adam%20J.%\
+20Johnston"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Adam%20J.%20Johnston"]
+}], "Author",
+ CellChangeTimes->{{3.6925738258095493`*^9, 3.69257384020207*^9}, {
+  3.695404256331645*^9, 3.695404257184721*^9}, {3.6954064780697727`*^9, 
+  3.6954065046171355`*^9}, {3.7035221398217077`*^9, 3.703522147890353*^9}},
+ CellID->1042495165,ExpressionUUID->"94e81e7d-afd4-4cc2-8985-ad42e9ceeffc"],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"]
+}], "Author",
+ CellChangeTimes->{{3.6925738258095493`*^9, 3.692573841033243*^9}, {
+  3.695404255075194*^9, 3.695404259162157*^9}, {3.695406491821828*^9, 
+  3.69540649267423*^9}},
+ CellID->1770327757],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellID->512682714]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1350, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.1 for Microsoft Windows (64-bit) (March 13, 2017)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[56996, 1383, 355, 9, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "b82ee9c6-e036-4219-814b-
+   e845c4c12a48",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[57354, 1394, 678, 16, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "39d314b4-b904-496a-
+   a77b-3d49db0e9e5f",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[58035, 1412, 340, 11, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "4e0284d9-6bdd-433d-bdad-
+   af77b016d959",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[58378, 1425, 637, 15, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "ce4ff44c-e83b-4ff7-863d-
+   dcefa2b518bf",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[59018, 1442, 912, 22, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "505a53a4-2f64-409e-ad40-
+   d51af691ea4d",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[59933, 1466, 392, 10, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "e4bef0d9-cac6-4c81-8b0c-
+   e4ff89e2e907",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[60328, 1478, 1505, 32, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "
+   cef8081d-9fbb-4e06-9d5c-5894f5bff070",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[61836, 1512, 908, 21, 
+  22, "ControlSuggestions", "ExpressionUUID" -> "a6922385-109d-4d50-
+   acc7-1491c46d3967",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 66837, 1650},
+ {"RotateAndZoomIn3D", 67013, 1655},
+ {"DragLocators", 67190, 1660},
+ {"CreateAndDeleteLocators", 67373, 1665},
+ {"SliderZoom", 67554, 1670},
+ {"GamepadControls", 67727, 1675},
+ {"AutomaticAnimation", 67908, 1680},
+ {"BookmarkAnimation", 68092, 1685}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 102, 1, 74, "DemoTitle", "ExpressionUUID" -> \
+"42664a20-8628-42bd-8d6d-3fe71d41cac9"],
+Cell[685, 25, 33, 0, 275, "InitializationSection", "ExpressionUUID" -> \
+"d5ff87e2-3134-4a1c-9fdb-4a1494d6af07"],
+Cell[CellGroupData[{
+Cell[743, 29, 29, 0, 189, "ManipulateSection", "ExpressionUUID" -> \
+"6ef48ba9-855b-45e9-8993-120a5d887b4d"],
+Cell[CellGroupData[{
+Cell[797, 33, 22861, 548, 1372, "Input", "ExpressionUUID" -> \
+"c1ed0682-b80a-4f59-bb7a-195014275ba4"],
+Cell[23661, 583, 12521, 249, 141, "Output", "ExpressionUUID" -> \
+"f2b89535-d69f-41fc-b7af-caf913a5d351",
+ CellID->82906212]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36231, 838, 91, 0, 169, "ManipulateCaptionSection", "ExpressionUUID" -> \
+"4332b0b9-11da-4948-a47d-e87179e361e1"],
+Cell[36325, 840, 1632, 34, 69, "ManipulateCaption", "ExpressionUUID" -> \
+"0a8cdc9b-3e7d-41b6-a0c6-503957e1c231"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[37994, 879, 28, 0, 172, "ThumbnailSection", "ExpressionUUID" -> \
+"8f7bd9bd-5b63-4849-ac72-eb2faab14a21"],
+Cell[38025, 881, 1242, 34, 230, "Output", "ExpressionUUID" -> \
+"12f9aa63-4da1-42c2-bc67-7c6109677452"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[39304, 920, 28, 0, 142, "SnapshotsSection", "ExpressionUUID" -> \
+"45004d6b-5caa-494b-baad-633ff8c83fc1"],
+Cell[39335, 922, 1241, 34, 230, "Output", "ExpressionUUID" -> \
+"bee4b247-3a1f-497e-8c82-3f76c0a32558"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[40613, 961, 26, 0, 335, "DetailsSection", "ExpressionUUID" -> \
+"3deb86e4-2a1b-4575-9816-be7e794b4e5f"],
+Cell[40642, 963, 993, 22, 23, "DetailNotes", "ExpressionUUID" -> \
+"bacfb09c-f49f-4d8e-93b1-45d260471e35",
+ CellID->1100948772],
+Cell[41638, 987, 778, 18, 34, "DetailNotes", "ExpressionUUID" -> \
+"35d79d66-a64b-4593-81df-7a182922d730",
+ CellID->536552528],
+Cell[42419, 1007, 813, 19, 34, "DetailNotes", "ExpressionUUID" -> \
+"ea6774f5-e4b9-4b23-916a-03945beabefb",
+ CellID->130558331],
+Cell[43235, 1028, 1229, 27, 26, "DetailNotes", "ExpressionUUID" -> \
+"489ef15f-cc1c-4019-83b3-5820e5dbd6be",
+ CellID->429245330],
+Cell[44467, 1057, 785, 12, 22, "DetailNotes", "ExpressionUUID" -> \
+"260acd51-09f3-44cd-9052-775b590eec0b",
+ CellID->234623046],
+Cell[45255, 1071, 887, 23, 34, "DetailNotes", "ExpressionUUID" -> \
+"8f26ad46-fbbb-4991-9a77-0ef011ac760b",
+ CellID->378317961],
+Cell[46145, 1096, 1013, 24, 34, "DetailNotes", "ExpressionUUID" -> \
+"4921ccf6-b9d5-4a43-9a47-bcac25189bba",
+ CellID->1155971764],
+Cell[47161, 1122, 1959, 41, 41, "DetailNotes", "ExpressionUUID" -> \
+"e2a53115-2cd7-485c-a4a3-89ffc71e315a",
+ CellID->1713040675],
+Cell[49123, 1165, 1354, 24, 27, "DetailNotes", "ExpressionUUID" -> \
+"e4a77c77-865b-4a35-aca2-115f63744e82",
+ CellID->334400537],
+Cell[50480, 1191, 1080, 34, 37, "DetailNotes", "ExpressionUUID" -> \
+"133051d6-3835-4090-ae59-afc126b94de4",
+ CellID->707928107],
+Cell[51563, 1227, 257, 9, 23, "DetailNotes", "ExpressionUUID" -> \
+"51c713a5-1c7f-494f-966a-9fd62cd887b3",
+ CellID->321390900],
+Cell[51823, 1238, 702, 25, 39, "DetailNotes", "ExpressionUUID" -> \
+"e60d03d8-80a5-468b-a81f-79a531d4d695",
+ CellID->262339247],
+Cell[52528, 1265, 578, 18, 25, "DetailNotes", "ExpressionUUID" -> \
+"d5ad1396-a41d-48f3-ba1a-795ae6add575",
+ CellID->320559157],
+Cell[53109, 1285, 390, 7, 22, "DetailNotes", "ExpressionUUID" -> \
+"9a41375e-86ef-4966-8586-f8e798de15e9",
+ CellID->735822625],
+Cell[53502, 1294, 728, 15, 23, "DetailNotes", "ExpressionUUID" -> \
+"ac32d621-d36c-4766-810c-88d80f2f2186",
+ CellID->77150958],
+Cell[54233, 1311, 674, 11, 22, "DetailNotes", "ExpressionUUID" -> \
+"9bf991fc-8a09-472d-a90c-fb557778a4a5",
+ CellID->1242926748],
+Cell[54910, 1324, 318, 5, 22, "DetailNotes", "ExpressionUUID" -> \
+"b02ae2f9-395f-4a83-ab24-96de5129e3a5",
+ CellID->1164338564],
+Cell[55231, 1331, 613, 12, 22, "DetailNotes", "ExpressionUUID" -> \
+"798681c9-eca6-4928-8efa-829221073822",
+ CellID->984375478],
+Cell[55847, 1345, 557, 15, 22, "DetailNotes", "ExpressionUUID" -> \
+"f96562d7-868d-408e-8989-dadda07aca1a",
+ CellID->18987788],
+Cell[56407, 1362, 512, 14, 22, "DetailNotes", "ExpressionUUID" -> \
+"12066bb0-b9d9-497c-aa6d-0314593adeae",
+ CellID->1641127922]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[56956, 1381, 37, 0, 126, "ControlSuggestionsSection", "ExpressionUUID" \
+-> "f44ab20d-5dcc-4e37-94ac-fc0fa0469a83"],
+Cell[56996, 1383, 355, 9, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"b82ee9c6-e036-4219-814b-e845c4c12a48",
+ CellTags->"ResizeImages"],
+Cell[57354, 1394, 678, 16, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"39d314b4-b904-496a-a77b-3d49db0e9e5f",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[58035, 1412, 340, 11, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"4e0284d9-6bdd-433d-bdad-af77b016d959",
+ CellTags->"DragLocators"],
+Cell[58378, 1425, 637, 15, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"ce4ff44c-e83b-4ff7-863d-dcefa2b518bf",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[59018, 1442, 912, 22, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"505a53a4-2f64-409e-ad40-d51af691ea4d",
+ CellTags->"SliderZoom"],
+Cell[59933, 1466, 392, 10, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"e4bef0d9-cac6-4c81-8b0c-e4ff89e2e907",
+ CellTags->"GamepadControls"],
+Cell[60328, 1478, 1505, 32, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"cef8081d-9fbb-4e06-9d5c-5894f5bff070",
+ CellTags->"AutomaticAnimation"],
+Cell[61836, 1512, 908, 21, 22, "ControlSuggestions", "ExpressionUUID" -> \
+"a6922385-109d-4d50-acc7-1491c46d3967",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[62781, 1538, 30, 0, 155, "SearchTermsSection", "ExpressionUUID" -> \
+"014154d1-a867-4466-be97-679850f6de09"],
+Cell[62814, 1540, 291, 4, 22, "SearchTerms", "ExpressionUUID" -> \
+"863a010c-975a-4ab4-996f-7b65601792f6",
+ CellID->2128443678],
+Cell[63108, 1546, 371, 5, 22, "SearchTerms", "ExpressionUUID" -> \
+"1a9f61f2-4ecc-48e5-aff9-3fd21fb1ff6d",
+ CellID->1523641227],
+Cell[63482, 1553, 234, 3, 22, "SearchTerms", "ExpressionUUID" -> \
+"2b0037bc-51ef-4c81-8b27-e935173e533d",
+ CellID->599613442],
+Cell[63719, 1558, 282, 4, 22, "SearchTerms", "ExpressionUUID" -> \
+"2ee18b27-a69a-4386-a084-332d8a1cad12",
+ CellID->1162428228],
+Cell[64004, 1564, 273, 4, 22, "SearchTerms", "ExpressionUUID" -> \
+"726e628c-93f2-4e3b-ab1b-155b63d9f141",
+ CellID->471249720]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64314, 1573, 31, 0, 141, "RelatedLinksSection", "ExpressionUUID" -> \
+"a6c566c9-3274-4a50-8725-d70ecc8e9320"],
+Cell[64348, 1575, 509, 11, 22, "RelatedLinks", "ExpressionUUID" -> \
+"9c6d7767-2048-4aee-88e0-3c7ea6c76674",
+ CellID->1547739723]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64894, 1591, 25, 0, 141, "AuthorSection", "ExpressionUUID" -> \
+"48dc4ec9-5717-4a0a-9d74-2915e43d0261"],
+Cell[64922, 1593, 878, 21, 22, "Author", "ExpressionUUID" -> \
+"94e81e7d-afd4-4cc2-8985-ad42e9ceeffc",
+ CellID->1042495165],
+Cell[65803, 1616, 504, 13, 22, "Author", "ExpressionUUID" -> \
+"cd31e87e-0344-4132-9108-e329a5f1a56b",
+ CellID->1770327757],
+Cell[66310, 1631, 131, 4, 22, "Author", "ExpressionUUID" -> \
+"33ad11fa-4f3c-4234-929d-8c075f6ff828",
+ CellID->512682714]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

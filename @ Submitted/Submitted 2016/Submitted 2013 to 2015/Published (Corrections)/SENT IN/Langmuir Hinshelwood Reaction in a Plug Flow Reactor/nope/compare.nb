@@ -1,0 +1,606 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     25772,        597]
+NotebookOptionsPosition[     25450,        581]
+NotebookOutlinePosition[     25795,        596]
+CellTagsIndexPosition[     25752,        593]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "pO2i", ",", "pCOi", ",", "R", ",", "k", ",", "kO2", ",", "kCO", ",", 
+       "sum", ",", "\[Theta]O", ",", "\[Theta]CO", ",", "\[Theta]V", ",", 
+       "rate", ",", "sol"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Switch", "[", 
+       RowBox[{"npr", ",", "1", ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"pO2i", "=", "1"}], ";", 
+          RowBox[{"pCOi", "=", 
+           RowBox[{"ratio", "*", "pO2i"}]}], ";"}], "}"}], ",", "2", ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"pO2i", "=", "O2"}], ";", 
+          RowBox[{"pCOi", "=", "CO"}], ";"}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"R", "=", "8.314"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"k", "=", 
+       RowBox[{"2.31*^7", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "40000"}], "/", "R"}], "/", "T"}], "]"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"mol", " ", 
+        RowBox[{
+         RowBox[{"CO", "/", "hr"}], "/", "mol"}], " ", "catalyst"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"kO2", "=", 
+       RowBox[{"1.34*^-2", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{
+          RowBox[{"24830", "/", "R"}], "/", "T"}], "]"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"1", "/", "bar"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"kCO", "=", 
+       RowBox[{"2.16", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{
+          RowBox[{"10600", "/", "R"}], "/", "T"}], "]"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"1", "/", "bar"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"sum", "[", "z_", "]"}], ":=", 
+       RowBox[{"1", "+", 
+        RowBox[{"kCO", "*", 
+         RowBox[{"pCO", "[", "z", "]"}]}], "+", 
+        SqrtBox[
+         RowBox[{"kO2", "*", 
+          RowBox[{"pO2", "[", "z", "]"}]}]]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Theta]O", "[", "z_", "]"}], ":=", 
+       RowBox[{
+        SqrtBox[
+         RowBox[{"kO2", "*", 
+          RowBox[{"pO2", "[", "z", "]"}]}]], "/", 
+        RowBox[{"sum", "[", "z", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Theta]CO", "[", "z_", "]"}], ":=", 
+       RowBox[{"kCO", "*", 
+        RowBox[{
+         RowBox[{"pCO", "[", "z", "]"}], "/", 
+         RowBox[{"sum", "[", "z", "]"}]}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Theta]V", "[", "z_", "]"}], ":=", 
+       RowBox[{"1", "-", 
+        RowBox[{"\[Theta]O", "[", "z", "]"}], "-", 
+        RowBox[{"\[Theta]CO", "[", "z", "]"}]}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rate", "[", "z_", "]"}], ":=", 
+       RowBox[{"k", "*", 
+        RowBox[{"\[Theta]O", "[", "z", "]"}], "*", 
+        RowBox[{"\[Theta]CO", "[", "z", "]"}]}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{"sol", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"NDSolve", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"pCO", "'"}], "[", "z", "]"}], "\[Equal]", 
+             RowBox[{"-", 
+              RowBox[{"rate", "[", "z", "]"}]}]}], ",", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"pO2", "'"}], "[", "z", "]"}], "\[Equal]", 
+             RowBox[{
+              RowBox[{"-", 
+               RowBox[{"rate", "[", "z", "]"}]}], "/", "2"}]}], ",", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"pCO2", "'"}], "[", "z", "]"}], "\[Equal]", 
+             RowBox[{"rate", "[", "z", "]"}]}], ",", 
+            RowBox[{
+             RowBox[{"pCO", "[", "0", "]"}], "\[Equal]", "pCOi"}], ",", 
+            RowBox[{
+             RowBox[{"pO2", "[", "0", "]"}], "\[Equal]", "pO2i"}], ",", 
+            RowBox[{
+             RowBox[{"pCO2", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"pCO", ",", "pO2", ",", "pCO2"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"z", ",", "0", ",", "10"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Column", "[", 
+       RowBox[{
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Text", "@", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+             RowBox[{"Row", "[", 
+              RowBox[{"{", 
+               RowBox[{"\"\<initial partial pressures:\>\"", ",", 
+                RowBox[{"Spacer", "[", "15", "]"}], ",", "\"\<CO = \>\"", ",",
+                 "pCOi", ",", 
+                RowBox[{"Spacer", "[", "10", "]"}], ",", 
+                RowBox[{"Subscript", "[", 
+                 RowBox[{"\"\<O\>\"", ",", "2"}], "]"}], ",", "\"\< = \>\"", 
+                ",", "pO2i"}], "}"}], "]"}], ",", "18"}], "]"}]}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Show", "[", 
+           RowBox[{
+            RowBox[{"Switch", "[", 
+             RowBox[{"ptm", ",", "\[IndentingNewLine]", "1", ",", 
+              RowBox[{"Plot", "[", 
+               RowBox[{
+                RowBox[{"Evaluate", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"pCO", "[", "z", "]"}], ",", 
+                    RowBox[{"pO2", "[", "z", "]"}], ",", 
+                    RowBox[{"pCO2", "[", "z", "]"}]}], "}"}], "/.", "sol"}], 
+                 "]"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"z", ",", "0", ",", "10"}], "}"}], ",", 
+                RowBox[{"PlotStyle", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.7", ",", "0"}], "]"}]}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", "Purple"}], "}"}]}], "}"}]}], ",", 
+                RowBox[{"PlotRange", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"-", "0.1"}], ",", 
+                   RowBox[{"0.1", "+", 
+                    RowBox[{"Max", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"pCOi", ",", "pO2i"}], "}"}]}]}]}], "}"}]}], ",", 
+                RowBox[{"FrameLabel", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<distance down reactor (m)\>\"", ",", "17"}], 
+                    "]"}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<pressure (bar)\>\"", ",", "17"}], "]"}]}], 
+                  "}"}]}]}], "]"}], ",", "\[IndentingNewLine]", "2", ",", 
+              RowBox[{"Plot", "[", 
+               RowBox[{
+                RowBox[{"Evaluate", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"\[Theta]CO", "[", "z", "]"}], ",", 
+                    RowBox[{"\[Theta]O", "[", "z", "]"}], ",", 
+                    RowBox[{"\[Theta]V", "[", "z", "]"}]}], "}"}], "/.", 
+                  "sol"}], "]"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"z", ",", "0", ",", "10"}], "}"}], ",", 
+                RowBox[{"PlotStyle", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"1", ",", "0.2", ",", "0.5"}], "]"}]}], "}"}], 
+                   ",", 
+                   RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"1", ",", "0.3", ",", "0"}], "]"}]}], "}"}]}], 
+                  "}"}]}], ",", 
+                RowBox[{"PlotRange", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"-", "0.05"}], ",", "1.05"}], "}"}]}], ",", 
+                RowBox[{"FrameLabel", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<distance down reactor (m)\>\"", ",", "17"}], 
+                    "]"}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<fractional coverage\>\"", ",", "17"}], 
+                    "]"}]}], "}"}]}]}], "]"}], ",", "\[IndentingNewLine]", 
+              "3", ",", 
+              RowBox[{"Plot", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"rate", "[", "z", "]"}], "/.", "sol"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"z", ",", "0", ",", "10"}], "}"}], ",", 
+                RowBox[{"PlotStyle", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{"Thick", ",", "Black"}], "}"}]}], ",", 
+                RowBox[{"PlotRange", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"-", "0.05"}], ",", "2.05"}], "}"}]}], ",", 
+                RowBox[{"FrameLabel", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<distance down reactor (m)\>\"", ",", "17"}], 
+                    "]"}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<reaction rate\>\"", ",", "17"}], "]"}]}], 
+                  "}"}]}]}], "]"}]}], "\[IndentingNewLine]", "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+            RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+            RowBox[{"LabelStyle", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"14", ",", "Black"}], "}"}]}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"500", ",", "325"}], "}"}]}], ",", 
+            RowBox[{"ImagePadding", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"50", ",", "10"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"50", ",", "5"}], "}"}]}], "}"}]}], ",", 
+            RowBox[{"PlotRangePadding", "\[Rule]", "None"}]}], "]"}]}], 
+         "\[IndentingNewLine]", "}"}], ",", "Center"}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"ptm", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\< partial pressures \>\""}], " ", ",", 
+            RowBox[{"2", "\[Rule]", "\"\< catalyst coverage \>\""}], ",", 
+            RowBox[{"3", "\[Rule]", "\"\< rate \>\""}]}], "}"}], ",", 
+          "Setter"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"npr", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\< ratio \>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\< each \>\""}]}], "}"}], ",", 
+          "Setter"}], "}"}], "]"}]}], "}"}], "}"}], "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"T", ",", "298", ",", "\"\<temperature (K)\>\""}], "}"}], ",", 
+      "200", ",", "350", ",", "1", ",", " ", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{"PaneSelector", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"1", "\[Rule]", 
+        RowBox[{"Control", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"ratio", ",", "1", ",", 
+             RowBox[{"Row", "[", 
+              RowBox[{"{", 
+               RowBox[{"\"\<ratio of inlet partial pressures \>\"", ",", 
+                RowBox[{"Subscript", "[", 
+                 RowBox[{
+                  RowBox[{"Style", "[", 
+                   RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                  "\"\<CO\>\""}], "]"}], ",", "\"\</\>\"", ",", 
+                RowBox[{"Subscript", "[", 
+                 RowBox[{
+                  RowBox[{"Style", "[", 
+                   RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                  RowBox[{"Subscript", "[", 
+                   RowBox[{"\"\<O\>\"", ",", "2"}], "]"}]}], "]"}]}], "}"}], 
+              "]"}]}], "}"}], ",", "0", ",", "3", ",", "0.1", ",", 
+           RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], 
+         "]"}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"2", "\[Rule]", 
+        RowBox[{"Grid", "[", 
+         RowBox[{"{", 
+          RowBox[{"{", 
+           RowBox[{"\"\<feed partial pressures (bar)\>\"", ",", 
+            RowBox[{"Spacer", "[", "1", "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"Control", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"CO", ",", "1", ",", "\"\<CO\>\""}], "}"}], ",", "0", 
+               ",", 
+               RowBox[{"2", "*", "O2"}], ",", "0.1", ",", 
+               RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+               RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}], ",",
+             "\[IndentingNewLine]", 
+            RowBox[{"Control", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"O2", ",", "1", ",", 
+                 RowBox[{"Subscript", "[", 
+                  RowBox[{"\"\<O\>\"", ",", "2"}], "]"}]}], "}"}], ",", 
+               RowBox[{"CO", "/", "2"}], ",", "2", ",", "0.1", ",", 
+               RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+               RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}]}], 
+           "}"}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Dynamic", "@", "npr"}]}], "]"}]}], "\[IndentingNewLine]", 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.6654307706273303`*^9, 3.6654307738009076`*^9}, {
+   3.6654308588074045`*^9, 3.665430935724492*^9}, {3.6654309917072597`*^9, 
+   3.6654311118916693`*^9}, {3.6654311812708254`*^9, 3.665431373983448*^9}, {
+   3.6654314204767303`*^9, 3.6654317294578257`*^9}, {3.6654318296007767`*^9, 
+   3.6654320592360144`*^9}, 3.665433293461215*^9, {3.665433413281964*^9, 
+   3.6654334139330015`*^9}, {3.665433480787682*^9, 3.66543352111123*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`CO$$ = 1, $CellContext`npr$$ = 
+    1, $CellContext`O2$$ = 1, $CellContext`ptm$$ = 1, $CellContext`ratio$$ = 
+    1, $CellContext`T$$ = 298, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptm$$], 1, ""}, {
+      1 -> " partial pressures ", 2 -> " catalyst coverage ", 3 -> 
+       " rate "}}, {{
+       Hold[$CellContext`npr$$], 1, ""}, {1 -> " ratio ", 2 -> " each "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2]}}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`T$$], 298, "temperature (K)"}, 200, 350, 1}, {{
+       Hold[$CellContext`ratio$$], 1, 
+       Row[{"ratio of inlet partial pressures ", 
+         Subscript[
+          Style["P", Italic], "CO"], "/", 
+         Subscript[
+          Style["P", Italic], 
+          Subscript["O", 2]]}]}, 0, 3, 0.1}, {{
+       Hold[$CellContext`CO$$], 1, "CO"}, 0, 
+      Dynamic[2 $CellContext`O2$$], 0.1}, {{
+       Hold[$CellContext`O2$$], 1, 
+       Subscript["O", 2]}, 
+      Dynamic[$CellContext`CO$$/2], 2, 0.1}, {
+      Hold[
+       PaneSelector[{
+        1 -> Manipulate`Place[3], 2 -> Grid[{{"feed partial pressures (bar)", 
+             Spacer[1], 
+             Manipulate`Place[4], 
+             Manipulate`Place[5]}}]}, 
+        Dynamic[$CellContext`npr$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {500., {171.5, 178.5}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`ptm$169365$$ = False, $CellContext`npr$169366$$ = 
+    False, $CellContext`T$169367$$ = 0, $CellContext`ratio$169368$$ = 
+    0, $CellContext`CO$169369$$ = 0, $CellContext`O2$169370$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`CO$$ = 1, $CellContext`npr$$ = 
+        1, $CellContext`O2$$ = 1, $CellContext`ptm$$ = 
+        1, $CellContext`ratio$$ = 1, $CellContext`T$$ = 298}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`ptm$$, $CellContext`ptm$169365$$, False], 
+        Hold[$CellContext`npr$$, $CellContext`npr$169366$$, False], 
+        Hold[$CellContext`T$$, $CellContext`T$169367$$, 0], 
+        Hold[$CellContext`ratio$$, $CellContext`ratio$169368$$, 0], 
+        Hold[$CellContext`CO$$, $CellContext`CO$169369$$, 0], 
+        Hold[$CellContext`O2$$, $CellContext`O2$169370$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`pO2i$, $CellContext`pCOi$, $CellContext`R$, \
+$CellContext`k$, $CellContext`kO2$, $CellContext`kCO$, $CellContext`sum$, \
+$CellContext`\[Theta]O$, $CellContext`\[Theta]CO$, $CellContext`\[Theta]V$, \
+$CellContext`rate$, $CellContext`sol$}, 
+        Switch[$CellContext`npr$$, 
+          1, {$CellContext`pO2i$ = 
+            1; $CellContext`pCOi$ = $CellContext`ratio$$ $CellContext`pO2i$; 
+           Null}, 2, {$CellContext`pO2i$ = $CellContext`O2$$; \
+$CellContext`pCOi$ = $CellContext`CO$$; Null}]; $CellContext`R$ = 
+         8.314; $CellContext`k$ = 
+         2.31*^7 Exp[((-40000)/$CellContext`R$)/$CellContext`T$$]; \
+$CellContext`kO2$ = 
+         0.0134 Exp[(
+             24830/$CellContext`R$)/$CellContext`T$$]; $CellContext`kCO$ = 
+         2.16 Exp[(10600/$CellContext`R$)/$CellContext`T$$]; $CellContext`sum$[
+           Pattern[$CellContext`z$, 
+            Blank[]]] := 
+         1 + $CellContext`kCO$ $CellContext`pCO[$CellContext`z$] + 
+          Sqrt[$CellContext`kO2$ $CellContext`pO2[$CellContext`z$]]; \
+$CellContext`\[Theta]O$[
+           Pattern[$CellContext`z$, 
+            Blank[]]] := 
+         Sqrt[$CellContext`kO2$ \
+$CellContext`pO2[$CellContext`z$]]/$CellContext`sum$[$CellContext`z$]; \
+$CellContext`\[Theta]CO$[
+           Pattern[$CellContext`z$, 
+            
+            Blank[]]] := $CellContext`kCO$ \
+($CellContext`pCO[$CellContext`z$]/$CellContext`sum$[$CellContext`z$]); \
+$CellContext`\[Theta]V$[
+           Pattern[$CellContext`z$, 
+            Blank[]]] := 
+         1 - $CellContext`\[Theta]O$[$CellContext`z$] - \
+$CellContext`\[Theta]CO$[$CellContext`z$]; $CellContext`rate$[
+           Pattern[$CellContext`z$, 
+            
+            Blank[]]] := $CellContext`k$ \
+$CellContext`\[Theta]O$[$CellContext`z$] \
+$CellContext`\[Theta]CO$[$CellContext`z$]; $CellContext`sol$ = Quiet[
+           
+           NDSolve[{
+            Derivative[
+              1][$CellContext`pCO][$CellContext`z] == \
+-$CellContext`rate$[$CellContext`z], 
+             Derivative[
+              1][$CellContext`pO2][$CellContext`z] == \
+(-$CellContext`rate$[$CellContext`z])/2, 
+             Derivative[
+              1][$CellContext`pCO2][$CellContext`z] == \
+$CellContext`rate$[$CellContext`z], $CellContext`pCO[
+              0] == $CellContext`pCOi$, $CellContext`pO2[
+              0] == $CellContext`pO2i$, $CellContext`pCO2[0] == 
+             0}, {$CellContext`pCO, $CellContext`pO2, $CellContext`pCO2}, \
+{$CellContext`z, 0, 10}]]; Column[{
+           Text[
+            Style[
+             Row[{"initial partial pressures:", 
+               Spacer[15], "CO = ", $CellContext`pCOi$, 
+               Spacer[10], 
+               Subscript["O", 2], " = ", $CellContext`pO2i$}], 18]], 
+           Show[
+            Switch[$CellContext`ptm$$, 1, 
+             Plot[
+              Evaluate[
+               ReplaceAll[{
+                 $CellContext`pCO[$CellContext`z], 
+                 $CellContext`pO2[$CellContext`z], 
+                 $CellContext`pCO2[$CellContext`z]}, $CellContext`sol$]], \
+{$CellContext`z, 0, 10}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                 RGBColor[0, 0.7, 0]}, {Thick, Purple}}, 
+              PlotRange -> {-0.1, 0.1 + 
+                Max[{$CellContext`pCOi$, $CellContext`pO2i$}]}, FrameLabel -> {
+                Style["distance down reactor (m)", 17], 
+                Style["pressure (bar)", 17]}], 2, 
+             Plot[
+              Evaluate[
+               ReplaceAll[{
+                 $CellContext`\[Theta]CO$[$CellContext`z], 
+                 $CellContext`\[Theta]O$[$CellContext`z], 
+                 $CellContext`\[Theta]V$[$CellContext`z]}, \
+$CellContext`sol$]], {$CellContext`z, 0, 10}, 
+              PlotStyle -> {{Thick, Blue}, {Thick, 
+                 RGBColor[1, 0.2, 0.5]}, {Thick, 
+                 RGBColor[1, 0.3, 0]}}, PlotRange -> {-0.05, 1.05}, 
+              FrameLabel -> {
+                Style["distance down reactor (m)", 17], 
+                Style["fractional coverage", 17]}], 3, 
+             Plot[
+              ReplaceAll[
+               $CellContext`rate$[$CellContext`z], $CellContext`sol$], \
+{$CellContext`z, 0, 10}, PlotStyle -> {Thick, Black}, 
+              PlotRange -> {-0.05, 2.05}, FrameLabel -> {
+                Style["distance down reactor (m)", 17], 
+                Style["reaction rate", 17]}]], Axes -> False, Frame -> True, 
+            LabelStyle -> {14, Black}, ImageSize -> {500, 325}, 
+            ImagePadding -> {{50, 10}, {50, 5}}, PlotRangePadding -> None]}, 
+          Center]], 
+      "Specifications" :> {{{$CellContext`ptm$$, 1, ""}, {
+         1 -> " partial pressures ", 2 -> " catalyst coverage ", 3 -> 
+          " rate "}, ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`npr$$, 1, ""}, {1 -> " ratio ", 2 -> " each "}, 
+         ControlType -> Setter, ControlPlacement -> 2}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2]}}], {{$CellContext`T$$, 298, 
+          "temperature (K)"}, 200, 350, 1, Appearance -> 
+         "Labeled"}, {{$CellContext`ratio$$, 1, 
+          Row[{"ratio of inlet partial pressures ", 
+            Subscript[
+             Style["P", Italic], "CO"], "/", 
+            Subscript[
+             Style["P", Italic], 
+             Subscript["O", 2]]}]}, 0, 3, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`CO$$, 1, "CO"}, 0, 
+         Dynamic[2 $CellContext`O2$$], 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 4}, {{$CellContext`O2$$, 1, 
+          Subscript["O", 2]}, 
+         Dynamic[$CellContext`CO$$/2], 2, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 5}, 
+        PaneSelector[{
+         1 -> Manipulate`Place[3], 2 -> Grid[{{"feed partial pressures (bar)", 
+              Spacer[1], 
+              Manipulate`Place[4], 
+              Manipulate`Place[5]}}]}, 
+         Dynamic[$CellContext`npr$$]]}, "Options" :> {}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{560., {244., 251.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.6654310203403473`*^9, 3.6654310365112514`*^9}, {
+   3.665431093610614*^9, 3.6654311124791813`*^9}, {3.665431355065015*^9, 
+   3.6654313749294825`*^9}, 3.6654314515140133`*^9, 3.6654320673333235`*^9, 
+   3.665432285404656*^9, 3.665433294688749*^9, 3.665433414452031*^9, {
+   3.6654334828042665`*^9, 3.665433525690336*^9}}]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.3 for Microsoft Windows (64-bit) (October 9, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 15200, 354, 955, "Input"],
+Cell[15783, 378, 9651, 200, 512, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

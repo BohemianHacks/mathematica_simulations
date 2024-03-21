@@ -1,0 +1,654 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     27775,        645]
+NotebookOptionsPosition[     27451,        629]
+NotebookOutlinePosition[     27796,        644]
+CellTagsIndexPosition[     27753,        641]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "R", ",", "Cp", ",", "T1", ",", "P1", ",", "V", ",", "compT", ",", 
+       "turbT", ",", "compP", ",", "turbP", ",", "data", ",", "Tout", ",", 
+       "Pout", ",", "enthalpy", ",", "work", ",", "label"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"R", "=", "8.314"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"J", "/", "mol"}], "/", "K"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"Cp", "=", 
+       RowBox[{"5", "*", 
+        RowBox[{"R", "/", "2"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"J", "/", "mol"}], "/", "K"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"T1", "=", "323"}], ";", 
+      RowBox[{"(*", "K", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"P1", "=", "1."}], ";", 
+      RowBox[{"(*", "MPa", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"V", "=", 
+       RowBox[{"R", "*", 
+        RowBox[{"T1", "/", "P1"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"COMPRESSOR", " ", "constant", " ", "T2"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"compT", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"W", ",", "\[CapitalDelta]H", ",", "T2", ",", "P2"}], "}"}],
+          ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"W", "[", "p_", "]"}], ":=", 
+           RowBox[{"V", "*", 
+            RowBox[{"(", 
+             RowBox[{"p", "-", "P1"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"\[CapitalDelta]H", "[", "p_", "]"}], ":=", 
+           RowBox[{
+            RowBox[{"W", "[", "p", "]"}], "/", "\[Eta]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"T2", "[", "p_", "]"}], ":=", 
+           RowBox[{
+            FractionBox[
+             RowBox[{"\[CapitalDelta]H", "[", "p", "]"}], "Cp"], "+", 
+            "T1"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"P2", "=", 
+           RowBox[{
+            RowBox[{"DeleteCases", "[", 
+             RowBox[{
+              RowBox[{"p", "/.", 
+               RowBox[{"Quiet", "@", 
+                RowBox[{"Solve", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Cp", "*", 
+                    RowBox[{"Log", "[", 
+                    FractionBox[
+                    RowBox[{"T2", "[", "p", "]"}], "T1"], "]"}]}], "+", 
+                    RowBox[{"R", "*", 
+                    RowBox[{"Log", "[", 
+                    FractionBox["P1", "p"], "]"}]}]}], "\[Equal]", "0"}], ",",
+                   "p"}], "]"}]}]}], ",", "P1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"T2", "[", "P2", "]"}], ",", "P2", ",", 
+            RowBox[{"\[CapitalDelta]H", "[", "P2", "]"}], ",", 
+            RowBox[{"W", "[", "P2", "]"}], ",", 
+            "\"\<compressor \!\(\*SubscriptBox[\(T\), \(2\)]\) = \
+constant\>\""}], "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"TURBINE", " ", "constant", " ", "T2"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"turbT", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"W", ",", "\[CapitalDelta]H", ",", "T2", ",", "P2"}], "}"}],
+          ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"W", "[", "p_", "]"}], ":=", 
+           RowBox[{"V", "*", 
+            RowBox[{"(", 
+             RowBox[{"p", "-", "P1"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"\[CapitalDelta]H", "[", "p_", "]"}], ":=", 
+           RowBox[{"\[Eta]", "*", 
+            RowBox[{"W", "[", "p", "]"}]}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"T2", "[", "p_", "]"}], ":=", 
+           RowBox[{
+            FractionBox[
+             RowBox[{"\[CapitalDelta]H", "[", "p", "]"}], "Cp"], "+", 
+            "T1"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"P2", "=", 
+           RowBox[{
+            RowBox[{"DeleteCases", "[", 
+             RowBox[{
+              RowBox[{"p", "/.", 
+               RowBox[{"Quiet", "@", 
+                RowBox[{"Solve", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Cp", "*", 
+                    RowBox[{"Log", "[", 
+                    FractionBox[
+                    RowBox[{"T2", "[", "p", "]"}], "T1"], "]"}]}], "+", 
+                    RowBox[{"R", "*", 
+                    RowBox[{"Log", "[", 
+                    FractionBox["P1", "p"], "]"}]}]}], "\[Equal]", "0"}], ",",
+                   "p"}], "]"}]}]}], ",", "P1"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"T2", "[", "P2", "]"}], ",", "P2", ",", 
+            RowBox[{"\[CapitalDelta]H", "[", "P2", "]"}], ",", 
+            RowBox[{"W", "[", "P2", "]"}], ",", 
+            "\"\<turbine \!\(\*SubscriptBox[\(T\), \(2\)]\) = constant\>\""}],
+            "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"COMPRESSOR", ",", " ", 
+        RowBox[{"constant", " ", "P2"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"compP", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "P2", ",", "T2i", ",", "\[CapitalDelta]H", ",", "W", ",", "T2"}], 
+          "}"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"P2", "=", "0.5"}], ";", "\[IndentingNewLine]", 
+          RowBox[{"T2i", "=", 
+           RowBox[{"t", "/.", 
+            RowBox[{"Quiet", "@", 
+             RowBox[{
+              RowBox[{"Solve", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Cp", "*", 
+                   RowBox[{"Log", "[", 
+                    FractionBox["t", "T1"], "]"}]}], "+", 
+                  RowBox[{"R", "*", 
+                   RowBox[{"Log", "[", 
+                    FractionBox["P1", "P2"], "]"}]}]}], "\[Equal]", "0"}], 
+                ",", "t"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\[CapitalDelta]H", "=", 
+           RowBox[{"Cp", "*", 
+            RowBox[{"(", 
+             RowBox[{"T2i", "-", "T1"}], ")"}]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"W", "=", 
+           FractionBox["\[CapitalDelta]H", "\[Eta]"]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"T2", "=", 
+           RowBox[{"T1", "+", 
+            FractionBox["\[CapitalDelta]H", "Cp"]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+           "T2", ",", "P2", ",", "\[CapitalDelta]H", ",", "W", ",", 
+            "\"\<compressor \!\(\*SubscriptBox[\(P\), \(2\)]\) = \
+constant\>\""}], "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"TURBINE", ",", " ", 
+        RowBox[{"constant", " ", "P2"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"turbP", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "P2", ",", "T2i", ",", "\[CapitalDelta]H", ",", "W", ",", "T2"}], 
+          "}"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"P2", "=", "1.5"}], ";", "\[IndentingNewLine]", 
+          RowBox[{"T2i", "=", 
+           RowBox[{"t", "/.", 
+            RowBox[{"Quiet", "@", 
+             RowBox[{
+              RowBox[{"Solve", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Cp", "*", 
+                   RowBox[{"Log", "[", 
+                    FractionBox["t", "T1"], "]"}]}], "+", 
+                  RowBox[{"R", "*", 
+                   RowBox[{"Log", "[", 
+                    FractionBox["P1", "P2"], "]"}]}]}], "\[Equal]", "0"}], 
+                ",", "t"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"\[CapitalDelta]H", "=", 
+           RowBox[{"Cp", "*", 
+            RowBox[{"(", 
+             RowBox[{"T2i", "-", "T1"}], ")"}]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"W", "=", 
+           RowBox[{"\[Eta]", "*", "\[CapitalDelta]H"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"T2", "=", 
+           RowBox[{"T1", "+", 
+            FractionBox["\[CapitalDelta]H", "Cp"]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+           "T2", ",", "P2", ",", "\[CapitalDelta]H", ",", "W", ",", 
+            "\"\<turbine \!\(\*SubscriptBox[\(P\), \(2\)]\) = constant\>\""}],
+            "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"data", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{"Which", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"equip", "\[Equal]", "1"}], "\[And]", 
+          RowBox[{"const", "\[Equal]", "1"}]}], ",", 
+         RowBox[{"compT", "[", "\[Eta]", "]"}], ",", 
+         RowBox[{"(*", 
+          RowBox[{"compressor", ",", " ", 
+           RowBox[{"const", " ", "T2"}]}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"equip", "\[Equal]", "1"}], "\[And]", 
+          RowBox[{"const", "\[Equal]", "2"}]}], ",", 
+         RowBox[{"compP", "[", "\[Eta]", "]"}], ",", 
+         RowBox[{"(*", 
+          RowBox[{"compressor", ",", " ", 
+           RowBox[{"const", " ", "P2"}]}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"equip", "\[Equal]", "2"}], "\[And]", 
+          RowBox[{"const", "\[Equal]", "1"}]}], ",", 
+         RowBox[{"turbT", "[", "\[Eta]", "]"}], ",", 
+         RowBox[{"(*", 
+          RowBox[{"turbine", ",", " ", 
+           RowBox[{"const", " ", "T2"}]}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"equip", "\[Equal]", "2"}], "\[And]", 
+          RowBox[{"const", "\[Equal]", "2"}]}], ",", 
+         RowBox[{"turbP", "[", "\[Eta]", "]"}]}], 
+        RowBox[{"(*", 
+         RowBox[{"turbine", ",", " ", 
+          RowBox[{"const", " ", "P2"}]}], "*)"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Tout", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"data", "[", "\[Eta]", "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Pout", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"data", "[", "\[Eta]", "]"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"enthalpy", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"data", "[", "\[Eta]", "]"}], "[", 
+        RowBox[{"[", "3", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"work", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"data", "[", "\[Eta]", "]"}], "[", 
+        RowBox[{"[", "4", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"label", "[", "\[Eta]_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"data", "[", "\[Eta]", "]"}], "[", 
+        RowBox[{"[", "5", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Evaluate", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"label", "[", "e", "]"}], ",", 
+          RowBox[{"Tout", "[", "e", "]"}], ",", 
+          RowBox[{"Pout", "[", "e", "]"}], ",", 
+          RowBox[{"enthalpy", "[", "e", "]"}], ",", 
+          RowBox[{"work", "[", "e", "]"}]}], "}"}], "/.", 
+        RowBox[{"e", "\[Rule]", "0.8"}]}], "]"}]}]}], "\[IndentingNewLine]", 
+    "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"equip", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< compressor \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< turbine \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", "SpanFromLeft"}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"const", ",", "1", ",", "\"\<constant at outlet:\>\""}], 
+             "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< temperature \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< pressure \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", "SpanFromLeft"}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Style", "[", 
+          RowBox[{
+           RowBox[{"Row", "[", 
+            RowBox[{"{", 
+             RowBox[{"\"\<efficiencies \>\"", ",", 
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\<\[Eta]\>\"", ",", "Italic"}], "]"}], ",", 
+              "\"\<:\>\""}], "}"}], "]"}], ",", "Bold"}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"\[Eta]1", ",", "0.8", ",", 
+              RowBox[{"Subscript", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{"\"\<\[Eta]\>\"", ",", "Italic"}], "]"}], ",", "1"}],
+                "]"}]}], "}"}], ",", "0.1", ",", "0.9", ",", "0.01", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"\[Eta]2", ",", "0.5", ",", 
+              RowBox[{"Subscript", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{"\"\<\[Eta]\>\"", ",", "Italic"}], "]"}], ",", "2"}],
+                "]"}]}], "}"}], ",", "0.1", ",", "0.9", ",", "0.01", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}]}], 
+        "}"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.663442156126241*^9, 3.6634421727531924`*^9}, {
+  3.663442263440379*^9, 3.6634425077543535`*^9}, {3.663442545505512*^9, 
+  3.663442729407031*^9}, {3.663442775233652*^9, 3.663443021863759*^9}, {
+  3.6634430680924025`*^9, 3.663443153206271*^9}, {3.6634434462180305`*^9, 
+  3.6634443199050026`*^9}, {3.6634443955393286`*^9, 3.663444624110402*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`const$$ = 1, $CellContext`equip$$ = 
+    1, $CellContext`\[Eta]1$$ = 0.8, $CellContext`\[Eta]2$$ = 0.5, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`equip$$], 1, ""}, {
+      1 -> " compressor ", 2 -> " turbine "}}, {{
+       Hold[$CellContext`const$$], 1, "constant at outlet:"}, {
+      1 -> " temperature ", 2 -> " pressure "}}, {{
+       Hold[$CellContext`\[Eta]1$$], 0.8, 
+       Subscript[
+        Style["\[Eta]", Italic], 1]}, 0.1, 0.9, 0.01}, {{
+       Hold[$CellContext`\[Eta]2$$], 0.5, 
+       Subscript[
+        Style["\[Eta]", Italic], 2]}, 0.1, 0.9, 0.01}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], SpanFromLeft}, {
+          Manipulate`Place[2], SpanFromLeft}, {
+          Style[
+           Row[{"efficiencies ", 
+             Style["\[Eta]", Italic], ":"}], Bold], 
+          Manipulate`Place[3], 
+          Manipulate`Place[4]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {444., {2., 8.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`equip$9624$$ = False, $CellContext`const$9625$$ = 
+    False, $CellContext`\[Eta]1$9626$$ = 0, $CellContext`\[Eta]2$9627$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`const$$ = 1, $CellContext`equip$$ = 
+        1, $CellContext`\[Eta]1$$ = 0.8, $CellContext`\[Eta]2$$ = 0.5}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`equip$$, $CellContext`equip$9624$$, False], 
+        Hold[$CellContext`const$$, $CellContext`const$9625$$, False], 
+        Hold[$CellContext`\[Eta]1$$, $CellContext`\[Eta]1$9626$$, 0], 
+        Hold[$CellContext`\[Eta]2$$, $CellContext`\[Eta]2$9627$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`R$, $CellContext`Cp$, $CellContext`T1$, \
+$CellContext`P1$, $CellContext`V$, $CellContext`compT$, $CellContext`turbT$, \
+$CellContext`compP$, $CellContext`turbP$, $CellContext`data$, \
+$CellContext`Tout$, $CellContext`Pout$, $CellContext`enthalpy$, \
+$CellContext`work$, $CellContext`label$}, $CellContext`R$ = 
+         8.314; $CellContext`Cp$ = 5 ($CellContext`R$/2); $CellContext`T1$ = 
+         323; $CellContext`P1$ = 
+         1.; $CellContext`V$ = $CellContext`R$ \
+($CellContext`T1$/$CellContext`P1$); $CellContext`compT$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := 
+         Module[{$CellContext`W$, $CellContext`\[CapitalDelta]H$, \
+$CellContext`T2$, $CellContext`P2$}, $CellContext`W$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := $CellContext`V$ ($CellContext`p$ - \
+$CellContext`P1$); $CellContext`\[CapitalDelta]H$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := $CellContext`W$[$CellContext`p$]/$CellContext`\
+\[Eta]$; $CellContext`T2$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := \
+$CellContext`\[CapitalDelta]H$[$CellContext`p$]/$CellContext`Cp$ + \
+$CellContext`T1$; $CellContext`P2$ = Part[
+              DeleteCases[
+               ReplaceAll[$CellContext`p, 
+                Quiet[
+                 
+                 Solve[$CellContext`Cp$ 
+                    Log[$CellContext`T2$[$CellContext`p]/$CellContext`T1$] + \
+$CellContext`R$ Log[$CellContext`P1$/$CellContext`p] == 
+                  0, $CellContext`p]]], $CellContext`P1$], 1]; {
+             $CellContext`T2$[$CellContext`P2$], $CellContext`P2$, 
+             $CellContext`\[CapitalDelta]H$[$CellContext`P2$], 
+             $CellContext`W$[$CellContext`P2$], 
+             "compressor \!\(\*SubscriptBox[\(T\), \(2\)]\) = constant"}]; \
+$CellContext`turbT$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := 
+         Module[{$CellContext`W$, $CellContext`\[CapitalDelta]H$, \
+$CellContext`T2$, $CellContext`P2$}, $CellContext`W$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := $CellContext`V$ ($CellContext`p$ - \
+$CellContext`P1$); $CellContext`\[CapitalDelta]H$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := $CellContext`\[Eta]$ \
+$CellContext`W$[$CellContext`p$]; $CellContext`T2$[
+              Pattern[$CellContext`p$, 
+               
+               Blank[]]] := \
+$CellContext`\[CapitalDelta]H$[$CellContext`p$]/$CellContext`Cp$ + \
+$CellContext`T1$; $CellContext`P2$ = Part[
+              DeleteCases[
+               ReplaceAll[$CellContext`p, 
+                Quiet[
+                 
+                 Solve[$CellContext`Cp$ 
+                    Log[$CellContext`T2$[$CellContext`p]/$CellContext`T1$] + \
+$CellContext`R$ Log[$CellContext`P1$/$CellContext`p] == 
+                  0, $CellContext`p]]], $CellContext`P1$], 1]; {
+             $CellContext`T2$[$CellContext`P2$], $CellContext`P2$, 
+             $CellContext`\[CapitalDelta]H$[$CellContext`P2$], 
+             $CellContext`W$[$CellContext`P2$], 
+             "turbine \!\(\*SubscriptBox[\(T\), \(2\)]\) = constant"}]; \
+$CellContext`compP$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := 
+         Module[{$CellContext`P2$, $CellContext`T2i$, $CellContext`\
+\[CapitalDelta]H$, $CellContext`W$, $CellContext`T2$}, $CellContext`P2$ = 
+            0.5; $CellContext`T2i$ = ReplaceAll[$CellContext`t, 
+              Quiet[
+               Part[
+                
+                Solve[$CellContext`Cp$ 
+                   Log[$CellContext`t/$CellContext`T1$] + $CellContext`R$ 
+                   Log[$CellContext`P1$/$CellContext`P2$] == 
+                 0, $CellContext`t], 
+                1]]]; $CellContext`\[CapitalDelta]H$ = $CellContext`Cp$ \
+($CellContext`T2i$ - $CellContext`T1$); $CellContext`W$ = $CellContext`\
+\[CapitalDelta]H$/$CellContext`\[Eta]$; $CellContext`T2$ = $CellContext`T1$ + \
+$CellContext`\[CapitalDelta]H$/$CellContext`Cp$; {$CellContext`T2$, \
+$CellContext`P2$, $CellContext`\[CapitalDelta]H$, $CellContext`W$, 
+             "compressor \!\(\*SubscriptBox[\(P\), \(2\)]\) = constant"}]; \
+$CellContext`turbP$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := 
+         Module[{$CellContext`P2$, $CellContext`T2i$, $CellContext`\
+\[CapitalDelta]H$, $CellContext`W$, $CellContext`T2$}, $CellContext`P2$ = 
+            1.5; $CellContext`T2i$ = ReplaceAll[$CellContext`t, 
+              Quiet[
+               Part[
+                
+                Solve[$CellContext`Cp$ 
+                   Log[$CellContext`t/$CellContext`T1$] + $CellContext`R$ 
+                   Log[$CellContext`P1$/$CellContext`P2$] == 
+                 0, $CellContext`t], 
+                1]]]; $CellContext`\[CapitalDelta]H$ = $CellContext`Cp$ \
+($CellContext`T2i$ - $CellContext`T1$); $CellContext`W$ = \
+$CellContext`\[Eta]$ $CellContext`\[CapitalDelta]H$; $CellContext`T2$ = \
+$CellContext`T1$ + $CellContext`\[CapitalDelta]H$/$CellContext`Cp$; \
+{$CellContext`T2$, $CellContext`P2$, $CellContext`\[CapitalDelta]H$, \
+$CellContext`W$, 
+             "turbine \!\(\*SubscriptBox[\(P\), \(2\)]\) = constant"}]; \
+$CellContext`data$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Which[
+           And[$CellContext`equip$$ == 1, $CellContext`const$$ == 1], 
+           $CellContext`compT$[$CellContext`\[Eta]$], 
+           And[$CellContext`equip$$ == 1, $CellContext`const$$ == 2], 
+           $CellContext`compP$[$CellContext`\[Eta]$], 
+           And[$CellContext`equip$$ == 2, $CellContext`const$$ == 1], 
+           $CellContext`turbT$[$CellContext`\[Eta]$], 
+           And[$CellContext`equip$$ == 2, $CellContext`const$$ == 2], 
+           $CellContext`turbP$[$CellContext`\[Eta]$]]; $CellContext`Tout$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Part[
+           $CellContext`data$[$CellContext`\[Eta]$], 1]; $CellContext`Pout$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Part[
+           $CellContext`data$[$CellContext`\[Eta]$], 
+           2]; $CellContext`enthalpy$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Part[
+           $CellContext`data$[$CellContext`\[Eta]$], 3]; $CellContext`work$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Part[
+           $CellContext`data$[$CellContext`\[Eta]$], 4]; $CellContext`label$[
+           Pattern[$CellContext`\[Eta]$, 
+            Blank[]]] := Part[
+           $CellContext`data$[$CellContext`\[Eta]$], 5]; Evaluate[
+          ReplaceAll[{
+            $CellContext`label$[$CellContext`e], 
+            $CellContext`Tout$[$CellContext`e], 
+            $CellContext`Pout$[$CellContext`e], 
+            $CellContext`enthalpy$[$CellContext`e], 
+            $CellContext`work$[$CellContext`e]}, $CellContext`e -> 0.8]]], 
+      "Specifications" :> {{{$CellContext`equip$$, 1, ""}, {
+         1 -> " compressor ", 2 -> " turbine "}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`const$$, 1, "constant at outlet:"}, {
+         1 -> " temperature ", 2 -> " pressure "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`\[Eta]1$$, 0.8, 
+          Subscript[
+           Style["\[Eta]", Italic], 1]}, 0.1, 0.9, 0.01, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`\[Eta]2$$, 0.5, 
+          Subscript[
+           Style["\[Eta]", Italic], 2]}, 0.1, 0.9, 0.01, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 4}, 
+        Grid[{{
+           Manipulate`Place[1], SpanFromLeft}, {
+           Manipulate`Place[2], SpanFromLeft}, {
+           Style[
+            Row[{"efficiencies ", 
+              Style["\[Eta]", Italic], ":"}], Bold], 
+           Manipulate`Place[3], 
+           Manipulate`Place[4]}}, Alignment -> Left]}, "Options" :> {}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{495., {72., 79.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.663442485411075*^9, 3.663442509524454*^9}, 
+   3.663442749255166*^9, {3.6634429651455145`*^9, 3.6634430225948005`*^9}, {
+   3.6634430736077185`*^9, 3.6634431545613484`*^9}, {3.663443453988475*^9, 
+   3.6634435023552413`*^9}, {3.663443663042432*^9, 3.663443675218128*^9}, 
+   3.663443753138585*^9, 3.663443844348802*^9, {3.6634439022971163`*^9, 
+   3.663443974118224*^9}, 3.663444164193096*^9, 3.6634443287545085`*^9, 
+   3.6634444084240656`*^9, {3.6634446164589643`*^9, 3.663444624464422*^9}}]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.3 for Microsoft Windows (64-bit) (October 9, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 15633, 378, 1565, "Input"],
+Cell[16216, 402, 11219, 224, 168, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

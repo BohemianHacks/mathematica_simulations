@@ -1,0 +1,3088 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    137414,       3080]
+NotebookOptionsPosition[    128679,       2919]
+NotebookOutlinePosition[    130739,       2969]
+CellTagsIndexPosition[    130403,       2957]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Heat Transfer in a Bank of Tubes", "DemoTitle",
+ CellChangeTimes->{{3.6043681506729994`*^9, 3.6043681683640113`*^9}, {
+  3.6058021317211494`*^9, 3.605802146583999*^9}, {3.605809666520588*^9, 
+  3.6058096666025925`*^9}, {3.6058846513615723`*^9, 
+  3.605884656640874*^9}},ExpressionUUID->"aa6e165e-d4ee-400e-b48d-\
+461565957a91"],
+
+Cell["", "InitializationSection",ExpressionUUID->"03f10caa-45d0-4349-b6cb-907f2a4e1b3b"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection",ExpressionUUID->"45a7f247-ac2f-4444-b745-d77f269a7dc1"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\[Nu]", ",", "numrows", ",", "ST", ",", "SL", ",", "SD", ",", "d", ",",
+        "Pr", ",", "Prs", ",", "k", ",", "\[Rho]", ",", "Ts", ",", "Tin", ",",
+        "numtubes", ",", "Cp", ",", "vmax", ",", "ReD", ",", "C1", ",", "m", 
+       ",", "C2", ",", "Nu", ",", "h", ",", "Tout", ",", "\[CapitalDelta]Tlm",
+        ",", "q", ",", "p1", ",", "p2", ",", "p3"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"d", "=", "0.02"}], ";", 
+      RowBox[{"\[Nu]", "=", "14.82*^-6"}], ";", 
+      RowBox[{"Pr", "=", "0.71"}], ";", 
+      RowBox[{"Prs", "=", "0.701"}], ";", 
+      RowBox[{"k", "=", "0.0253"}], ";", 
+      RowBox[{"\[Rho]", "=", "1.217"}], ";", 
+      RowBox[{"Cp", "=", "1007"}], ";", 
+      RowBox[{"Ts", "=", "70"}], ";", 
+      RowBox[{"Tin", "=", "15"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"numrows", "=", "10"}], ";", 
+      RowBox[{"numtubes", "=", 
+       RowBox[{"numrows", "*", "numcols"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ST", "=", 
+       RowBox[{"Strans", "/", "100"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"SL", "=", 
+       RowBox[{"Slong", "/", "100"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"SD", "=", 
+       SqrtBox[
+        RowBox[{
+         SuperscriptBox["SL", "2"], "+", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           FractionBox["ST", "2"], ")"}], "2"]}]]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"vmax", "[", "v_", "]"}], ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"SD", "<", 
+          FractionBox[
+           RowBox[{"ST", "+", "d"}], "2"]}], ",", 
+         RowBox[{
+          FractionBox["ST", 
+           RowBox[{"2", 
+            RowBox[{"(", 
+             RowBox[{"SD", "-", "d"}], ")"}]}]], "*", "v"}], ",", 
+         RowBox[{
+          FractionBox["ST", 
+           RowBox[{"ST", "-", "d"}]], "*", "v"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"ReD", "[", "v_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"vmax", "[", "v", "]"}], "*", 
+        RowBox[{"d", "/", "\[Nu]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"C1", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", 
+       RowBox[{"Which", "[", "\[IndentingNewLine]", " ", 
+        RowBox[{
+         RowBox[{"10", "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          SuperscriptBox["10", "2"]}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.8", ",", "0.9"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          SuperscriptBox["10", "2"], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          SuperscriptBox["10", "3"]}], ",", "0.683", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          SuperscriptBox["10", "3"], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "5"]}]}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.27", ",", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"ST", "/", "SL"}], "<", "2"}], ",", 
+             RowBox[{"0.35", "*", 
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{"ST", "/", "SL"}], ")"}], 
+               RowBox[{"1", "/", "5"}]]}], ",", "0.4"}], "]"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "5"]}], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "6"]}]}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.021", ",", "0.022"}], 
+          "]"}]}], "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"m", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", " ", 
+       RowBox[{"Which", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"10", "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          SuperscriptBox["10", "2"]}], ",", "0.4", ",", "\[IndentingNewLine]", 
+         RowBox[{
+          SuperscriptBox["10", "2"], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          SuperscriptBox["10", "3"]}], ",", "0.466", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          SuperscriptBox["10", "3"], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "5"]}]}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.63", ",", "0.6"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "5"]}], "<", 
+          RowBox[{"ReD", "[", "v", "]"}], "\[LessEqual]", 
+          RowBox[{"2", "*", 
+           SuperscriptBox["10", "6"]}]}], ",", "0.84"}], 
+        "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"C2", "[", "config_", "]"}], ":=", 
+       RowBox[{"Which", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"numcols", "\[Equal]", "1"}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.7", ",", "0.64"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[Equal]", "2"}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.8", ",", "0.76"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[Equal]", "3"}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.86", ",", "0.84"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[Equal]", "4"}], ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"config", "\[Equal]", "1"}], ",", "0.9", ",", "0.89"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[Equal]", "5"}], ",", "0.92", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[LessEqual]", " ", "7"}], ",", "0.95", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[LessEqual]", " ", "10"}], ",", "0.97", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[LessEqual]", " ", "13"}], ",", "0.98", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"numcols", "\[LessEqual]", "16"}], ",", "0.99", ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"numcols", ">", "16"}], ",", "1"}], "\[IndentingNewLine]", 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Nu", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", " ", 
+       RowBox[{
+        RowBox[{"C2", "[", "config", "]"}], "*", 
+        RowBox[{"C1", "[", 
+         RowBox[{"v", ",", "config"}], "]"}], "*", 
+        SuperscriptBox[
+         RowBox[{"ReD", "[", "v", "]"}], 
+         RowBox[{"m", "[", 
+          RowBox[{"v", ",", "config"}], "]"}]], "*", 
+        SuperscriptBox["Pr", "0.36"], "*", 
+        SuperscriptBox[
+         RowBox[{"(", 
+          FractionBox["Pr", "Prs"], ")"}], "0.25"]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"h", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"Nu", "[", 
+          RowBox[{"v", ",", "config"}], "]"}], "*", "k"}], "d"]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Tout", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", 
+       RowBox[{"Ts", "-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"Ts", "-", "Tin"}], ")"}], "*", 
+         RowBox[{"Exp", "[", 
+          RowBox[{"-", 
+           FractionBox[
+            RowBox[{"\[Pi]", "*", "d", "*", "numtubes", "*", 
+             RowBox[{"h", "[", 
+              RowBox[{"v", ",", "config"}], "]"}]}], 
+            RowBox[{
+            "\[Rho]", "*", "v", "*", "numrows", "*", "ST", "*", "Cp"}]]}], 
+          "]"}]}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[CapitalDelta]Tlm", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"Ts", "-", "Tin"}], ")"}], "-", 
+         RowBox[{"(", 
+          RowBox[{"Ts", "-", 
+           RowBox[{"Tout", "[", 
+            RowBox[{"v", ",", "config"}], "]"}]}], ")"}]}], 
+        RowBox[{"Log", "[", 
+         FractionBox[
+          RowBox[{"Ts", "-", "Tin"}], 
+          RowBox[{"Ts", "-", 
+           RowBox[{"Tout", "[", 
+            RowBox[{"v", ",", "config"}], "]"}]}]], "]"}]]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"q", "[", 
+        RowBox[{"v_", ",", "config_"}], "]"}], ":=", 
+       RowBox[{"numtubes", "*", 
+        RowBox[{"h", "[", 
+         RowBox[{"v", ",", "config"}], "]"}], "*", "\[Pi]", "*", "d", "*", 
+        RowBox[{"\[CapitalDelta]Tlm", "[", 
+         RowBox[{"v", ",", "config"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"p1", "=", 
+       RowBox[{"Graphics3D", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{"Blue", ",", 
+           RowBox[{"Arrowheads", "[", 
+            RowBox[{"0.4", "/", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"numrows", ">", "numcols"}], ",", "numrows", ",", 
+               "numcols"}], "]"}]}], "]"}], ",", 
+           RowBox[{"Table", "[", 
+            RowBox[{
+             RowBox[{"Arrow", "[", 
+              RowBox[{"Tube", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"-", "1.5"}], "*", "SL"}], ",", 
+                   RowBox[{
+                    RowBox[{"k", "*", "ST"}], "+", 
+                    RowBox[{"ST", "/", "2"}]}], ",", "0.2"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", 
+                   RowBox[{
+                    RowBox[{"k", "*", "ST"}], "+", 
+                    RowBox[{"ST", "/", "2"}]}], ",", "0.2"}], "}"}]}], "}"}], 
+               "]"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"k", ",", "0", ",", 
+               RowBox[{"numrows", "-", "2"}]}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"RGBColor", "[", 
+            RowBox[{"0.9", ",", "0", ",", "0"}], "]"}], ",", 
+           RowBox[{"Table", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"Tube", "[", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"j", "*", "SL"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Mod", "[", 
+                    RowBox[{"j", ",", "2"}], "]"}], "\[Equal]", "1"}], ",", 
+                    RowBox[{
+                    RowBox[{"i", "*", "ST"}], "+", 
+                    RowBox[{
+                    RowBox[{"ST", "/", "2"}], "*", 
+                    RowBox[{"(", 
+                    RowBox[{"orientation", "-", "1"}], ")"}]}]}], ",", 
+                    RowBox[{"i", "*", "ST"}]}], "]"}], ",", "0"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"j", "*", "SL"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Mod", "[", 
+                    RowBox[{"j", ",", "2"}], "]"}], "\[Equal]", "1"}], ",", 
+                    RowBox[{
+                    RowBox[{"i", "*", "ST"}], "+", 
+                    RowBox[{
+                    RowBox[{"ST", "/", "2"}], "*", 
+                    RowBox[{"(", 
+                    RowBox[{"orientation", "-", "1"}], ")"}]}]}], ",", 
+                    RowBox[{"i", "*", "ST"}]}], "]"}], ",", "0.2"}], "}"}]}], 
+                  "}"}], ",", 
+                 RowBox[{"d", "/", "2"}]}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"j", ",", "0", ",", 
+                 RowBox[{"numcols", "-", "1"}]}], "}"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"i", ",", "0", ",", 
+               RowBox[{"numrows", "-", "1"}]}], "}"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"ViewPoint", "\[Rule]", "Above"}], ",", 
+         RowBox[{"Boxed", "\[Rule]", "False"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p2", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Tout", "[", 
+            RowBox[{"v", ",", "1"}], "]"}], ",", 
+           RowBox[{"Tout", "[", 
+            RowBox[{"v", ",", "2"}], "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"v", ",", "1", ",", "20"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], "}"}]}],
+          ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"1", ",", "20"}], "}"}], ",", "All"}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+         RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameTicks", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+           "\"\<inlet air velocity (m/s)\>\"", ",", 
+            "\"\<outlet air temperature (\[Degree]C)\>\""}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"60", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"55", ",", "10"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"#1", ",", "18", ",", "#2", ",", 
+                 RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"#3", ",", 
+                 RowBox[{"Tout", "[", 
+                  RowBox[{"#3", ",", "#4"}], "]"}]}], "}"}]}], "]"}], "&"}], "@@@", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<aligned\>\"", ",", "Blue", ",", "10", ",", "1"}], 
+               "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"\"\<staggered\>\"", ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", "15", ",", 
+                "2"}], "}"}]}], "}"}]}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p3", "=", " ", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"q", "[", 
+             RowBox[{"v", ",", "1"}], "]"}], "/", "1000"}], ",", 
+           RowBox[{
+            RowBox[{"q", "[", 
+             RowBox[{"v", ",", "2"}], "]"}], "/", "1000"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"v", ",", "1", ",", "20"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], "}"}]}],
+          ",", 
+         RowBox[{"PlotRange", "\[Rule]", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"1", ",", "20"}], "}"}], ",", "All"}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+         RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameTicks", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+           "\"\<inlet air velocity (m/s)\>\"", ",", 
+            "\"\<heat transfer rate (kW/m)\>\""}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"60", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"55", ",", "10"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"#1", ",", "18", ",", "#2", ",", 
+                 RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"#3", ",", 
+                 RowBox[{
+                  RowBox[{"q", "[", 
+                   RowBox[{"#3", ",", "#4"}], "]"}], "/", "1000"}]}], "}"}]}],
+               "]"}], "&"}], "@@@", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"\"\<aligned\>\"", ",", "Blue", ",", "10", ",", "1"}], 
+               "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"\"\<staggered\>\"", ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", "15", ",", 
+                "2"}], "}"}]}], "}"}]}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", 
+       RowBox[{
+        RowBox[{"Switch", "[", 
+         RowBox[{
+         "display", ",", "1", ",", "p1", ",", "2", ",", "p2", ",", "3", ",", 
+          "p3"}], "]"}], ",", 
+        RowBox[{"ImageSize", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"600", ",", "380"}], "}"}]}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"Control", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"display", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", "\"\< tube configuration \>\""}], ",", 
+             RowBox[{"2", "\[Rule]", "\"\< air temperature \>\""}], ",", 
+             RowBox[{"3", "\[Rule]", "\"\< heat transfer rate \>\""}]}], 
+            "}"}]}], "}"}], "]"}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "Slong", ",", "3.7", ",", "\"\<longitudinal pitch (cm)\>\""}], 
+             "}"}], " ", ",", "2.5", ",", "10", ",", "0.1", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], " ", ",", 
+            RowBox[{"ImageSize", "\[Rule]", " ", "Small"}]}], "}"}], "]"}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"numcols", ",", "10", ",", "\"\<columns\>\""}], "}"}], 
+            ",", "4", ",", "25", ",", "1", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}]}], 
+        "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "Strans", ",", "3", ",", "\"\<transverse pitch (cm)\>\""}], 
+             "}"}], " ", ",", "2.5", ",", "10", ",", "0.1", " ", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], " ", ",", 
+            RowBox[{"ImageSize", "\[Rule]", " ", "Small"}]}], "}"}], "]"}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"1", "\[Rule]", 
+             RowBox[{"Control", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{
+                 "orientation", ",", "1", ",", "\"\<tube configuration\>\""}],
+                  "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"1", "\[Rule]", "\"\< aligned \>\""}], ",", 
+                  RowBox[{"2", "\[Rule]", "\"\< staggered \>\""}]}], "}"}]}], 
+               "}"}], "]"}]}], "}"}], ",", 
+           RowBox[{"Dynamic", "@", "display"}]}], "]"}]}], "}"}]}], 
+      "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.6043602610137367`*^9, {3.6043667271505785`*^9, 3.604366727301587*^9}, {
+   3.604367084904041*^9, 3.604367084944043*^9}, {3.6043672183186717`*^9, 
+   3.6043672317124376`*^9}, 3.604367305691669*^9, {3.604367471252138*^9, 
+   3.604367473270254*^9}, 3.604367593280118*^9, {3.6043676271540556`*^9, 
+   3.6043677353062415`*^9}, {3.6043678103025312`*^9, 
+   3.6043678180859766`*^9}, {3.6043678537910185`*^9, 3.6043679715487537`*^9}, 
+   3.6043681779835615`*^9, {3.604368388240587*^9, 3.6043684140340624`*^9}, {
+   3.604368452312252*^9, 3.6043684668290825`*^9}, {3.6043685016940765`*^9, 
+   3.6043685146538177`*^9}, {3.6043686072111115`*^9, 3.604368617583705*^9}, {
+   3.6043687578987303`*^9, 3.6043687584387617`*^9}, {3.6043688344031067`*^9, 
+   3.6043689791353846`*^9}, {3.604369186467243*^9, 3.604369198527933*^9}, {
+   3.6043692441125402`*^9, 3.6043692658207817`*^9}, {3.604369297134573*^9, 
+   3.6043692979496193`*^9}, {3.6043695226744733`*^9, 3.604369614534727*^9}, {
+   3.604369651436838*^9, 3.604369652381892*^9}, {3.6043696832096553`*^9, 
+   3.604369786767578*^9}, {3.604369818721406*^9, 3.6043698920325994`*^9}, {
+   3.6043699233103886`*^9, 3.6043699324609118`*^9}, {3.604370005989117*^9, 
+   3.6043700062591324`*^9}, {3.6043700673066244`*^9, 3.60437014835726*^9}, {
+   3.60437018472034*^9, 3.6043703512578654`*^9}, {3.604370381300584*^9, 
+   3.604370461202154*^9}, {3.604370502992544*^9, 3.604370519772504*^9}, {
+   3.6043706045383525`*^9, 3.604370605153387*^9}, {3.604370655326257*^9, 
+   3.6043706778705463`*^9}, {3.60437082950622*^9, 3.6043708781710033`*^9}, {
+   3.6043709242276373`*^9, 3.6043710190180593`*^9}, {3.604371258239742*^9, 
+   3.604371286950384*^9}, {3.604371395744607*^9, 3.604371403114028*^9}, {
+   3.604371568981515*^9, 3.604371627148842*^9}, {3.604371685870201*^9, 
+   3.6043717832367697`*^9}, {3.604371920223605*^9, 3.604372000591202*^9}, 
+   3.6043720823808804`*^9, {3.6043730630899734`*^9, 3.6043730645570574`*^9}, {
+   3.6043742365820932`*^9, 3.6043742933393393`*^9}, {3.6043745071795707`*^9, 
+   3.6043745207683477`*^9}, 3.6043755812070017`*^9, 3.6043797371417074`*^9, 
+   3.6043797683074903`*^9, 3.6043798359583592`*^9, {3.6043798960747976`*^9, 
+   3.604379927621602*^9}, {3.604380690286224*^9, 3.6043807017518797`*^9}, {
+   3.605581255171487*^9, 3.6055813143208704`*^9}, {3.6055813539361362`*^9, 
+   3.605581399830761*^9}, {3.6055814617273016`*^9, 3.6055815062758493`*^9}, {
+   3.605801593258351*^9, 3.6058016226720333`*^9}, {3.6058016686906652`*^9, 
+   3.6058016786552353`*^9}, {3.60580171894754*^9, 3.60580176808435*^9}, {
+   3.6058018833939457`*^9, 3.6058019402741985`*^9}, {3.605801972203025*^9, 
+   3.6058019934372396`*^9}, {3.605802084438445*^9, 3.6058021058836713`*^9}, {
+   3.6058064767351427`*^9, 3.605806516911441*^9}, {3.605884811176713*^9, 
+   3.605884873571282*^9}, {3.6058849119544773`*^9, 3.6058849152696667`*^9}, {
+   3.6058849740590296`*^9, 3.60588498141545*^9}, {3.605886152270419*^9, 
+   3.605886193661787*^9}, {3.6817579293375535`*^9, 3.681758917766656*^9}, {
+   3.681758988016394*^9, 3.6817589896387973`*^9}, {3.681759022470919*^9, 
+   3.6817590232353206`*^9}, {3.6817593445875635`*^9, 
+   3.6817593991762667`*^9}, {3.6817594752582555`*^9, 
+   3.6817594768494587`*^9}, {3.681828248410638*^9, 3.6818282603746605`*^9}, {
+   3.6818392425610037`*^9, 3.6818392920831923`*^9}, 3.681839338642706*^9, {
+   3.6818394250283756`*^9, 3.6818394271343794`*^9}, {3.681839493084243*^9, 
+   3.681839516090584*^9}, {3.681839570239996*^9, 3.681839580770015*^9}, {
+   3.681839615985193*^9, 3.6818396200824003`*^9}, {3.6818396759540443`*^9, 
+   3.68183968477556*^9}, 3.681839715284729*^9, {3.6818398365620017`*^9, 
+   3.6818399026984196`*^9}, {3.681839964600946*^9, 3.681840059296793*^9}, {
+   3.681840102038087*^9, 3.6818401159221106`*^9}, {3.6818401542641945`*^9, 
+   3.6818401678000345`*^9}, 3.682260461468974*^9, {3.6822605008549757`*^9, 
+   3.682260556395811*^9}, {3.682260929322321*^9, 3.6822610130088954`*^9}, {
+   3.682261069686017*^9, 3.682261084829445*^9}, 3.6822782082809343`*^9, {
+   3.6822782500886154`*^9, 3.6822782869688864`*^9}, {3.6828674329790807`*^9, 
+   3.6828674791679945`*^9}, {3.682867528198924*^9, 3.68286753660114*^9}, {
+   3.6828676114677453`*^9, 3.6828676608318615`*^9}, {3.6828677158109875`*^9, 
+   3.682867809109727*^9}, {3.682867866450285*^9, 3.6828679835727777`*^9}, {
+   3.6828680684313965`*^9, 3.682868162793846*^9}, {3.682868200406543*^9, 
+   3.682868207947175*^9}, {3.682868253523675*^9, 3.682868253905076*^9}, 
+   3.682868337901064*^9, 3.6828685200963545`*^9, {3.68286877322087*^9, 
+   3.6828688222928104`*^9}, 3.682868861659292*^9, {3.682869033234748*^9, 
+   3.682869039802963*^9}, {3.6828693129282255`*^9, 3.6828693147242284`*^9}, {
+   3.682869422145337*^9, 3.682869460145836*^9}, {3.6834887226452384`*^9, 
+   3.683488726217255*^9}, {3.683488764411498*^9, 3.683488778004565*^9}, {
+   3.718375599148795*^9, 
+   3.7183756585002875`*^9}},ExpressionUUID->"c7eb7910-879e-445c-ab4f-\
+d3138a6a1a82"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+    10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+    3.7, $CellContext`Strans$$ = 3, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`display$$], 1, ""}, {
+      1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+       " heat transfer rate "}}, {{
+       Hold[$CellContext`Slong$$], 3.7, "longitudinal pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`numcols$$], 10, "columns"}, 4, 25, 1}, {{
+       Hold[$CellContext`Strans$$], 3, "transverse pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`orientation$$], 1, "tube configuration"}, {
+      1 -> " aligned ", 2 -> " staggered "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1]}, {
+          Manipulate`Place[2], 
+          Manipulate`Place[3]}, {
+          Manipulate`Place[4], 
+          PaneSelector[{1 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`display$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = Automatic, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`display$55443$$ = False, $CellContext`Slong$55444$$ = 
+    0, $CellContext`numcols$55445$$ = 0, $CellContext`Strans$55446$$ = 
+    0, $CellContext`orientation$55447$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+        10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+        3.7, $CellContext`Strans$$ = 3}, "ControllerVariables" :> {
+        Hold[$CellContext`display$$, $CellContext`display$55443$$, False], 
+        Hold[$CellContext`Slong$$, $CellContext`Slong$55444$$, 0], 
+        Hold[$CellContext`numcols$$, $CellContext`numcols$55445$$, 0], 
+        Hold[$CellContext`Strans$$, $CellContext`Strans$55446$$, 0], 
+        Hold[$CellContext`orientation$$, $CellContext`orientation$55447$$, 
+         False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Nu]$, $CellContext`numrows$, $CellContext`ST$, \
+$CellContext`SL$, $CellContext`SD$, $CellContext`d$, $CellContext`Pr$, \
+$CellContext`Prs$, $CellContext`k$, $CellContext`\[Rho]$, $CellContext`Ts$, \
+$CellContext`Tin$, $CellContext`numtubes$, $CellContext`Cp$, \
+$CellContext`vmax$, $CellContext`ReD$, $CellContext`C1$, $CellContext`m$, \
+$CellContext`C2$, $CellContext`Nu$, $CellContext`h$, $CellContext`Tout$, \
+$CellContext`\[CapitalDelta]Tlm$, $CellContext`q$, $CellContext`p1$, \
+$CellContext`p2$, $CellContext`p3$}, $CellContext`d$ = 
+         0.02; $CellContext`\[Nu]$ = 0.00001482; $CellContext`Pr$ = 
+         0.71; $CellContext`Prs$ = 0.701; $CellContext`k$ = 
+         0.0253; $CellContext`\[Rho]$ = 1.217; $CellContext`Cp$ = 
+         1007; $CellContext`Ts$ = 70; $CellContext`Tin$ = 
+         15; $CellContext`numrows$ = 
+         10; $CellContext`numtubes$ = $CellContext`numrows$ \
+$CellContext`numcols$$; $CellContext`ST$ = $CellContext`Strans$$/
+          100; $CellContext`SL$ = $CellContext`Slong$$/100; $CellContext`SD$ = 
+         Sqrt[$CellContext`SL$^2 + ($CellContext`ST$/2)^2]; $CellContext`vmax$[
+           Pattern[$CellContext`v$, 
+            Blank[]]] := 
+         If[$CellContext`SD$ < ($CellContext`ST$ + $CellContext`d$)/
+            2, ($CellContext`ST$/(
+            2 ($CellContext`SD$ - $CellContext`d$))) $CellContext`v$, \
+($CellContext`ST$/($CellContext`ST$ - $CellContext`d$)) $CellContext`v$]; \
+$CellContext`ReD$[
+           Pattern[$CellContext`v$, 
+            
+            Blank[]]] := $CellContext`vmax$[$CellContext`v$] \
+($CellContext`d$/$CellContext`\[Nu]$); $CellContext`C1$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 
+           If[$CellContext`config$ == 1, 0.8, 0.9], 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.683, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.27, 
+            
+            If[$CellContext`ST$/$CellContext`SL$ < 2, 
+             0.35 ($CellContext`ST$/$CellContext`SL$)^(1/5), 0.4]], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           If[$CellContext`config$ == 1, 0.021, 0.022]]; $CellContext`m$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 0.4, 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.466, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.63, 0.6], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           0.84]; $CellContext`C2$[
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[$CellContext`numcols$$ == 1, 
+           If[$CellContext`config$ == 1, 0.7, 0.64], $CellContext`numcols$$ == 
+           2, 
+           If[$CellContext`config$ == 1, 0.8, 0.76], $CellContext`numcols$$ == 
+           3, 
+           If[$CellContext`config$ == 1, 0.86, 0.84], $CellContext`numcols$$ == 
+           4, 
+           If[$CellContext`config$ == 1, 0.9, 0.89], $CellContext`numcols$$ == 
+           5, 0.92, $CellContext`numcols$$ <= 7, 0.95, $CellContext`numcols$$ <= 
+           10, 0.97, $CellContext`numcols$$ <= 13, 
+           0.98, $CellContext`numcols$$ <= 16, 0.99, $CellContext`numcols$$ > 
+           16, 1]; $CellContext`Nu$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`C2$[$CellContext`config$] \
+$CellContext`C1$[$CellContext`v$, $CellContext`config$] \
+$CellContext`ReD$[$CellContext`v$]^$CellContext`m$[$CellContext`v$, \
+$CellContext`config$] $CellContext`Pr$^0.36 \
+($CellContext`Pr$/$CellContext`Prs$)^0.25; $CellContext`h$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Nu$[$CellContext`v$, \
+$CellContext`config$] $CellContext`k$/$CellContext`d$; $CellContext`Tout$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Ts$ - ($CellContext`Ts$ - \
+$CellContext`Tin$) 
+          Exp[-(Pi $CellContext`d$ $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$]/($CellContext`\[Rho]$ \
+$CellContext`v$ $CellContext`numrows$ $CellContext`ST$ $CellContext`Cp$))]; \
+$CellContext`\[CapitalDelta]Tlm$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := (($CellContext`Ts$ - $CellContext`Tin$) - \
+($CellContext`Ts$ - $CellContext`Tout$[$CellContext`v$, \
+$CellContext`config$]))/
+          Log[($CellContext`Ts$ - $CellContext`Tin$)/($CellContext`Ts$ - \
+$CellContext`Tout$[$CellContext`v$, $CellContext`config$])]; $CellContext`q$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$] 
+          
+          Pi $CellContext`d$ \
+$CellContext`\[CapitalDelta]Tlm$[$CellContext`v$, $CellContext`config$]; \
+$CellContext`p1$ = Graphics3D[{Blue, 
+            Arrowheads[
+            0.4/If[$CellContext`numrows$ > $CellContext`numcols$$, \
+$CellContext`numrows$, $CellContext`numcols$$]], 
+            Table[
+             Arrow[
+              
+              Tube[{{(-1.5) $CellContext`SL$, $CellContext`k$ \
+$CellContext`ST$ + $CellContext`ST$/2, 0.2}, {
+                0, $CellContext`k$ $CellContext`ST$ + $CellContext`ST$/2, 
+                 0.2}}]], {$CellContext`k$, 0, $CellContext`numrows$ - 2}], 
+            RGBColor[0.9, 0, 0], 
+            Table[
+             Table[
+              Tube[{{$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0}, {$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0.2}}, $CellContext`d$/2], {$CellContext`j, 
+               0, $CellContext`numcols$$ - 1}], {$CellContext`i, 
+              0, $CellContext`numrows$ - 1}]}, ViewPoint -> Above, Boxed -> 
+           False]; $CellContext`p2$ = Plot[{
+            $CellContext`Tout$[$CellContext`v, 1], 
+            $CellContext`Tout$[$CellContext`v, 2]}, {$CellContext`v, 1, 20}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", 
+             "outlet air temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               Style[#, 18, #2, Background -> White], {#3, 
+                $CellContext`Tout$[#3, #4]}]& , {{"aligned", Blue, 10, 1}, {
+               "staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; $CellContext`p3$ = 
+         Plot[{$CellContext`q$[$CellContext`v, 1]/
+            1000, $CellContext`q$[$CellContext`v, 2]/1000}, {$CellContext`v, 
+            1, 20}, PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", "heat transfer rate (kW/m)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               
+               Style[#, 18, #2, Background -> 
+                White], {#3, $CellContext`q$[#3, #4]/1000}]& , {{
+               "aligned", Blue, 10, 1}, {"staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; Show[
+          
+          Switch[$CellContext`display$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$, 3, $CellContext`p3$], 
+          ImageSize -> {600, 380}]], 
+      "Specifications" :> {{{$CellContext`display$$, 1, ""}, {
+         1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+          " heat transfer rate "}, ControlPlacement -> 
+         1}, {{$CellContext`Slong$$, 3.7, "longitudinal pitch (cm)"}, 2.5, 10,
+          0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         2}, {{$CellContext`numcols$$, 10, "columns"}, 4, 25, 1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Strans$$, 3, "transverse pitch (cm)"}, 2.5, 10, 
+         0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`orientation$$, 1, "tube configuration"}, {
+         1 -> " aligned ", 2 -> " staggered "}, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1]}, {
+           Manipulate`Place[2], 
+           Manipulate`Place[3]}, {
+           Manipulate`Place[4], 
+           PaneSelector[{1 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`display$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->79152992,ExpressionUUID->"6144ec2b-cee5-44d4-836b-f001acb0a4a0"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection",ExpressionUUID->"36ec7e6e-2504-4f68-b037-c5d7005b2f86"],
+
+Cell["\<\
+This Demonstration shows convective, steady-state heat transfer from a bank \
+of tubes, which are at a constant temperature of 70 \[Degree]C, to \
+cross-flowing air, which enters at 15 \[Degree]C. Align or stagger the tubes \
+with buttons. The aligned configuration has flow lanes for the air, whereas \
+the staggered configuration disrupts these flow lanes. When the air velocity \
+increases, the rate of heat transfer increases and the outlet air temperature \
+decreases. An average Nusselt number is calculated for the entire tube bank, \
+and that number is used to calculate the outlet air temperature and the heat \
+transfer rate per length of tube. Radiation is negligible and air properties \
+are assumed independent of temperature. Use sliders to adjust the arrangement \
+of the tubes. Due to ineffective heat transfer, aligned tubes should not be \
+considered for a ratio of transverse pitch to longitudinal pitch less than \
+0.7. The tube diameter does not change when the tube arrangement changes, but \
+the diameter displayed in the tube configuration figure changes so that all \
+tubes are shown.\
+\>", "ManipulateCaption",
+ CellChangeTimes->{{3.604372750755109*^9, 3.604372963514278*^9}, {
+   3.6043730239457345`*^9, 3.6043730501082306`*^9}, {3.604373096541887*^9, 
+   3.6043731630406904`*^9}, {3.6043734218364925`*^9, 
+   3.6043735798425303`*^9}, {3.6043736346416645`*^9, 3.604373646817361*^9}, {
+   3.6043737127611322`*^9, 3.6043738833508897`*^9}, {3.6043740249549885`*^9, 
+   3.6043741427627273`*^9}, {3.604374364751424*^9, 3.604374375498039*^9}, {
+   3.60438053391328*^9, 3.6043806572903366`*^9}, {3.6043809287758646`*^9, 
+   3.6043809386814313`*^9}, 3.605581570679533*^9, 3.6058025255536747`*^9, {
+   3.605809562267625*^9, 3.6058095681639624`*^9}, {3.6058642924665403`*^9, 
+   3.6058644612731953`*^9}, 3.605885546608777*^9, {3.6058860562009244`*^9, 
+   3.6058860583370466`*^9}, {3.6058980028749375`*^9, 3.60589800359501*^9}, {
+   3.606489872509638*^9, 3.606489881484857*^9}, {3.606500145357274*^9, 
+   3.6065002535904713`*^9}, 3.606500291364925*^9, {3.60650040673939*^9, 
+   3.606500409729307*^9}, {3.607250390147542*^9, 3.607250407272209*^9}, {
+   3.681759068388421*^9, 3.681759158922877*^9}, {3.681759198105749*^9, 
+   3.68175925410067*^9}, {3.6817597662597017`*^9, 3.6817597666809025`*^9}, {
+   3.6822786582980647`*^9, 3.6822786822059236`*^9}, 3.6822787581825*^9, {
+   3.682867243341422*^9, 3.682867244607025*^9}, {3.683368139899951*^9, 
+   3.683368167960908*^9}, {3.6834888460374756`*^9, 3.6834888471859846`*^9}, {
+   3.6834889237653103`*^9, 3.6834889244228125`*^9}, {3.683645352259137*^9, 
+   3.683645405212376*^9}},ExpressionUUID->"86d55cbc-ae1e-464d-b83e-\
+885d444ccd04"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection",ExpressionUUID->"97cc02a0-bbd4-4958-91fe-fe1d703f3914"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+    10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+    3.7, $CellContext`Strans$$ = 3, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`display$$], 1, ""}, {
+      1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+       " heat transfer rate "}}, {{
+       Hold[$CellContext`Slong$$], 3.7, "longitudinal pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`numcols$$], 10, "columns"}, 4, 25, 1}, {{
+       Hold[$CellContext`Strans$$], 3, "transverse pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`orientation$$], 1, "tube configuration"}, {
+      1 -> " aligned ", 2 -> " staggered "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1]}, {
+          Manipulate`Place[2], 
+          Manipulate`Place[3]}, {
+          Manipulate`Place[4], 
+          PaneSelector[{1 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`display$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = Automatic, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`display$55519$$ = False, $CellContext`Slong$55520$$ = 
+    0, $CellContext`numcols$55521$$ = 0, $CellContext`Strans$55522$$ = 
+    0, $CellContext`orientation$55523$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+        10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+        3.7, $CellContext`Strans$$ = 3}, "ControllerVariables" :> {
+        Hold[$CellContext`display$$, $CellContext`display$55519$$, False], 
+        Hold[$CellContext`Slong$$, $CellContext`Slong$55520$$, 0], 
+        Hold[$CellContext`numcols$$, $CellContext`numcols$55521$$, 0], 
+        Hold[$CellContext`Strans$$, $CellContext`Strans$55522$$, 0], 
+        Hold[$CellContext`orientation$$, $CellContext`orientation$55523$$, 
+         False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Nu]$, $CellContext`numrows$, $CellContext`ST$, \
+$CellContext`SL$, $CellContext`SD$, $CellContext`d$, $CellContext`Pr$, \
+$CellContext`Prs$, $CellContext`k$, $CellContext`\[Rho]$, $CellContext`Ts$, \
+$CellContext`Tin$, $CellContext`numtubes$, $CellContext`Cp$, \
+$CellContext`vmax$, $CellContext`ReD$, $CellContext`C1$, $CellContext`m$, \
+$CellContext`C2$, $CellContext`Nu$, $CellContext`h$, $CellContext`Tout$, \
+$CellContext`\[CapitalDelta]Tlm$, $CellContext`q$, $CellContext`p1$, \
+$CellContext`p2$, $CellContext`p3$}, $CellContext`d$ = 
+         0.02; $CellContext`\[Nu]$ = 0.00001482; $CellContext`Pr$ = 
+         0.71; $CellContext`Prs$ = 0.701; $CellContext`k$ = 
+         0.0253; $CellContext`\[Rho]$ = 1.217; $CellContext`Cp$ = 
+         1007; $CellContext`Ts$ = 70; $CellContext`Tin$ = 
+         15; $CellContext`numrows$ = 
+         10; $CellContext`numtubes$ = $CellContext`numrows$ \
+$CellContext`numcols$$; $CellContext`ST$ = $CellContext`Strans$$/
+          100; $CellContext`SL$ = $CellContext`Slong$$/100; $CellContext`SD$ = 
+         Sqrt[$CellContext`SL$^2 + ($CellContext`ST$/2)^2]; $CellContext`vmax$[
+           Pattern[$CellContext`v$, 
+            Blank[]]] := 
+         If[$CellContext`SD$ < ($CellContext`ST$ + $CellContext`d$)/
+            2, ($CellContext`ST$/(
+            2 ($CellContext`SD$ - $CellContext`d$))) $CellContext`v$, \
+($CellContext`ST$/($CellContext`ST$ - $CellContext`d$)) $CellContext`v$]; \
+$CellContext`ReD$[
+           Pattern[$CellContext`v$, 
+            
+            Blank[]]] := $CellContext`vmax$[$CellContext`v$] \
+($CellContext`d$/$CellContext`\[Nu]$); $CellContext`C1$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 
+           If[$CellContext`config$ == 1, 0.8, 0.9], 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.683, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.27, 
+            
+            If[$CellContext`ST$/$CellContext`SL$ < 2, 
+             0.35 ($CellContext`ST$/$CellContext`SL$)^(1/5), 0.4]], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           If[$CellContext`config$ == 1, 0.021, 0.022]]; $CellContext`m$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 0.4, 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.466, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.63, 0.6], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           0.84]; $CellContext`C2$[
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[$CellContext`numcols$$ == 1, 
+           If[$CellContext`config$ == 1, 0.7, 0.64], $CellContext`numcols$$ == 
+           2, 
+           If[$CellContext`config$ == 1, 0.8, 0.76], $CellContext`numcols$$ == 
+           3, 
+           If[$CellContext`config$ == 1, 0.86, 0.84], $CellContext`numcols$$ == 
+           4, 
+           If[$CellContext`config$ == 1, 0.9, 0.89], $CellContext`numcols$$ == 
+           5, 0.92, $CellContext`numcols$$ <= 7, 0.95, $CellContext`numcols$$ <= 
+           10, 0.97, $CellContext`numcols$$ <= 13, 
+           0.98, $CellContext`numcols$$ <= 16, 0.99, $CellContext`numcols$$ > 
+           16, 1]; $CellContext`Nu$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`C2$[$CellContext`config$] \
+$CellContext`C1$[$CellContext`v$, $CellContext`config$] \
+$CellContext`ReD$[$CellContext`v$]^$CellContext`m$[$CellContext`v$, \
+$CellContext`config$] $CellContext`Pr$^0.36 \
+($CellContext`Pr$/$CellContext`Prs$)^0.25; $CellContext`h$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Nu$[$CellContext`v$, \
+$CellContext`config$] $CellContext`k$/$CellContext`d$; $CellContext`Tout$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Ts$ - ($CellContext`Ts$ - \
+$CellContext`Tin$) 
+          Exp[-(Pi $CellContext`d$ $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$]/($CellContext`\[Rho]$ \
+$CellContext`v$ $CellContext`numrows$ $CellContext`ST$ $CellContext`Cp$))]; \
+$CellContext`\[CapitalDelta]Tlm$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := (($CellContext`Ts$ - $CellContext`Tin$) - \
+($CellContext`Ts$ - $CellContext`Tout$[$CellContext`v$, \
+$CellContext`config$]))/
+          Log[($CellContext`Ts$ - $CellContext`Tin$)/($CellContext`Ts$ - \
+$CellContext`Tout$[$CellContext`v$, $CellContext`config$])]; $CellContext`q$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$] 
+          
+          Pi $CellContext`d$ \
+$CellContext`\[CapitalDelta]Tlm$[$CellContext`v$, $CellContext`config$]; \
+$CellContext`p1$ = Graphics3D[{Blue, 
+            Arrowheads[
+            0.4/If[$CellContext`numrows$ > $CellContext`numcols$$, \
+$CellContext`numrows$, $CellContext`numcols$$]], 
+            Table[
+             Arrow[
+              
+              Tube[{{(-1.5) $CellContext`SL$, $CellContext`k$ \
+$CellContext`ST$ + $CellContext`ST$/2, 0.2}, {
+                0, $CellContext`k$ $CellContext`ST$ + $CellContext`ST$/2, 
+                 0.2}}]], {$CellContext`k$, 0, $CellContext`numrows$ - 2}], 
+            RGBColor[0.9, 0, 0], 
+            Table[
+             Table[
+              Tube[{{$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0}, {$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0.2}}, $CellContext`d$/2], {$CellContext`j, 
+               0, $CellContext`numcols$$ - 1}], {$CellContext`i, 
+              0, $CellContext`numrows$ - 1}]}, ViewPoint -> Above, Boxed -> 
+           False]; $CellContext`p2$ = Plot[{
+            $CellContext`Tout$[$CellContext`v, 1], 
+            $CellContext`Tout$[$CellContext`v, 2]}, {$CellContext`v, 1, 20}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", 
+             "outlet air temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               Style[#, 18, #2, Background -> White], {#3, 
+                $CellContext`Tout$[#3, #4]}]& , {{"aligned", Blue, 10, 1}, {
+               "staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; $CellContext`p3$ = 
+         Plot[{$CellContext`q$[$CellContext`v, 1]/
+            1000, $CellContext`q$[$CellContext`v, 2]/1000}, {$CellContext`v, 
+            1, 20}, PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", "heat transfer rate (kW/m)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               
+               Style[#, 18, #2, Background -> 
+                White], {#3, $CellContext`q$[#3, #4]/1000}]& , {{
+               "aligned", Blue, 10, 1}, {"staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; Show[
+          
+          Switch[$CellContext`display$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$, 3, $CellContext`p3$], 
+          ImageSize -> {600, 380}]], 
+      "Specifications" :> {{{$CellContext`display$$, 1, ""}, {
+         1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+          " heat transfer rate "}, ControlPlacement -> 
+         1}, {{$CellContext`Slong$$, 3.7, "longitudinal pitch (cm)"}, 2.5, 10,
+          0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         2}, {{$CellContext`numcols$$, 10, "columns"}, 4, 25, 1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Strans$$, 3, "transverse pitch (cm)"}, 2.5, 10, 
+         0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`orientation$$, 1, "tube configuration"}, {
+         1 -> " aligned ", 2 -> " staggered "}, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1]}, {
+           Manipulate`Place[2], 
+           Manipulate`Place[3]}, {
+           Manipulate`Place[4], 
+           PaneSelector[{1 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`display$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->272868997,ExpressionUUID->"b59061d9-a7db-4d88-9aef-2ea22da62582"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection",ExpressionUUID->"6449a213-0c3b-44da-a210-9eb8e5d8e3ff"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`display$$ = 2, $CellContext`numcols$$ = 
+    10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+    3.7, $CellContext`Strans$$ = 3, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`display$$], 2, ""}, {
+      1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+       " heat transfer rate "}}, {{
+       Hold[$CellContext`Slong$$], 3.7, "longitudinal pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`numcols$$], 10, "columns"}, 4, 25, 1}, {{
+       Hold[$CellContext`Strans$$], 3, "transverse pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`orientation$$], 1, "tube configuration"}, {
+      1 -> " aligned ", 2 -> " staggered "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1]}, {
+          Manipulate`Place[2], 
+          Manipulate`Place[3]}, {
+          Manipulate`Place[4], 
+          PaneSelector[{1 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`display$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = Automatic, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`display$55595$$ = False, $CellContext`Slong$55596$$ = 
+    0, $CellContext`numcols$55597$$ = 0, $CellContext`Strans$55598$$ = 
+    0, $CellContext`orientation$55599$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`display$$ = 2, $CellContext`numcols$$ = 
+        10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+        3.7, $CellContext`Strans$$ = 3}, "ControllerVariables" :> {
+        Hold[$CellContext`display$$, $CellContext`display$55595$$, False], 
+        Hold[$CellContext`Slong$$, $CellContext`Slong$55596$$, 0], 
+        Hold[$CellContext`numcols$$, $CellContext`numcols$55597$$, 0], 
+        Hold[$CellContext`Strans$$, $CellContext`Strans$55598$$, 0], 
+        Hold[$CellContext`orientation$$, $CellContext`orientation$55599$$, 
+         False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Nu]$, $CellContext`numrows$, $CellContext`ST$, \
+$CellContext`SL$, $CellContext`SD$, $CellContext`d$, $CellContext`Pr$, \
+$CellContext`Prs$, $CellContext`k$, $CellContext`\[Rho]$, $CellContext`Ts$, \
+$CellContext`Tin$, $CellContext`numtubes$, $CellContext`Cp$, \
+$CellContext`vmax$, $CellContext`ReD$, $CellContext`C1$, $CellContext`m$, \
+$CellContext`C2$, $CellContext`Nu$, $CellContext`h$, $CellContext`Tout$, \
+$CellContext`\[CapitalDelta]Tlm$, $CellContext`q$, $CellContext`p1$, \
+$CellContext`p2$, $CellContext`p3$}, $CellContext`d$ = 
+         0.02; $CellContext`\[Nu]$ = 0.00001482; $CellContext`Pr$ = 
+         0.71; $CellContext`Prs$ = 0.701; $CellContext`k$ = 
+         0.0253; $CellContext`\[Rho]$ = 1.217; $CellContext`Cp$ = 
+         1007; $CellContext`Ts$ = 70; $CellContext`Tin$ = 
+         15; $CellContext`numrows$ = 
+         10; $CellContext`numtubes$ = $CellContext`numrows$ \
+$CellContext`numcols$$; $CellContext`ST$ = $CellContext`Strans$$/
+          100; $CellContext`SL$ = $CellContext`Slong$$/100; $CellContext`SD$ = 
+         Sqrt[$CellContext`SL$^2 + ($CellContext`ST$/2)^2]; $CellContext`vmax$[
+           Pattern[$CellContext`v$, 
+            Blank[]]] := 
+         If[$CellContext`SD$ < ($CellContext`ST$ + $CellContext`d$)/
+            2, ($CellContext`ST$/(
+            2 ($CellContext`SD$ - $CellContext`d$))) $CellContext`v$, \
+($CellContext`ST$/($CellContext`ST$ - $CellContext`d$)) $CellContext`v$]; \
+$CellContext`ReD$[
+           Pattern[$CellContext`v$, 
+            
+            Blank[]]] := $CellContext`vmax$[$CellContext`v$] \
+($CellContext`d$/$CellContext`\[Nu]$); $CellContext`C1$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 
+           If[$CellContext`config$ == 1, 0.8, 0.9], 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.683, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.27, 
+            
+            If[$CellContext`ST$/$CellContext`SL$ < 2, 
+             0.35 ($CellContext`ST$/$CellContext`SL$)^(1/5), 0.4]], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           If[$CellContext`config$ == 1, 0.021, 0.022]]; $CellContext`m$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 0.4, 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.466, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.63, 0.6], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           0.84]; $CellContext`C2$[
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[$CellContext`numcols$$ == 1, 
+           If[$CellContext`config$ == 1, 0.7, 0.64], $CellContext`numcols$$ == 
+           2, 
+           If[$CellContext`config$ == 1, 0.8, 0.76], $CellContext`numcols$$ == 
+           3, 
+           If[$CellContext`config$ == 1, 0.86, 0.84], $CellContext`numcols$$ == 
+           4, 
+           If[$CellContext`config$ == 1, 0.9, 0.89], $CellContext`numcols$$ == 
+           5, 0.92, $CellContext`numcols$$ <= 7, 0.95, $CellContext`numcols$$ <= 
+           10, 0.97, $CellContext`numcols$$ <= 13, 
+           0.98, $CellContext`numcols$$ <= 16, 0.99, $CellContext`numcols$$ > 
+           16, 1]; $CellContext`Nu$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`C2$[$CellContext`config$] \
+$CellContext`C1$[$CellContext`v$, $CellContext`config$] \
+$CellContext`ReD$[$CellContext`v$]^$CellContext`m$[$CellContext`v$, \
+$CellContext`config$] $CellContext`Pr$^0.36 \
+($CellContext`Pr$/$CellContext`Prs$)^0.25; $CellContext`h$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Nu$[$CellContext`v$, \
+$CellContext`config$] $CellContext`k$/$CellContext`d$; $CellContext`Tout$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Ts$ - ($CellContext`Ts$ - \
+$CellContext`Tin$) 
+          Exp[-(Pi $CellContext`d$ $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$]/($CellContext`\[Rho]$ \
+$CellContext`v$ $CellContext`numrows$ $CellContext`ST$ $CellContext`Cp$))]; \
+$CellContext`\[CapitalDelta]Tlm$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := (($CellContext`Ts$ - $CellContext`Tin$) - \
+($CellContext`Ts$ - $CellContext`Tout$[$CellContext`v$, \
+$CellContext`config$]))/
+          Log[($CellContext`Ts$ - $CellContext`Tin$)/($CellContext`Ts$ - \
+$CellContext`Tout$[$CellContext`v$, $CellContext`config$])]; $CellContext`q$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$] 
+          
+          Pi $CellContext`d$ \
+$CellContext`\[CapitalDelta]Tlm$[$CellContext`v$, $CellContext`config$]; \
+$CellContext`p1$ = Graphics3D[{Blue, 
+            Arrowheads[
+            0.4/If[$CellContext`numrows$ > $CellContext`numcols$$, \
+$CellContext`numrows$, $CellContext`numcols$$]], 
+            Table[
+             Arrow[
+              
+              Tube[{{(-1.5) $CellContext`SL$, $CellContext`k$ \
+$CellContext`ST$ + $CellContext`ST$/2, 0.2}, {
+                0, $CellContext`k$ $CellContext`ST$ + $CellContext`ST$/2, 
+                 0.2}}]], {$CellContext`k$, 0, $CellContext`numrows$ - 2}], 
+            RGBColor[0.9, 0, 0], 
+            Table[
+             Table[
+              Tube[{{$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0}, {$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0.2}}, $CellContext`d$/2], {$CellContext`j, 
+               0, $CellContext`numcols$$ - 1}], {$CellContext`i, 
+              0, $CellContext`numrows$ - 1}]}, ViewPoint -> Above, Boxed -> 
+           False]; $CellContext`p2$ = Plot[{
+            $CellContext`Tout$[$CellContext`v, 1], 
+            $CellContext`Tout$[$CellContext`v, 2]}, {$CellContext`v, 1, 20}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", 
+             "outlet air temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               Style[#, 18, #2, Background -> White], {#3, 
+                $CellContext`Tout$[#3, #4]}]& , {{"aligned", Blue, 10, 1}, {
+               "staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; $CellContext`p3$ = 
+         Plot[{$CellContext`q$[$CellContext`v, 1]/
+            1000, $CellContext`q$[$CellContext`v, 2]/1000}, {$CellContext`v, 
+            1, 20}, PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", "heat transfer rate (kW/m)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               
+               Style[#, 18, #2, Background -> 
+                White], {#3, $CellContext`q$[#3, #4]/1000}]& , {{
+               "aligned", Blue, 10, 1}, {"staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; Show[
+          
+          Switch[$CellContext`display$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$, 3, $CellContext`p3$], 
+          ImageSize -> {600, 380}]], 
+      "Specifications" :> {{{$CellContext`display$$, 2, ""}, {
+         1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+          " heat transfer rate "}, ControlPlacement -> 
+         1}, {{$CellContext`Slong$$, 3.7, "longitudinal pitch (cm)"}, 2.5, 10,
+          0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         2}, {{$CellContext`numcols$$, 10, "columns"}, 4, 25, 1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Strans$$, 3, "transverse pitch (cm)"}, 2.5, 10, 
+         0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`orientation$$, 1, "tube configuration"}, {
+         1 -> " aligned ", 2 -> " staggered "}, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1]}, {
+           Manipulate`Place[2], 
+           Manipulate`Place[3]}, {
+           Manipulate`Place[4], 
+           PaneSelector[{1 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`display$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->418619448,ExpressionUUID->"0b39bab5-53b2-445a-88f6-7ab195c8da52"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+    7, $CellContext`orientation$$ = 2, $CellContext`Slong$$ = 
+    6.8, $CellContext`Strans$$ = 5.2, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`display$$], 1, ""}, {
+      1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+       " heat transfer rate "}}, {{
+       Hold[$CellContext`Slong$$], 6.8, "longitudinal pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`numcols$$], 7, "columns"}, 4, 25, 1}, {{
+       Hold[$CellContext`Strans$$], 5.2, "transverse pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`orientation$$], 2, "tube configuration"}, {
+      1 -> " aligned ", 2 -> " staggered "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1]}, {
+          Manipulate`Place[2], 
+          Manipulate`Place[3]}, {
+          Manipulate`Place[4], 
+          PaneSelector[{1 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`display$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = Automatic, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`display$55671$$ = False, $CellContext`Slong$55672$$ = 
+    0, $CellContext`numcols$55673$$ = 0, $CellContext`Strans$55674$$ = 
+    0, $CellContext`orientation$55675$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`display$$ = 1, $CellContext`numcols$$ = 
+        7, $CellContext`orientation$$ = 2, $CellContext`Slong$$ = 
+        6.8, $CellContext`Strans$$ = 5.2}, "ControllerVariables" :> {
+        Hold[$CellContext`display$$, $CellContext`display$55671$$, False], 
+        Hold[$CellContext`Slong$$, $CellContext`Slong$55672$$, 0], 
+        Hold[$CellContext`numcols$$, $CellContext`numcols$55673$$, 0], 
+        Hold[$CellContext`Strans$$, $CellContext`Strans$55674$$, 0], 
+        Hold[$CellContext`orientation$$, $CellContext`orientation$55675$$, 
+         False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Nu]$, $CellContext`numrows$, $CellContext`ST$, \
+$CellContext`SL$, $CellContext`SD$, $CellContext`d$, $CellContext`Pr$, \
+$CellContext`Prs$, $CellContext`k$, $CellContext`\[Rho]$, $CellContext`Ts$, \
+$CellContext`Tin$, $CellContext`numtubes$, $CellContext`Cp$, \
+$CellContext`vmax$, $CellContext`ReD$, $CellContext`C1$, $CellContext`m$, \
+$CellContext`C2$, $CellContext`Nu$, $CellContext`h$, $CellContext`Tout$, \
+$CellContext`\[CapitalDelta]Tlm$, $CellContext`q$, $CellContext`p1$, \
+$CellContext`p2$, $CellContext`p3$}, $CellContext`d$ = 
+         0.02; $CellContext`\[Nu]$ = 0.00001482; $CellContext`Pr$ = 
+         0.71; $CellContext`Prs$ = 0.701; $CellContext`k$ = 
+         0.0253; $CellContext`\[Rho]$ = 1.217; $CellContext`Cp$ = 
+         1007; $CellContext`Ts$ = 70; $CellContext`Tin$ = 
+         15; $CellContext`numrows$ = 
+         10; $CellContext`numtubes$ = $CellContext`numrows$ \
+$CellContext`numcols$$; $CellContext`ST$ = $CellContext`Strans$$/
+          100; $CellContext`SL$ = $CellContext`Slong$$/100; $CellContext`SD$ = 
+         Sqrt[$CellContext`SL$^2 + ($CellContext`ST$/2)^2]; $CellContext`vmax$[
+           Pattern[$CellContext`v$, 
+            Blank[]]] := 
+         If[$CellContext`SD$ < ($CellContext`ST$ + $CellContext`d$)/
+            2, ($CellContext`ST$/(
+            2 ($CellContext`SD$ - $CellContext`d$))) $CellContext`v$, \
+($CellContext`ST$/($CellContext`ST$ - $CellContext`d$)) $CellContext`v$]; \
+$CellContext`ReD$[
+           Pattern[$CellContext`v$, 
+            
+            Blank[]]] := $CellContext`vmax$[$CellContext`v$] \
+($CellContext`d$/$CellContext`\[Nu]$); $CellContext`C1$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 
+           If[$CellContext`config$ == 1, 0.8, 0.9], 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.683, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.27, 
+            
+            If[$CellContext`ST$/$CellContext`SL$ < 2, 
+             0.35 ($CellContext`ST$/$CellContext`SL$)^(1/5), 0.4]], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           If[$CellContext`config$ == 1, 0.021, 0.022]]; $CellContext`m$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 0.4, 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.466, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.63, 0.6], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           0.84]; $CellContext`C2$[
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[$CellContext`numcols$$ == 1, 
+           If[$CellContext`config$ == 1, 0.7, 0.64], $CellContext`numcols$$ == 
+           2, 
+           If[$CellContext`config$ == 1, 0.8, 0.76], $CellContext`numcols$$ == 
+           3, 
+           If[$CellContext`config$ == 1, 0.86, 0.84], $CellContext`numcols$$ == 
+           4, 
+           If[$CellContext`config$ == 1, 0.9, 0.89], $CellContext`numcols$$ == 
+           5, 0.92, $CellContext`numcols$$ <= 7, 0.95, $CellContext`numcols$$ <= 
+           10, 0.97, $CellContext`numcols$$ <= 13, 
+           0.98, $CellContext`numcols$$ <= 16, 0.99, $CellContext`numcols$$ > 
+           16, 1]; $CellContext`Nu$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`C2$[$CellContext`config$] \
+$CellContext`C1$[$CellContext`v$, $CellContext`config$] \
+$CellContext`ReD$[$CellContext`v$]^$CellContext`m$[$CellContext`v$, \
+$CellContext`config$] $CellContext`Pr$^0.36 \
+($CellContext`Pr$/$CellContext`Prs$)^0.25; $CellContext`h$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Nu$[$CellContext`v$, \
+$CellContext`config$] $CellContext`k$/$CellContext`d$; $CellContext`Tout$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Ts$ - ($CellContext`Ts$ - \
+$CellContext`Tin$) 
+          Exp[-(Pi $CellContext`d$ $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$]/($CellContext`\[Rho]$ \
+$CellContext`v$ $CellContext`numrows$ $CellContext`ST$ $CellContext`Cp$))]; \
+$CellContext`\[CapitalDelta]Tlm$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := (($CellContext`Ts$ - $CellContext`Tin$) - \
+($CellContext`Ts$ - $CellContext`Tout$[$CellContext`v$, \
+$CellContext`config$]))/
+          Log[($CellContext`Ts$ - $CellContext`Tin$)/($CellContext`Ts$ - \
+$CellContext`Tout$[$CellContext`v$, $CellContext`config$])]; $CellContext`q$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$] 
+          Pi $CellContext`d$ \
+$CellContext`\[CapitalDelta]Tlm$[$CellContext`v$, $CellContext`config$]; \
+$CellContext`p1$ = Graphics3D[{Blue, 
+            Arrowheads[
+            0.4/If[$CellContext`numrows$ > $CellContext`numcols$$, \
+$CellContext`numrows$, $CellContext`numcols$$]], 
+            Table[
+             Arrow[
+              
+              Tube[{{(-1.5) $CellContext`SL$, $CellContext`k$ \
+$CellContext`ST$ + $CellContext`ST$/2, 0.2}, {
+                0, $CellContext`k$ $CellContext`ST$ + $CellContext`ST$/2, 
+                 0.2}}]], {$CellContext`k$, 0, $CellContext`numrows$ - 2}], 
+            RGBColor[0.9, 0, 0], 
+            Table[
+             Table[
+              Tube[{{$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0}, {$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0.2}}, $CellContext`d$/2], {$CellContext`j, 
+               0, $CellContext`numcols$$ - 1}], {$CellContext`i, 
+              0, $CellContext`numrows$ - 1}]}, ViewPoint -> Above, Boxed -> 
+           False]; $CellContext`p2$ = Plot[{
+            $CellContext`Tout$[$CellContext`v, 1], 
+            $CellContext`Tout$[$CellContext`v, 2]}, {$CellContext`v, 1, 20}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", 
+             "outlet air temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               Style[#, 18, #2, Background -> White], {#3, 
+                $CellContext`Tout$[#3, #4]}]& , {{"aligned", Blue, 10, 1}, {
+               "staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; $CellContext`p3$ = 
+         Plot[{$CellContext`q$[$CellContext`v, 1]/
+            1000, $CellContext`q$[$CellContext`v, 2]/1000}, {$CellContext`v, 
+            1, 20}, PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", "heat transfer rate (kW/m)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               
+               Style[#, 18, #2, Background -> 
+                White], {#3, $CellContext`q$[#3, #4]/1000}]& , {{
+               "aligned", Blue, 10, 1}, {"staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; Show[
+          
+          Switch[$CellContext`display$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$, 3, $CellContext`p3$], 
+          ImageSize -> {600, 380}]], 
+      "Specifications" :> {{{$CellContext`display$$, 1, ""}, {
+         1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+          " heat transfer rate "}, ControlPlacement -> 
+         1}, {{$CellContext`Slong$$, 6.8, "longitudinal pitch (cm)"}, 2.5, 10,
+          0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         2}, {{$CellContext`numcols$$, 7, "columns"}, 4, 25, 1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Strans$$, 5.2, "transverse pitch (cm)"}, 2.5, 10, 
+         0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`orientation$$, 2, "tube configuration"}, {
+         1 -> " aligned ", 2 -> " staggered "}, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1]}, {
+           Manipulate`Place[2], 
+           Manipulate`Place[3]}, {
+           Manipulate`Place[4], 
+           PaneSelector[{1 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`display$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->31679190,ExpressionUUID->"4f2f4293-e076-41dc-903c-cee8a0dde002"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`display$$ = 3, $CellContext`numcols$$ = 
+    10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+    3.7, $CellContext`Strans$$ = 3, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`display$$], 3, ""}, {
+      1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+       " heat transfer rate "}}, {{
+       Hold[$CellContext`Slong$$], 3.7, "longitudinal pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`numcols$$], 10, "columns"}, 4, 25, 1}, {{
+       Hold[$CellContext`Strans$$], 3, "transverse pitch (cm)"}, 2.5, 10, 
+      0.1}, {{
+       Hold[$CellContext`orientation$$], 1, "tube configuration"}, {
+      1 -> " aligned ", 2 -> " staggered "}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1]}, {
+          Manipulate`Place[2], 
+          Manipulate`Place[3]}, {
+          Manipulate`Place[4], 
+          PaneSelector[{1 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`display$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = Automatic, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`display$55747$$ = False, $CellContext`Slong$55748$$ = 
+    0, $CellContext`numcols$55749$$ = 0, $CellContext`Strans$55750$$ = 
+    0, $CellContext`orientation$55751$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`display$$ = 3, $CellContext`numcols$$ = 
+        10, $CellContext`orientation$$ = 1, $CellContext`Slong$$ = 
+        3.7, $CellContext`Strans$$ = 3}, "ControllerVariables" :> {
+        Hold[$CellContext`display$$, $CellContext`display$55747$$, False], 
+        Hold[$CellContext`Slong$$, $CellContext`Slong$55748$$, 0], 
+        Hold[$CellContext`numcols$$, $CellContext`numcols$55749$$, 0], 
+        Hold[$CellContext`Strans$$, $CellContext`Strans$55750$$, 0], 
+        Hold[$CellContext`orientation$$, $CellContext`orientation$55751$$, 
+         False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Nu]$, $CellContext`numrows$, $CellContext`ST$, \
+$CellContext`SL$, $CellContext`SD$, $CellContext`d$, $CellContext`Pr$, \
+$CellContext`Prs$, $CellContext`k$, $CellContext`\[Rho]$, $CellContext`Ts$, \
+$CellContext`Tin$, $CellContext`numtubes$, $CellContext`Cp$, \
+$CellContext`vmax$, $CellContext`ReD$, $CellContext`C1$, $CellContext`m$, \
+$CellContext`C2$, $CellContext`Nu$, $CellContext`h$, $CellContext`Tout$, \
+$CellContext`\[CapitalDelta]Tlm$, $CellContext`q$, $CellContext`p1$, \
+$CellContext`p2$, $CellContext`p3$}, $CellContext`d$ = 
+         0.02; $CellContext`\[Nu]$ = 0.00001482; $CellContext`Pr$ = 
+         0.71; $CellContext`Prs$ = 0.701; $CellContext`k$ = 
+         0.0253; $CellContext`\[Rho]$ = 1.217; $CellContext`Cp$ = 
+         1007; $CellContext`Ts$ = 70; $CellContext`Tin$ = 
+         15; $CellContext`numrows$ = 
+         10; $CellContext`numtubes$ = $CellContext`numrows$ \
+$CellContext`numcols$$; $CellContext`ST$ = $CellContext`Strans$$/
+          100; $CellContext`SL$ = $CellContext`Slong$$/100; $CellContext`SD$ = 
+         Sqrt[$CellContext`SL$^2 + ($CellContext`ST$/2)^2]; $CellContext`vmax$[
+           Pattern[$CellContext`v$, 
+            Blank[]]] := 
+         If[$CellContext`SD$ < ($CellContext`ST$ + $CellContext`d$)/
+            2, ($CellContext`ST$/(
+            2 ($CellContext`SD$ - $CellContext`d$))) $CellContext`v$, \
+($CellContext`ST$/($CellContext`ST$ - $CellContext`d$)) $CellContext`v$]; \
+$CellContext`ReD$[
+           Pattern[$CellContext`v$, 
+            
+            Blank[]]] := $CellContext`vmax$[$CellContext`v$] \
+($CellContext`d$/$CellContext`\[Nu]$); $CellContext`C1$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 
+           If[$CellContext`config$ == 1, 0.8, 0.9], 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.683, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.27, 
+            
+            If[$CellContext`ST$/$CellContext`SL$ < 2, 
+             0.35 ($CellContext`ST$/$CellContext`SL$)^(1/5), 0.4]], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           If[$CellContext`config$ == 1, 0.021, 0.022]]; $CellContext`m$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[
+           Inequality[10, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^2], 0.4, 
+           Inequality[10^2, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 10^3], 0.466, 
+           Inequality[10^3, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^5], 
+           If[$CellContext`config$ == 1, 0.63, 0.6], 
+           Inequality[2 10^5, Less, 
+            $CellContext`ReD$[$CellContext`v$], LessEqual, 2 10^6], 
+           0.84]; $CellContext`C2$[
+           Pattern[$CellContext`config$, 
+            Blank[]]] := Which[$CellContext`numcols$$ == 1, 
+           If[$CellContext`config$ == 1, 0.7, 0.64], $CellContext`numcols$$ == 
+           2, 
+           If[$CellContext`config$ == 1, 0.8, 0.76], $CellContext`numcols$$ == 
+           3, 
+           If[$CellContext`config$ == 1, 0.86, 0.84], $CellContext`numcols$$ == 
+           4, 
+           If[$CellContext`config$ == 1, 0.9, 0.89], $CellContext`numcols$$ == 
+           5, 0.92, $CellContext`numcols$$ <= 7, 0.95, $CellContext`numcols$$ <= 
+           10, 0.97, $CellContext`numcols$$ <= 13, 
+           0.98, $CellContext`numcols$$ <= 16, 0.99, $CellContext`numcols$$ > 
+           16, 1]; $CellContext`Nu$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`C2$[$CellContext`config$] \
+$CellContext`C1$[$CellContext`v$, $CellContext`config$] \
+$CellContext`ReD$[$CellContext`v$]^$CellContext`m$[$CellContext`v$, \
+$CellContext`config$] $CellContext`Pr$^0.36 \
+($CellContext`Pr$/$CellContext`Prs$)^0.25; $CellContext`h$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Nu$[$CellContext`v$, \
+$CellContext`config$] $CellContext`k$/$CellContext`d$; $CellContext`Tout$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`Ts$ - ($CellContext`Ts$ - \
+$CellContext`Tin$) 
+          Exp[-(Pi $CellContext`d$ $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$]/($CellContext`\[Rho]$ \
+$CellContext`v$ $CellContext`numrows$ $CellContext`ST$ $CellContext`Cp$))]; \
+$CellContext`\[CapitalDelta]Tlm$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := (($CellContext`Ts$ - $CellContext`Tin$) - \
+($CellContext`Ts$ - $CellContext`Tout$[$CellContext`v$, \
+$CellContext`config$]))/
+          Log[($CellContext`Ts$ - $CellContext`Tin$)/($CellContext`Ts$ - \
+$CellContext`Tout$[$CellContext`v$, $CellContext`config$])]; $CellContext`q$[
+           Pattern[$CellContext`v$, 
+            Blank[]], 
+           Pattern[$CellContext`config$, 
+            
+            Blank[]]] := $CellContext`numtubes$ \
+$CellContext`h$[$CellContext`v$, $CellContext`config$] 
+          
+          Pi $CellContext`d$ \
+$CellContext`\[CapitalDelta]Tlm$[$CellContext`v$, $CellContext`config$]; \
+$CellContext`p1$ = Graphics3D[{Blue, 
+            Arrowheads[
+            0.4/If[$CellContext`numrows$ > $CellContext`numcols$$, \
+$CellContext`numrows$, $CellContext`numcols$$]], 
+            Table[
+             Arrow[
+              
+              Tube[{{(-1.5) $CellContext`SL$, $CellContext`k$ \
+$CellContext`ST$ + $CellContext`ST$/2, 0.2}, {
+                0, $CellContext`k$ $CellContext`ST$ + $CellContext`ST$/2, 
+                 0.2}}]], {$CellContext`k$, 0, $CellContext`numrows$ - 2}], 
+            RGBColor[0.9, 0, 0], 
+            Table[
+             Table[
+              Tube[{{$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0}, {$CellContext`j $CellContext`SL$, 
+                 If[
+                 Mod[$CellContext`j, 2] == 
+                  1, $CellContext`i $CellContext`ST$ + ($CellContext`ST$/
+                    2) ($CellContext`orientation$$ - 
+                    1), $CellContext`i $CellContext`ST$], 
+                 0.2}}, $CellContext`d$/2], {$CellContext`j, 
+               0, $CellContext`numcols$$ - 1}], {$CellContext`i, 
+              0, $CellContext`numrows$ - 1}]}, ViewPoint -> Above, Boxed -> 
+           False]; $CellContext`p2$ = Plot[{
+            $CellContext`Tout$[$CellContext`v, 1], 
+            $CellContext`Tout$[$CellContext`v, 2]}, {$CellContext`v, 1, 20}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", 
+             "outlet air temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               Style[#, 18, #2, Background -> White], {#3, 
+                $CellContext`Tout$[#3, #4]}]& , {{"aligned", Blue, 10, 1}, {
+               "staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; $CellContext`p3$ = 
+         Plot[{$CellContext`q$[$CellContext`v, 1]/
+            1000, $CellContext`q$[$CellContext`v, 2]/1000}, {$CellContext`v, 
+            1, 20}, PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{1, 20}, All}, Axes -> 
+           False, Frame -> True, FrameTicks -> True, 
+           FrameLabel -> {
+            "inlet air velocity (m/s)", "heat transfer rate (kW/m)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{60, 10}, {55, 10}}, 
+           AspectRatio -> Full, Epilog -> {
+             Apply[Text[
+               
+               Style[#, 18, #2, Background -> 
+                White], {#3, $CellContext`q$[#3, #4]/1000}]& , {{
+               "aligned", Blue, 10, 1}, {"staggered", 
+                RGBColor[0, 0.6, 0], 15, 2}}, {1}]}]; Show[
+          
+          Switch[$CellContext`display$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$, 3, $CellContext`p3$], 
+          ImageSize -> {600, 380}]], 
+      "Specifications" :> {{{$CellContext`display$$, 3, ""}, {
+         1 -> " tube configuration ", 2 -> " air temperature ", 3 -> 
+          " heat transfer rate "}, ControlPlacement -> 
+         1}, {{$CellContext`Slong$$, 3.7, "longitudinal pitch (cm)"}, 2.5, 10,
+          0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         2}, {{$CellContext`numcols$$, 10, "columns"}, 4, 25, 1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Strans$$, 3, "transverse pitch (cm)"}, 2.5, 10, 
+         0.1, Appearance -> "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`orientation$$, 1, "tube configuration"}, {
+         1 -> " aligned ", 2 -> " staggered "}, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1]}, {
+           Manipulate`Place[2], 
+           Manipulate`Place[3]}, {
+           Manipulate`Place[4], 
+           PaneSelector[{1 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`display$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->125155972,ExpressionUUID->"7a0aa281-12bd-44c1-a1bd-56351deb85c9"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection",ExpressionUUID->"ecb0e246-a614-466b-bf80-81548ba91fb4"],
+
+Cell[TextData[{
+ "The diagonal pitch ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["S", 
+    StyleBox["D",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "43158347-ed63-4ba0-9798-a7481617ff45"],
+ " of a bank of tube is:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.681829735427932*^9}, {
+  3.6818297659025917`*^9, 3.681829792712642*^9}},
+ CellID->131260062,ExpressionUUID->"eee6a681-d581-4592-bb37-d8f572ef7017"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["S", 
+     StyleBox["D",
+      FontSlant->"Plain"]], "=", 
+    SqrtBox[
+     RowBox[{
+      SubsuperscriptBox["S", 
+       StyleBox["L",
+        FontSlant->"Plain"], "2"], "+", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox["S", 
+          StyleBox["T",
+           FontSlant->"Plain"]], "/", "2"}], ")"}], "2"]}]]}], 
+   TraditionalForm]], "InlineMath",ExpressionUUID->
+  "9ecfc850-328d-426b-8146-52373741377d"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.6818297603203816`*^9}, {
+  3.681829795184447*^9, 3.681829795309247*^9}, {3.683645488578595*^9, 
+  3.6836454994566803`*^9}},
+ CellID->93296757,ExpressionUUID->"f157ec87-24e6-408f-bf68-71833351e37b"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["S", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "8e5f0163-f4de-43fa-8607-eea13c938793"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["S", 
+    StyleBox["T",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "cd37d854-f562-460c-808a-7066ba8c0421"],
+ " are the longitudinal and transverse pitch (m)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.681829821955327*^9}, 
+   3.682278749169673*^9},
+ CellID->198632830,ExpressionUUID->"434d95c5-163d-42e4-9254-c47ebc767f82"],
+
+Cell["\<\
+A Nusselt correlation is used to calculate the average heat transfer \
+coefficient:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.681829869200663*^9}},
+ CellID->235806730,ExpressionUUID->"a0f4b05f-f1da-4bed-a02b-6abeff649098"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    OverscriptBox["Nu", "_"], "=", 
+    RowBox[{
+     SubscriptBox["C", "1"], " ", 
+     SubscriptBox["C", "2"], " ", 
+     SubsuperscriptBox["Re", "max", "m"], " ", 
+     SuperscriptBox["Pr", "0.36"], " ", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       FractionBox["Pr", 
+        SubscriptBox["Pr", 
+         StyleBox["s",
+          FontSlant->"Plain"]]], ")"}], 
+      RowBox[{"1", "/", "4"}]]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"139323cd-a1d9-4faa-b83b-f6ef8a75c28d"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.681829925752616*^9}},
+ CellID->8683375,ExpressionUUID->"53578e2c-891c-4043-825b-aa32d424330f"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["Re", "max"], "=", 
+    RowBox[{
+     SubscriptBox["u", "max"], " ", 
+     RowBox[{"d", "/", "\[Nu]"}]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"43058934-864a-4fdd-9bdd-01ea7472e38f"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.6818299401956596`*^9}},
+ CellID->36044035,ExpressionUUID->"5e22711a-0d8c-408a-97ad-601e1b4925ad"],
+
+Cell[TextData[{
+ "If ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["S", 
+     StyleBox["D",
+      FontSlant->"Plain"]], "<", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["S", 
+       StyleBox["T",
+        FontSlant->"Plain"]], "+", "d"}], "2"]}], TraditionalForm]], 
+  "InlineMath",ExpressionUUID->"41389d6e-f9d6-4aa9-9715-7a5f6371cd0e"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["u", "max"], "=", 
+    RowBox[{
+     FractionBox[
+      SubscriptBox["S", 
+       StyleBox["T",
+        FontSlant->"Plain"]], 
+      RowBox[{"2", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox["S", 
+          StyleBox["D",
+           FontSlant->"Plain"]], "-", "d"}], ")"}]}]], " ", "u"}]}], 
+   TraditionalForm]], "InlineMath",ExpressionUUID->
+  "7c2e1b82-cbf0-4bb9-9627-c87a84741a7d"],
+ ", otherwise ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["u", "max"], "=", 
+    RowBox[{
+     FractionBox[
+      SubscriptBox["S", 
+       StyleBox["T",
+        FontSlant->"Plain"]], 
+      RowBox[{
+       SubscriptBox["S", 
+        StyleBox["T",
+         FontSlant->"Plain"]], "-", "d"}]], " ", "u"}]}], TraditionalForm]], 
+  "InlineMath",ExpressionUUID->"61b61dc2-99bd-4af6-b283-2c1008c9979d"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.681830030480075*^9}},
+ CellID->90508235,ExpressionUUID->"61d1c599-79d9-4d17-b35d-070fb2214ba6"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    OverscriptBox["h", "_"], "=", 
+    RowBox[{
+     OverscriptBox["Nu", "_"], " ", 
+     RowBox[{"k", "/", "d"}]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"52eaa09b-ad26-4aee-89df-198d4afcff3a"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.6818300510997286`*^9}},
+ CellID->21474732,ExpressionUUID->"b91474bd-10fb-4ae6-b678-505d1ba43526"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   OverscriptBox["Nu", "_"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "06d8240d-ad99-4654-b47b-736979256dcb"],
+ " is the average Nusselt number for the entire bank of tubes, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Re", "max"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "c2c525c5-3659-49d4-a20a-fa32d0158f17"],
+ " is the Reynolds number at the maximum fluid velocity, ",
+ Cell[BoxData[
+  FormBox["Pr", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "d57d4168-b27d-4cf3-8d0f-07b55cedc8ef"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Pr", 
+    StyleBox["s",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "730e6eab-4353-4d75-af34-81202b97d692"],
+ " are the Prandtl numbers at air and tube surface temperatures, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["u", "max"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "f72058b4-9aa2-4497-a08c-330b979c040b"],
+ " is the maximum fluid velocity (m/s), ",
+ Cell[BoxData[
+  FormBox["d", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "7e6dd0f5-4ae1-49b1-a943-207a4dd857ae"],
+ " is tube diameter (m), ",
+ Cell[BoxData[
+  FormBox["\[Nu]", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "83dc3b5c-e35d-4a37-a80f-7d0735d32236"],
+ " is the kinematic viscosity of air (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox[
+     StyleBox["m",
+      FontSlant->"Plain"], "2"], "/", 
+    StyleBox["s",
+     FontSlant->"Plain"]}], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "e9c06d9b-4d43-4cb6-b03e-fd7bdd51c84f"],
+ "), ",
+ Cell[BoxData[
+  FormBox["u", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "c960a44f-fd76-418e-a825-69c84df72f5a"],
+ " is velocity (m/s), ",
+ Cell[BoxData[
+  FormBox[
+   OverscriptBox["h", "_"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "b1688b92-85b7-42b7-a056-05c419c682aa"],
+ " is the average heat transfer coefficient (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["W",
+     FontSlant->"Plain"], "/", 
+    RowBox[{"[", 
+     RowBox[{
+      SuperscriptBox[
+       StyleBox["m",
+        FontSlant->"Plain"], "2"], " ", 
+      StyleBox["K",
+       FontSlant->"Plain"]}], "]"}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"a9d3f9e2-0c16-4b07-ae4b-e8065ee6701c"],
+ "), ",
+ Cell[BoxData[
+  FormBox["k", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "18307b36-7e42-4c86-8d55-b36d7ce0b614"],
+ " is thermal conductivity (W/[m K]) and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "1"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "e1625dea-a2eb-4803-8ec5-370e3d7728b0"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "2"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "29f226ef-2357-479b-b576-926fda49023a"],
+ " and ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "e196f8d6-384a-4d19-a129-5c688f123ff7"],
+ " are constants from the following two tables:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818297241087093`*^9, 3.68183028764861*^9}, {
+  3.68183898238636*^9, 3.681838984851165*^9}, {3.683645659423834*^9, 
+  3.683645662345324*^9}},
+ CellID->29085094,ExpressionUUID->"6929b9b1-f013-430d-8e61-7b2e32bba68a"],
+
+Cell[TextData[Cell[BoxData[
+ TagBox[GridBox[{
+    {"Configuration", 
+     SubscriptBox["Re", "max"], 
+     SubscriptBox[
+      StyleBox["C",
+       FontSlant->"Italic"], "1"], 
+     StyleBox["m",
+      FontSlant->"Italic"]},
+    {"Aligned", 
+     RowBox[{"10", "-", 
+      SuperscriptBox["10", "2"]}], "0.8", "0.4"},
+    {"Staggered", 
+     RowBox[{"10", "-", 
+      SuperscriptBox["10", "2"]}], "0.9", "0.4"},
+    {"Aligned", 
+     RowBox[{
+      SuperscriptBox["10", "2"], "-", 
+      SuperscriptBox["10", "3"]}], "0.683", "0.466"},
+    {"Staggered", 
+     RowBox[{
+      SuperscriptBox["10", "2"], "-", 
+      SuperscriptBox["10", "3"]}], "0.683", "0.466"},
+    {
+     RowBox[{"Aligned", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "T"], "/", 
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "L"]}], ">", "0.7"}], ")"}]}], 
+     RowBox[{
+      SuperscriptBox["10", "3"], "-", 
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "5"]}]}], "0.27", "0.63"},
+    {
+     RowBox[{"Staggered", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "T"], "/", 
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "L"]}], "<", "2"}], ")"}]}], 
+     RowBox[{
+      SuperscriptBox["10", "3"], "-", 
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "5"]}]}], 
+     RowBox[{"0.35", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "T"], "/", 
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "L"]}], ")"}], "0.2"]}], "0.6"},
+    {
+     RowBox[{"Staggered", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "T"], "/", 
+         SubscriptBox[
+          StyleBox["S",
+           FontSlant->"Italic"], "L"]}], ">", "2"}], ")"}]}], 
+     RowBox[{
+      SuperscriptBox["10", "3"], "-", 
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "5"]}]}], "0.4", "0.6"},
+    {"Aligned", 
+     RowBox[{
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "5"]}], "-", 
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "6"]}]}], "0.021", "0.84"},
+    {"Staggered", 
+     RowBox[{
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "5"]}], "-", 
+      RowBox[{"2", "\[Times]", 
+       SuperscriptBox["10", "6"]}]}], "0.022", "0.84"}
+   },
+   AutoDelete->False,
+   GridBoxBackground->{"Columns" -> {{None}}, "Rows" -> {
+       GrayLevel[0.85], None}},
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxItemStyle->{"Columns" -> {{"Text"}}, "Rows" -> {{"Text"}}},
+   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{1}}}],
+  "Grid",
+  BaseStyle->10]],
+ CellChangeTimes->{{3.604378049383173*^9, 3.6043780863602877`*^9}, {
+   3.6043781254145217`*^9, 3.6043784414425974`*^9}, {3.604378625135104*^9, 
+   3.604378632366518*^9}, 3.6043786958131466`*^9, {3.605888974207175*^9, 
+   3.6058890097062054`*^9}, 
+   3.607250624600709*^9},ExpressionUUID->"498799b1-9dc7-4ea8-b82a-\
+413c79a9c360"]], "DetailNotes",
+ CellChangeTimes->{{3.681759728126816*^9, 3.681759790269346*^9}, {
+  3.681759879119361*^9, 3.6817601215087423`*^9}, {3.681760573533057*^9, 
+  3.6817606141575675`*^9}, {3.68176077215837*^9, 3.6817610221238995`*^9}, {
+  3.681761061605004*^9, 3.6817610752090597`*^9}, {3.6818273316705837`*^9, 
+  3.6818273804366918`*^9}},
+ CellID->9621425,ExpressionUUID->"e96c6a3e-c7c1-407b-b25d-7007d77d5544"],
+
+Cell[TextData[{
+ "If the number of columns ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["N", 
+     StyleBox["L",
+      FontSlant->"Plain"]], "<", "20"}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"f5529c19-6fc4-4ee2-bf87-befd66666ae3"],
+ ", get ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "2"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "04b80769-6247-4741-97d5-896647c12936"],
+ " from the following table, otherwise ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", "2"], "=", "1"}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"6f3e92eb-d8be-4dd5-952e-90ff99c90338"],
+ ":"
+}], "DetailNotes",
+ CellChangeTimes->{{3.681761109921138*^9, 3.681761203531928*^9}, {
+   3.6817612495826273`*^9, 3.6817612503490286`*^9}, {3.6817618781600327`*^9, 
+   3.6817618782692327`*^9}, {3.681761989067162*^9, 3.681761990552165*^9}, {
+   3.6818274306904106`*^9, 3.6818274428472376`*^9}, {3.6818303597998013`*^9, 
+   3.681830359895402*^9}, 3.6823458670394244`*^9},
+ CellID->206823807,ExpressionUUID->"ae2f5167-c483-4aca-a192-d9549d9e34a8"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     SubscriptBox[
+      StyleBox["N",
+       FontSlant->"Italic"], "L"], "1", "2", "3", "4", "5", "7", "10", "13", 
+     "16"},
+    {"Aligned", "0.7`", "0.8`", "0.86`", "0.9`", "0.92`", "0.95`", "0.97`", 
+     "0.98`", "0.99`"},
+    {"Staggered", "0.64`", "0.76`", "0.84`", "0.89`", "0.92`", "0.95`", 
+     "0.97`", "0.98`", "0.99`"}
+   },
+   AutoDelete->False,
+   GridBoxBackground->{"Columns" -> {{None}}, "Rows" -> {
+       GrayLevel[0.85], None}},
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{1}}}],
+  "Grid",
+  BaseStyle->10]], "DetailNotes",
+ CellChangeTimes->{
+  3.6817612440738173`*^9, {3.681761405589751*^9, 3.6817614079473553`*^9}, {
+   3.6817618741936255`*^9, 3.681761875927229*^9}, {3.681761994016371*^9, 
+   3.6817619955169735`*^9}, {3.681827452572055*^9, 3.681827453621257*^9}},
+ CellID->95879086,ExpressionUUID->"289704d5-f230-450e-b2f8-bb340adc5316"],
+
+Cell[TextData[{
+ "The heat transfer rate per unit length of tube is calculated from the ",
+ Cell[BoxData[
+  FormBox[
+   OverscriptBox["h", "_"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "f7f306e5-8795-488f-ad50-1762d9cbc168"],
+ " found from the Nusselt correlation:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818304090161247`*^9, 3.6818304328327847`*^9}, {
+  3.6818307184464417`*^9, 3.6818307565561447`*^9}, {3.6823458361289883`*^9, 
+  3.6823458461604424`*^9}},
+ CellID->91857037,ExpressionUUID->"bbb6c254-e49d-4f63-b465-6c7b097611d1"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"q", "=", 
+    RowBox[{"N", " ", 
+     OverscriptBox["h", "_"], " ", "\[Pi]", " ", "d", " ", "\[CapitalDelta]", 
+     "\[InvisibleSpace]", 
+     SubscriptBox["T", "lm"]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"dfdc1e4d-e2fe-4631-8f5e-e295a00c6c77"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818304090161247`*^9, 3.6818304328327847`*^9}, {
+  3.6818307184464417`*^9, 3.6818307802566037`*^9}},
+ CellID->785174280,ExpressionUUID->"c024883b-f944-48ca-b2e2-5f72988e969d"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"\[CapitalDelta]", "\[InvisibleSpace]", 
+     SubscriptBox["T", "lm"]}], "=", 
+    RowBox[{
+     FractionBox[
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox["T", 
+          StyleBox["s",
+           FontSlant->"Plain"]], "-", 
+         SubscriptBox["T", "in"]}], ")"}], "-", 
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox["T", 
+          StyleBox["s",
+           FontSlant->"Plain"]], "-", 
+         SubscriptBox["T", "out"]}], ")"}]}], 
+      RowBox[{"ln", " ", 
+       RowBox[{"(", 
+        FractionBox[
+         RowBox[{
+          SubscriptBox["T", 
+           StyleBox["s",
+            FontSlant->"Plain"]], "-", 
+          SubscriptBox["T", "in"]}], 
+         RowBox[{
+          SubscriptBox["T", 
+           StyleBox["s",
+            FontSlant->"Plain"]], "-", 
+          SubscriptBox["T", "out"]}]], ")"}]}]], "=", 
+     FractionBox[
+      RowBox[{
+       SubscriptBox["T", "out"], "-", 
+       SubscriptBox["T", "in"]}], 
+      RowBox[{"ln", " ", 
+       RowBox[{"(", 
+        FractionBox[
+         RowBox[{
+          SubscriptBox["T", 
+           StyleBox["s",
+            FontSlant->"Plain"]], "-", 
+          SubscriptBox["T", "in"]}], 
+         RowBox[{
+          SubscriptBox["T", 
+           StyleBox["s",
+            FontSlant->"Plain"]], "-", 
+          SubscriptBox["T", "out"]}]], ")"}]}]]}]}], TraditionalForm]], 
+  "InlineMath",ExpressionUUID->"1ddc8c32-ae79-43cd-a828-072e68ce9e86"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818304090161247`*^9, 3.6818304328327847`*^9}, {
+  3.6818307184464417`*^9, 3.681830878592422*^9}},
+ CellID->1578442,ExpressionUUID->"eb673397-5557-4d9f-963e-f864a06e1d06"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "out"], "=", 
+    RowBox[{
+     SubscriptBox["T", 
+      StyleBox["s",
+       FontSlant->"Plain"]], "-", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["T", 
+         StyleBox["s",
+          FontSlant->"Plain"]], "-", 
+        SubscriptBox["T", "in"]}], ")"}], " ", 
+      SuperscriptBox["e", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"\[Pi]", " ", "d", " ", "N", " ", 
+          OverscriptBox["h", "_"]}], 
+         RowBox[{"\[Rho]", " ", "u", " ", 
+          SubscriptBox["N", 
+           StyleBox["T",
+            FontSlant->"Plain"]], " ", 
+          SubscriptBox["S", 
+           StyleBox["T",
+            FontSlant->"Plain"]], " ", "Cp"}]]}]]}]}]}], TraditionalForm]], 
+  "InlineMath",ExpressionUUID->"5b84c34d-dc84-4093-9116-2aa5fff92fdd"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818304090161247`*^9, 3.6818304328327847`*^9}, {
+  3.6818307184464417`*^9, 3.681830934393759*^9}},
+ CellID->26478917,ExpressionUUID->"bf848f6b-eb2f-4479-bd8d-40dc19ca5425"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["q", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "5672b511-d0c4-4ec3-802c-0c80d2d2d5b1"],
+ " is in W/m, ",
+ Cell[BoxData[
+  FormBox["N", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "6ab3b614-b0a9-4c78-9f45-d33351836045"],
+ " is the total number of tubes in the bank, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[CapitalDelta]", "\[InvisibleSpace]", 
+    SubscriptBox["T", "lm"]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"c4f0c743-020a-429a-99b6-1450effcd408"],
+ " is the log-mean temperature difference (\[Degree]C), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["T", 
+    StyleBox["s",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "92aa177f-85ee-45c1-a584-9baf2670ac3e"],
+ " is the tube surface temperature (\[Degree]C), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["T", "in"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "8572146b-df77-4b8c-a759-4d7cb52858d2"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["T", "out"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "e8bda149-e248-4e09-8cd3-31c673056306"],
+ " are the temperatures at the inlet and outlet (\[Degree]C), ",
+ Cell[BoxData[
+  FormBox["\[Rho]", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "9acb72f7-b057-4bdb-b986-686a80a5c69c"],
+ " is air density (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"kg", "/", 
+    SuperscriptBox[
+     StyleBox["m",
+      FontSlant->"Plain"], "3"]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"46ab107f-b4a8-4e0c-a417-69b407fd7ea4"],
+ "), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["N", 
+    StyleBox["T",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "292a4cdd-2c08-4d83-9db7-cfdb5d4a1819"],
+ " is the number of tubes in each row and ",
+ Cell[BoxData[
+  FormBox["Cp", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "367dd210-fa8b-4003-86c4-665d21e66694"],
+ " is heat capacity (J/[kg K])."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6818304090161247`*^9, 3.6818304328327847`*^9}, {
+   3.6818307184464417`*^9, 3.6818310821036987`*^9}, {3.6818311230314765`*^9, 
+   3.681831140319126*^9}, {3.6818312324993343`*^9, 3.6818312420817556`*^9}, 
+   3.682278751001687*^9, 3.6836457321970577`*^9},
+ CellID->665533141,ExpressionUUID->"eccae3ec-a7a0-44b6-a960-3405ab31c2b1"],
+
+Cell["Reference", "DetailNotes",
+ CellChangeTimes->{{3.6822732419967036`*^9, 3.682273244243108*^9}},
+ CellID->7029765,ExpressionUUID->"32ffcaae-0f18-4b1e-814b-14be43e34811"],
+
+Cell[TextData[{
+ "[1] T. L. Bergman, A. S. Lavine, F. P. Incropera and D. P. DeWitt, ",
+ StyleBox["Introduction to Heat Transfer",
+  FontSlant->"Italic"],
+ ", 6th ed., Hoboken: John Wiley and Sons, 2011 pp. 447\[Dash]451."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6822732419967036`*^9, 3.6822732453195095`*^9}, {
+   3.6822733042454433`*^9, 3.6822733260670977`*^9}, 3.682278466499465*^9, {
+   3.6828686526195917`*^9, 3.6828686663141017`*^9}, 3.683645799193615*^9, {
+   3.683646167443219*^9, 3.683646167654952*^9}},
+ CellID->310652996,ExpressionUUID->"0f0fd3e3-3fd7-42d9-baaf-0d21b2fc7793"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection",ExpressionUUID->"6631aef3-d127-4f69-bf6c-865042b149a1"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Resize Images",ExpressionUUID->"bd48d569-a271-406c-bd7c-b18b469ca347"]}],
+  
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.604372530077487*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "ResizeImages",ExpressionUUID->"4a0a397a-6745-47c1-a598-57ba949eff4a"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Rotate and Zoom in 3D",ExpressionUUID->
+    "dd01f70c-e80f-4763-a9b0-0906f122cc2a"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6043725307175236`*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "RotateAndZoomIn3D",ExpressionUUID->"fcb2dd44-9a24-40ea-9408-641c8e68e7e3"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Drag Locators",ExpressionUUID->"ac16a8f2-fa01-4c34-abd6-41f841e2d9e1"]}],
+  
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "DragLocators",ExpressionUUID->"fc51737b-ed67-4038-b51d-538f57664479"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Create and Delete Locators",ExpressionUUID->
+    "1582a0db-5496-4dbd-a184-de7bc79ef848"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "CreateAndDeleteLocators",ExpressionUUID->"23e1f050-60b6-4954-a056-\
+99ca8b46d89e"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Slider Zoom",ExpressionUUID->"77ddf1b9-a298-4c08-b57f-1ff9c3d78c56"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6043725425211983`*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "SliderZoom",ExpressionUUID->"65911e61-d041-4687-a425-6aa8646e3d05"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Gamepad Controls",ExpressionUUID->
+    "40421570-6b0b-4362-9902-08ab98211928"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.604372547698495*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "GamepadControls",ExpressionUUID->"06600eec-3905-455f-8831-31de9ecf54e4"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Automatic Animation",ExpressionUUID->
+    "1f9abf93-cfad-432e-aa80-55c42ed8904f"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.60437255216075*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "AutomaticAnimation",ExpressionUUID->"413b5d4a-7b1c-44ae-baca-e1ee6e3ceffc"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Bookmark Animation",ExpressionUUID->
+    "2c64af45-66cd-409c-9f67-a1f95471672f"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "BookmarkAnimation",ExpressionUUID->"a30a4e42-345c-40bf-ad45-3d2424551dcc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection",ExpressionUUID->"9bda4048-a828-437d-a0a4-0f4670b425c7"],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.604372574112005*^9, 3.6043725846416073`*^9}, {
+   3.6823453231156273`*^9, 3.6823453231483955`*^9}, 3.6833685020866437`*^9},
+ CellID->201995360,ExpressionUUID->"a0ff1f23-dc68-4ffb-bc19-a2c35f6418c6"],
+
+Cell["mechanical engineering", "SearchTerms",
+ CellChangeTimes->{{3.604372574112005*^9, 3.6043725846416073`*^9}, {
+  3.6823453231156273`*^9, 3.682345328478928*^9}},
+ CellID->46138594,ExpressionUUID->"844bd603-75c3-4111-9066-72fadd968e10"],
+
+Cell["convection", "SearchTerms",
+ CellChangeTimes->{{3.604372574112005*^9, 3.6043725923110466`*^9}},
+ CellID->29380852,ExpressionUUID->"75ed3cda-5945-446c-a44f-b3b4a38d1e51"],
+
+Cell["Nusselt number", "SearchTerms",
+ CellChangeTimes->{{3.604372574112005*^9, 3.604372614472314*^9}, {
+   3.604380491625861*^9, 3.6043804926119175`*^9}, 3.60438091820126*^9, {
+   3.605802163543969*^9, 3.605802187871361*^9}},
+ CellID->62511124,ExpressionUUID->"1479c3c3-c058-42de-850d-67543b730b00"],
+
+Cell["heat transfer", "SearchTerms",
+ CellChangeTimes->{{3.604372574112005*^9, 3.604372614472314*^9}, {
+   3.604380491625861*^9, 3.6043804926119175`*^9}, 3.60438091820126*^9, {
+   3.605802163543969*^9, 3.605802168815271*^9}},
+ CellID->384487771,ExpressionUUID->"3a3c850f-fa70-4046-b357-886e1942ab89"],
+
+Cell["bank of tubes", "SearchTerms",
+ CellChangeTimes->{{3.6834890660936594`*^9, 3.683489068055668*^9}},
+ CellID->222175015,ExpressionUUID->"f796eaf7-1f21-4a9a-82aa-e6812dc7af5d"]
+}, Open  ]],
+
+Cell["", "RelatedLinksSection",ExpressionUUID->"f113e857-f48a-4977-842a-d741796285b3"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection",ExpressionUUID->"81fab814-76ec-4caa-b4fd-f0d84307cd8f"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Benjamin L. Kee ",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Benjamin+L.+\
+Kee"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Benjamin+L.+Kee"]
+}], "Author",
+ CellChangeTimes->{
+  3.604372680294079*^9},ExpressionUUID->"5b996930-5645-4c1f-adff-\
+336061133895"],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"],\
+
+ " and ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"]
+}], "Author",
+ CellChangeTimes->{{3.6823411053215704`*^9, 3.682341112260666*^9}, {
+  3.6834891030361576`*^9, 3.683489130097539*^9}},
+ CellID->243558147,ExpressionUUID->"06f3fd59-7a68-4897-99c2-b04c29826496"],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.6019636022716713`*^9, 3.601963605126835*^9}, {
+   3.6020079564795427`*^9, 3.6020079837655888`*^9}, {3.602438423639926*^9, 
+   3.602438441927972*^9}, 3.6026018266797204`*^9, {3.6834891067721815`*^9, 
+   3.6834891098001995`*^9}},
+ CellID->19384308,ExpressionUUID->"9b007fe7-722e-40d1-a46c-bc692f6ccae9"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 10, 2017)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[118481, 2651, 473, 12, 22, "ControlSuggestions",ExpressionUUID->"4a0a397a-6745-47c1-a598-57ba949eff4a",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[118957, 2665, 843, 20, 22, "ControlSuggestions",ExpressionUUID->"fcb2dd44-9a24-40ea-9408-641c8e68e7e3",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[119803, 2687, 460, 14, 22, "ControlSuggestions",ExpressionUUID->"fc51737b-ed67-4038-b51d-538f57664479",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[120266, 2703, 761, 19, 22, "ControlSuggestions",ExpressionUUID->"23e1f050-60b6-4954-a056-99ca8b46d89e",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[121030, 2724, 1004, 24, 22, "ControlSuggestions",ExpressionUUID->"65911e61-d041-4687-a425-6aa8646e3d05",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[122037, 2750, 515, 13, 22, "ControlSuggestions",ExpressionUUID->"06600eec-3905-455f-8831-31de9ecf54e4",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[122555, 2765, 1626, 35, 22, "ControlSuggestions",ExpressionUUID->"413b5d4a-7b1c-44ae-baca-e1ee6e3ceffc",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[124184, 2802, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"a30a4e42-345c-40bf-ad45-3d2424551dcc",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 129052, 2930},
+ {"RotateAndZoomIn3D", 129218, 2933},
+ {"DragLocators", 129384, 2936},
+ {"CreateAndDeleteLocators", 129556, 2939},
+ {"SliderZoom", 129726, 2942},
+ {"GamepadControls", 129889, 2945},
+ {"AutomaticAnimation", 130059, 2948},
+ {"BookmarkAnimation", 130232, 2951}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 333, 5, 74, "DemoTitle",ExpressionUUID->"aa6e165e-d4ee-400e-b48d-461565957a91"],
+Cell[916, 29, 88, 0, 275, "InitializationSection",ExpressionUUID->"03f10caa-45d0-4349-b6cb-907f2a4e1b3b"],
+Cell[CellGroupData[{
+Cell[1029, 33, 84, 0, 189, "ManipulateSection",ExpressionUUID->"45a7f247-ac2f-4444-b745-d77f269a7dc1"],
+Cell[CellGroupData[{
+Cell[1138, 37, 27297, 619, 1509, "Input",ExpressionUUID->"c7eb7910-879e-445c-ab4f-d3138a6a1a82"],
+Cell[28438, 658, 13082, 257, 36, "Output",ExpressionUUID->"6144ec2b-cee5-44d4-836b-f001acb0a4a0",
+ CellID->79152992]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[41569, 921, 91, 0, 169, "ManipulateCaptionSection",ExpressionUUID->"36ec7e6e-2504-4f68-b037-c5d7005b2f86"],
+Cell[41663, 923, 2707, 38, 97, "ManipulateCaption",ExpressionUUID->"86d55cbc-ae1e-464d-b83e-885d444ccd04"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[44407, 966, 83, 0, 172, "ThumbnailSection",ExpressionUUID->"97cc02a0-bbd4-4958-91fe-fe1d703f3914"],
+Cell[44493, 968, 13083, 257, 36, "Output",ExpressionUUID->"b59061d9-a7db-4d88-9aef-2ea22da62582",
+ CellID->272868997]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[57613, 1230, 83, 0, 142, "SnapshotsSection",ExpressionUUID->"6449a213-0c3b-44da-a210-9eb8e5d8e3ff"],
+Cell[57699, 1232, 13083, 257, 36, "Output",ExpressionUUID->"0b39bab5-53b2-445a-88f6-7ab195c8da52",
+ CellID->418619448],
+Cell[70785, 1491, 13075, 256, 36, "Output",ExpressionUUID->"4f2f4293-e076-41dc-903c-cee8a0dde002",
+ CellID->31679190],
+Cell[83863, 1749, 13083, 257, 36, "Output",ExpressionUUID->"7a0aa281-12bd-44c1-a1bd-56351deb85c9",
+ CellID->125155972]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[96983, 2011, 81, 0, 335, "DetailsSection",ExpressionUUID->"ecb0e246-a614-466b-bf80-81548ba91fb4"],
+Cell[97067, 2013, 463, 12, 23, "DetailNotes",ExpressionUUID->"eee6a681-d581-4592-bb37-d8f572ef7017",
+ CellID->131260062],
+Cell[97533, 2027, 787, 25, 33, "DetailNotes",ExpressionUUID->"f157ec87-24e6-408f-bf68-71833351e37b",
+ CellID->93296757],
+Cell[98323, 2054, 645, 19, 23, "DetailNotes",ExpressionUUID->"434d95c5-163d-42e4-9254-c47ebc767f82",
+ CellID->198632830],
+Cell[98971, 2075, 257, 5, 22, "DetailNotes",ExpressionUUID->"a0f4b05f-f1da-4bed-a02b-6abeff649098",
+ CellID->235806730],
+Cell[99231, 2082, 713, 21, 40, "DetailNotes",ExpressionUUID->"53578e2c-891c-4043-825b-aa32d424330f",
+ CellID->8683375],
+Cell[99947, 2105, 438, 12, 23, "DetailNotes",ExpressionUUID->"5e22711a-0d8c-408a-97ad-601e1b4925ad",
+ CellID->36044035],
+Cell[100388, 2119, 1403, 50, 37, "DetailNotes",ExpressionUUID->"61d1c599-79d9-4d17-b35d-070fb2214ba6",
+ CellID->90508235],
+Cell[101794, 2171, 432, 12, 23, "DetailNotes",ExpressionUUID->"b91474bd-10fb-4ae6-b678-505d1ba43526",
+ CellID->21474732],
+Cell[102229, 2185, 3208, 91, 58, "DetailNotes",ExpressionUUID->"6929b9b1-f013-430d-8e61-7b2e32bba68a",
+ CellID->29085094],
+Cell[105440, 2278, 3769, 111, 229, "DetailNotes",ExpressionUUID->"e96c6a3e-c7c1-407b-b25d-7007d77d5544",
+ CellID->9621425],
+Cell[109212, 2391, 1075, 27, 23, "DetailNotes",ExpressionUUID->"ae2f5167-c483-4aca-a192-d9549d9e34a8",
+ CellID->206823807],
+Cell[110290, 2420, 1050, 24, 69, "DetailNotes",ExpressionUUID->"289704d5-f230-450e-b2f8-bb340adc5316",
+ CellID->95879086],
+Cell[111343, 2446, 545, 11, 23, "DetailNotes",ExpressionUUID->"bbb6c254-e49d-4f63-b465-6c7b097611d1",
+ CellID->91857037],
+Cell[111891, 2459, 540, 13, 23, "DetailNotes",ExpressionUUID->"c024883b-f944-48ca-b2e2-5f72988e969d",
+ CellID->785174280],
+Cell[112434, 2474, 1729, 56, 48, "DetailNotes",ExpressionUUID->"eb673397-5557-4d9f-963e-f864a06e1d06",
+ CellID->1578442],
+Cell[114166, 2532, 1085, 33, 39, "DetailNotes",ExpressionUUID->"bf848f6b-eb2f-4479-bd8d-40dc19ca5425",
+ CellID->26478917],
+Cell[115254, 2567, 2328, 61, 42, "DetailNotes",ExpressionUUID->"eccae3ec-a7a0-44b6-a960-3405ab31c2b1",
+ CellID->665533141],
+Cell[117585, 2630, 173, 2, 22, "DetailNotes",ExpressionUUID->"32ffcaae-0f18-4b1e-814b-14be43e34811",
+ CellID->7029765],
+Cell[117761, 2634, 588, 10, 22, "DetailNotes",ExpressionUUID->"0f0fd3e3-3fd7-42d9-baaf-0d21b2fc7793",
+ CellID->310652996]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[118386, 2649, 92, 0, 126, "ControlSuggestionsSection",ExpressionUUID->"6631aef3-d127-4f69-bf6c-865042b149a1"],
+Cell[118481, 2651, 473, 12, 22, "ControlSuggestions",ExpressionUUID->"4a0a397a-6745-47c1-a598-57ba949eff4a",
+ CellTags->"ResizeImages"],
+Cell[118957, 2665, 843, 20, 22, "ControlSuggestions",ExpressionUUID->"fcb2dd44-9a24-40ea-9408-641c8e68e7e3",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[119803, 2687, 460, 14, 22, "ControlSuggestions",ExpressionUUID->"fc51737b-ed67-4038-b51d-538f57664479",
+ CellTags->"DragLocators"],
+Cell[120266, 2703, 761, 19, 22, "ControlSuggestions",ExpressionUUID->"23e1f050-60b6-4954-a056-99ca8b46d89e",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[121030, 2724, 1004, 24, 22, "ControlSuggestions",ExpressionUUID->"65911e61-d041-4687-a425-6aa8646e3d05",
+ CellTags->"SliderZoom"],
+Cell[122037, 2750, 515, 13, 22, "ControlSuggestions",ExpressionUUID->"06600eec-3905-455f-8831-31de9ecf54e4",
+ CellTags->"GamepadControls"],
+Cell[122555, 2765, 1626, 35, 22, "ControlSuggestions",ExpressionUUID->"413b5d4a-7b1c-44ae-baca-e1ee6e3ceffc",
+ CellTags->"AutomaticAnimation"],
+Cell[124184, 2802, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"a30a4e42-345c-40bf-ad45-3d2424551dcc",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[125251, 2831, 85, 0, 155, "SearchTermsSection",ExpressionUUID->"9bda4048-a828-437d-a0a4-0f4670b425c7"],
+Cell[125339, 2833, 264, 3, 22, "SearchTerms",ExpressionUUID->"a0ff1f23-dc68-4ffb-bc19-a2c35f6418c6",
+ CellID->201995360],
+Cell[125606, 2838, 238, 3, 22, "SearchTerms",ExpressionUUID->"844bd603-75c3-4111-9066-72fadd968e10",
+ CellID->46138594],
+Cell[125847, 2843, 175, 2, 22, "SearchTerms",ExpressionUUID->"75ed3cda-5945-446c-a44f-b3b4a38d1e51",
+ CellID->29380852],
+Cell[126025, 2847, 300, 4, 22, "SearchTerms",ExpressionUUID->"1479c3c3-c058-42de-850d-67543b730b00",
+ CellID->62511124],
+Cell[126328, 2853, 300, 4, 22, "SearchTerms",ExpressionUUID->"3a3c850f-fa70-4046-b357-886e1942ab89",
+ CellID->384487771],
+Cell[126631, 2859, 179, 2, 22, "SearchTerms",ExpressionUUID->"f796eaf7-1f21-4a9a-82aa-e6812dc7af5d",
+ CellID->222175015]
+}, Open  ]],
+Cell[126825, 2864, 86, 0, 141, "RelatedLinksSection",ExpressionUUID->"f113e857-f48a-4977-842a-d741796285b3"],
+Cell[CellGroupData[{
+Cell[126936, 2868, 80, 0, 129, "AuthorSection",ExpressionUUID->"81fab814-76ec-4caa-b4fd-f0d84307cd8f"],
+Cell[127019, 2870, 405, 12, 22, "Author",ExpressionUUID->"5b996930-5645-4c1f-adff-336061133895"],
+Cell[127427, 2884, 786, 21, 22, "Author",ExpressionUUID->"06f3fd59-7a68-4897-99c2-b04c29826496",
+ CellID->243558147],
+Cell[128216, 2907, 435, 8, 22, "Author",ExpressionUUID->"9b007fe7-722e-40d1-a46c-bc692f6ccae9",
+ CellID->19384308]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

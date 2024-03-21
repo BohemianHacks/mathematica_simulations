@@ -1,0 +1,2892 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    123615,       2884]
+NotebookOptionsPosition[    118682,       2733]
+NotebookOutlinePosition[    120295,       2783]
+CellTagsIndexPosition[    119959,       2771]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Adding One Component to a Binary Vapor-Liquid Equilibrium (VLE) Mixture\
+\>", "DemoTitle",
+ CellChangeTimes->{{3.633548366643347*^9, 3.6335483998332453`*^9}, {
+  3.6344143185154657`*^9, 3.63441431885705*^9}}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "P", ",", "Psat1", ",", "Psat2", ",", "Px", ",", "Py", ",", "x1", ",", 
+       "y1", ",", "nL", ",", "nV", ",", "zPoint", ",", "leverL", ",", "hL", 
+       ",", "piston", ",", "step", ",", "add", ",", "p1", ",", "p2"}], "}"}], 
+     ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"P", "=", "0.12"}], ";", 
+      RowBox[{"Psat1", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4", "-", 
+          RowBox[{"1171.53", "/", 
+           RowBox[{"(", 
+            RowBox[{"30", "+", "224.2"}], ")"}]}]}], ")"}]}]}], ";", 
+      RowBox[{"Psat2", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.05", "-", 
+          RowBox[{"1355", "/", 
+           RowBox[{"(", 
+            RowBox[{"30", "+", "209.4"}], ")"}]}]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Px", "[", "x_", "]"}], "=", 
+       RowBox[{
+        RowBox[{"x", "*", "Psat1"}], "+", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"1", "-", "x"}], ")"}], "*", "Psat2"}]}]}], ";", 
+      RowBox[{
+       RowBox[{"Py", "[", "x_", "]"}], "=", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         RowBox[{
+          FractionBox["x", "Psat1"], "+", 
+          FractionBox[
+           RowBox[{"1", "-", "x"}], "Psat2"]}], ")"}], 
+        RowBox[{"-", "1"}]]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"x1", "=", 
+       RowBox[{"x", "/.", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Px", "[", "x", "]"}], "\[Equal]", "P"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"x", ",", "0.1"}], "}"}]}], "]"}]}]}], ";", 
+      RowBox[{"y1", "=", 
+       RowBox[{"x", "/.", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Py", "[", "x", "]"}], "\[Equal]", "P"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"x", ",", "0.1"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"nL", "=", "20"}], ";", 
+      RowBox[{"nV", "=", "3"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"zPoint", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"x1", "*", "nL"}], "+", 
+           RowBox[{"y1", "*", "nV"}]}], ")"}], "/", 
+         RowBox[{"(", 
+          RowBox[{"nL", "+", "nV"}], ")"}]}], "+", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"cs", "\[Equal]", "1"}], ",", 
+             RowBox[{"1", "-", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"1", "-", "x1"}], ")"}], "*", "nL"}], "+", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"1", "-", "y1"}], ")"}], "*", "nV"}], "+", "nA"}], 
+                ")"}], "/", 
+               RowBox[{"(", 
+                RowBox[{"nL", "+", "nV", "+", "nA"}], ")"}]}]}], ",", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"x1", "*", "nL"}], "+", 
+                RowBox[{"y1", "*", "nV"}], "+", "nA"}], ")"}], "/", 
+              RowBox[{"(", 
+               RowBox[{"nL", "+", "nV", "+", "nA"}], ")"}]}]}], "]"}], "-", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"x1", "*", "nL"}], "+", 
+              RowBox[{"y1", "*", "nV"}]}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"nL", "+", "nV"}], ")"}]}]}], ")"}], "*", "step"}]}]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"leverL", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Px", "[", "zPoint", "]"}], "\[LessEqual]", "P"}], ",", "1",
+          ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"y1", "-", "zPoint"}], ")"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"y1", "-", "x1"}], ")"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"hL", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"cs", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"0.3", "*", "leverL"}], "+", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"nA", ">", "3.1"}], ",", 
+             RowBox[{"0.05", "*", 
+              RowBox[{"(", 
+               FractionBox[
+                RowBox[{"nA", "-", "3.2"}], 
+                RowBox[{"6", "-", "3.2"}]], ")"}]}], ",", "0"}], "]"}], "*", 
+           "step"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"0.3", "*", "leverL", "*", 
+          RowBox[{"(", 
+           RowBox[{"1", "-", 
+            RowBox[{"0.5", "*", "step"}]}], ")"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"piston", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"cs", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"nA", "\[LessEqual]", "3.1"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"2.35", "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{"1", "-", 
+                  RowBox[{
+                   FractionBox["1", "3"], "*", 
+                   RowBox[{"(", 
+                    RowBox[{"nA", "-", "0.1"}], ")"}]}]}], ")"}], "*", 
+                RowBox[{"(", 
+                 RowBox[{"2.35", "-", "hL"}], ")"}]}], "+", "hL", "-", 
+               "2.35"}], ")"}], "*", "step"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"2.35", "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"hL", "-", "2.35"}], ")"}], "*", "step"}]}]}], "]"}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"2.35", "+", 
+          RowBox[{"0.5", "*", "step"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"step", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"cs", "\[Equal]", "1"}], ",", "s1", ",", "s2"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"add", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"0.05", "+", 
+          RowBox[{"0.7", "*", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"nA", "-", "0.1"}], ")"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"6", "-", "0.1"}], ")"}]}]}]}], ")"}], "*", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", "step"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"p1", "=", 
+       RowBox[{"Graphics3D", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Opacity", "[", "0.5", "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "0"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "2.75"}], "}"}]}], "}"}], "]"}], 
+             ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"1", ",", "0", ",", "1.375"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "0", ",", "1.375"}], "}"}]}], "}"}], ",", 
+               "0.13"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Opacity", "[", "0.75", "]"}], ",", 
+             RowBox[{"RGBColor", "[", 
+              RowBox[{"0.07", ",", "1", ",", "0.6"}], "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "0"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "hL"}], "}"}]}], "}"}], "]"}], 
+             ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"1", ",", "0", ",", "1.375"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"1", "+", "add"}], ",", "0", ",", "1.375"}], 
+                  "}"}]}], "}"}], ",", "0.13"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Cylinder", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"1", "+", "add"}], ",", "0", ",", "1.375"}], "}"}], 
+               ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"2.1", "+", "add"}], ",", "0", ",", "1.375"}], 
+                "}"}]}], "}"}], ",", "0.03"}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"Black", ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"2.1", "+", "add"}], ",", "0", ",", "1.375"}], 
+                  "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"2.125", "+", "add"}], ",", "0", ",", "1.375"}], 
+                  "}"}]}], "}"}], ",", "0.14"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"Gray", ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "piston"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"piston", "+", "0.15"}]}], "}"}]}], "}"}], "]"}], 
+             ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "0", ",", 
+                   RowBox[{"piston", "+", "0.15"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "0", ",", "3"}], "}"}]}], "}"}], ",", 
+               "0.11"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"Row", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Subsuperscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<O\>\"", ",", "\"\<sat\>\""}], "]"}], ",", 
+                  "\"\< < \>\"", ",", 
+                  RowBox[{"Subsuperscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<H\>\"", ",", "\"\<sat\>\""}], "]"}]}], "}"}], "]"}], 
+               ",", "20"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"2", ",", "0", ",", "2.75"}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"cs", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"s1", "\[Equal]", "1"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"nA", ",", "\"\< mol \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<\[Hyphen]octane added\>\""}], "}"}], "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<add \>\"", ",", "nA", ",", "\"\< mol \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<\[Hyphen]octane\>\""}], "}"}], "]"}]}], "]"}], ",", 
+                   "18"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "0", ",", "1"}], "}"}]}], "]"}], ",", 
+               "\[IndentingNewLine]", 
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"s1", "\[Equal]", "1"}], ",", 
+                    "\"\<vapor condenses\>\"", ",", "\"\<\>\""}], "]"}], ",", 
+                   "18"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "0", ",", "1.75"}], "}"}]}], "]"}]}], 
+              "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"s1", "\[Equal]", "1"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"nA", ",", "\"\< mol \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<\[Hyphen]hexane added\>\""}], "}"}], "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<add \>\"", ",", "nA", ",", "\"\< mol \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<\[Hyphen]hexane\>\""}], "}"}], "]"}]}], "]"}], ",", 
+                   "18"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "0", ",", "1"}], "}"}]}], "]"}], ",", 
+               "\[IndentingNewLine]", 
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"s2", "\[Equal]", "1"}], ",", 
+                    "\"\<liquid evaporates\>\"", ",", "\"\<\>\""}], "]"}], 
+                   ",", "18"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "0", ",", "1.75"}], "}"}]}], "]"}]}], 
+              "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"Row", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Superscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<L\>\""}], "]"}], ",", "\"\< = \>\"", ",", 
+                  RowBox[{"NumberForm", "[", 
+                   RowBox[{
+                    RowBox[{"nL", "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"leverL", "*", 
+                    RowBox[{"(", 
+                    RowBox[{"nL", "+", "nV", "+", "nA"}], ")"}]}], "-", 
+                    "nL"}], ")"}], "*", "step"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                  RowBox[{"Spacer", "[", "25", "]"}], ",", 
+                  RowBox[{"Subscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<H\>\""}], "]"}], ",", "\"\< = \>\"", ",", 
+                  RowBox[{"NumberForm", "[", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"s1", "\[Equal]", "1"}], "\[And]", 
+                    RowBox[{
+                    RowBox[{"Px", "[", "zPoint", "]"}], "\[LessEqual]", 
+                    "P"}]}], ",", "zPoint", ",", "x1"}], "]"}], ",", "2"}], 
+                   "]"}]}], "}"}], "]"}], ",", "18"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", "0", ",", 
+               RowBox[{"0.15", "*", "hL"}]}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"Row", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Superscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<V\>\""}], "]"}], ",", "\"\< = \>\"", ",", 
+                  RowBox[{"NumberForm", "[", 
+                   RowBox[{
+                    RowBox[{"nV", "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"1", "-", "leverL"}], ")"}], "*", 
+                    RowBox[{"(", 
+                    RowBox[{"nL", "+", "nV", "+", "nA"}], ")"}]}], "-", 
+                    "nV"}], ")"}], "*", "step"}]}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                  RowBox[{"Spacer", "[", "25", "]"}], ",", 
+                  RowBox[{"Subscript", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<H\>\""}], "]"}], ",", "\"\< = \>\"", ",", 
+                  RowBox[{"NumberForm", "[", 
+                   RowBox[{"y1", ",", "2"}], "]"}]}], "}"}], "]"}], ",", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Px", "[", "zPoint", "]"}], "\[LessEqual]", "P"}], 
+                 ",", "Transparent", ",", "18"}], "]"}]}], "]"}], ",", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"piston", "<", "0.9"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"2.3", ",", 
+                 RowBox[{"-", "1"}], ",", 
+                 RowBox[{
+                  RowBox[{"0.4", "*", "piston"}], "+", "hL"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"0", ",", "0", ",", 
+                 RowBox[{
+                  RowBox[{"0.4", "*", "piston"}], "+", "hL"}]}], "}"}]}], 
+              "]"}]}], "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"piston", "<", "0.9"}], "\[And]", 
+              RowBox[{
+               RowBox[{"Px", "[", "zPoint", "]"}], ">", "P"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Thickness", "[", "0.001", "]"}], ",", 
+               RowBox[{"Arrowheads", "[", "0.03", "]"}], ",", 
+               RowBox[{"Arrow", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"1.5", ",", 
+                    RowBox[{"-", "1"}], ",", 
+                    RowBox[{
+                    RowBox[{"0.4", "*", "piston"}], "+", "hL"}]}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"0.75", ",", 
+                    RowBox[{"-", "1"}], ",", 
+                    RowBox[{
+                    RowBox[{"0.4", "*", "piston"}], "+", "hL"}]}], "}"}]}], 
+                 "}"}], "]"}]}], "}"}], ",", 
+             RowBox[{"Text", "@", "\"\<\>\""}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+         RowBox[{"Lighting", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"{", 
+            RowBox[{"\"\<Ambient\>\"", ",", "LightGray"}], "}"}], "}"}]}], 
+         ",", 
+         RowBox[{"ViewPoint", "\[Rule]", "Front"}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1"}], ",", "3.05"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "0.1"}], ",", "3"}], "}"}]}], "}"}]}]}], "]"}]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p2", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Px", "[", "x", "]"}], ",", 
+           RowBox[{"Py", "[", "x", "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"x", ",", "0", ",", "1"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], "}"}]}],
+          ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0.", ",", "0.25"}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Row", "@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+               "\"\<\[Hyphen]hexane mole fraction\>\""}], "}"}]}], ",", 
+            "\"\<pressure (bar)\>\""}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"PlotRangeClipping", "\[Rule]", "False"}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"60", ",", "30"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"60", ",", "10"}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<pure \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< -\>\"", ",", "#1"}], "}"}]}], ",", "17"}], "]"}], 
+                ",", 
+                RowBox[{"{", 
+                 RowBox[{"#2", ",", 
+                  RowBox[{"-", "0.025"}]}], "}"}]}], "]"}], "&"}], "@@@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<octane\>\"", ",", "0"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"\"\<hexane\>\"", ",", "0.95"}], "}"}]}], "}"}]}], 
+            ",", "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Px", "[", "zPoint", "]"}], "\[LessEqual]", "P"}], ",",
+               "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"Thickness", "@", "0.007"}], ",", "Dotted", ",", 
+                "Blue", ",", 
+                RowBox[{"Line", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"zPoint", ",", "P"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"zPoint", ",", "0.01"}], "}"}]}], "}"}], "]"}]}], 
+               "}"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{"Thick", ",", "Dashed", ",", "Blue", ",", 
+                RowBox[{"Line", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"y1", ",", "P"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"zPoint", ",", "P"}], "}"}]}], "}"}], "]"}], ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                RowBox[{"Line", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"zPoint", ",", "P"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"x1", ",", "P"}], "}"}]}], "}"}], "]"}], ",", 
+                "\[IndentingNewLine]", 
+                RowBox[{"Thickness", "@", "0.007"}], ",", "Dotted", ",", 
+                "Blue", ",", 
+                RowBox[{"Line", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"x1", ",", "0"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"x1", ",", "P"}], "}"}]}], "}"}], "]"}], ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                RowBox[{"Line", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"y1", ",", "0"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"y1", ",", "P"}], "}"}]}], "}"}], "]"}]}], 
+               "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"PointSize", "@", "0.02"}], ",", 
+              RowBox[{"Point", "[", 
+               RowBox[{"{", 
+                RowBox[{"zPoint", ",", "P"}], "}"}], "]"}]}], "}"}]}], 
+           "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", 
+       RowBox[{
+        RowBox[{"Switch", "[", 
+         RowBox[{"ptv", ",", "1", ",", "p1", ",", "2", ",", "p2"}], "]"}], 
+        ",", 
+        RowBox[{"ImageSize", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"550", ",", "400"}], "}"}]}], ",", 
+        RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"ptv", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< piston-cylinder \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", 
+               RowBox[{"Row", "@", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Style", "[", 
+                   RowBox[{"\"\< P-x-y\>\"", ",", "Italic"}], "]"}], ",", 
+                  "\"\< diagram \>\""}], "}"}]}]}]}], "}"}], ",", "Setter"}], 
+           "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"cs", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", 
+               RowBox[{"Row", "@", 
+                RowBox[{"{", 
+                 RowBox[{"\"\<add \>\"", ",", 
+                  RowBox[{"Style", "[", 
+                   RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                  "\"\<\[Hyphen]octane\>\""}], "}"}]}]}], ",", 
+              RowBox[{"2", "\[Rule]", 
+               RowBox[{"Row", "@", 
+                RowBox[{"{", 
+                 RowBox[{"\"\<add \>\"", ",", 
+                  RowBox[{"Style", "[", 
+                   RowBox[{"\"\<n\>\"", ",", "Italic"}], "]"}], ",", 
+                  "\"\<\[Hyphen]hexane\>\""}], "}"}]}]}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", "SpanFromLeft"}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"nA", ",", "0.5", ",", "\"\<moles to inject\>\""}], 
+             "}"}], ",", "0.1", ",", "6", ",", "0.1", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], 
+          "]"}], ",", "SpanFromLeft", ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                  "s1", ",", "0", ",", "\"\<inject isothermally\>\""}], "}"}],
+                  ",", "0", ",", "1", ",", "Trigger", ",", 
+                 RowBox[{"AnimationRate", "\[Rule]", "2"}]}], "}"}], "]"}]}], 
+             ",", "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                  "s2", ",", "0", ",", "\"\<inject isothermally\>\""}], "}"}],
+                  ",", "0", ",", "1", ",", "Trigger", ",", 
+                 RowBox[{"AnimationRate", "\[Rule]", "2"}]}], "}"}], 
+               "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "cs"}]}], "]"}]}], "}"}]}], 
+      "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.6335482285834503`*^9, {3.633548645361289*^9, 3.6335487115450745`*^9}, {
+   3.633548765243146*^9, 3.633548893926506*^9}, {3.6335491656880493`*^9, 
+   3.6335491665791006`*^9}, {3.6335491984539237`*^9, 3.6335492012890863`*^9}, 
+   3.633704267054121*^9, 3.6337043049652896`*^9, 3.675706866291258*^9, {
+   3.677606860401593*^9, 3.677606866309605*^9}, {3.677606908298888*^9, 
+   3.677607563249979*^9}, {3.6776076983703003`*^9, 3.6776077161393356`*^9}, {
+   3.6776078371498156`*^9, 3.677607892649969*^9}, {3.677607933350071*^9, 
+   3.6776079440580897`*^9}, {3.6776081880169015`*^9, 
+   3.6776082107729616`*^9}, {3.6780330701350255`*^9, 3.678033124496111*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+    0.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 0., $CellContext`s2$$ = 
+    0, Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 1, ""}, {1 -> " piston-cylinder ", 2 -> Row[{
+          Style[" P-x-y", Italic], " diagram "}]}}, {{
+       Hold[$CellContext`cs$$], 1, ""}, {1 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]hexane"}]}}, {{
+       Hold[$CellContext`nA$$], 0.5, "moles to inject"}, 0.1, 6, 0.1}, {{
+       Hold[$CellContext`s1$$], 0., "inject isothermally"}, 0, 1}, {{
+       Hold[$CellContext`s2$$], 0, "inject isothermally"}, 0, 1}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2], SpanFromLeft}, {
+          Manipulate`Place[3], SpanFromLeft, 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    550., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`ptv$21999$$ = 
+    False, $CellContext`cs$22000$$ = False, $CellContext`nA$22001$$ = 
+    0, $CellContext`s1$22002$$ = 0, $CellContext`s2$22003$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+        0.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 
+        0., $CellContext`s2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$21999$$, False], 
+        Hold[$CellContext`cs$$, $CellContext`cs$22000$$, False], 
+        Hold[$CellContext`nA$$, $CellContext`nA$22001$$, 0], 
+        Hold[$CellContext`s1$$, $CellContext`s1$22002$$, 0], 
+        Hold[$CellContext`s2$$, $CellContext`s2$22003$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`Px$, $CellContext`Py$, $CellContext`x1$, $CellContext`y1$, \
+$CellContext`nL$, $CellContext`nV$, $CellContext`zPoint$, \
+$CellContext`leverL$, $CellContext`hL$, $CellContext`piston$, \
+$CellContext`step$, $CellContext`add$, $CellContext`p1$, $CellContext`p2$}, \
+$CellContext`P$ = 0.12; $CellContext`Psat1$ = 
+         10^(4 - 1171.53/(30 + 224.2)); $CellContext`Psat2$ = 
+         10^(4.05 - 1355/(30 + 209.4)); $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] = $CellContext`x$ $CellContext`Psat1$ + (
+            1 - $CellContext`x$) $CellContext`Psat2$; $CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] = ($CellContext`x$/$CellContext`Psat1$ + (
+             1 - $CellContext`x$)/$CellContext`Psat2$)^(-1); $CellContext`x1$ = 
+         ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Px$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`y1$ = ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Py$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`nL$ = 20; $CellContext`nV$ = 
+         3; $CellContext`zPoint$ = ($CellContext`x1$ $CellContext`nL$ + \
+$CellContext`y1$ $CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$) + (
+            If[$CellContext`cs$$ == 1, 
+              1 - ((1 - $CellContext`x1$) $CellContext`nL$ + (
+                 1 - $CellContext`y1$) $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$), \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$)] - \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ \
+$CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$)) $CellContext`step$; \
+$CellContext`leverL$ = 
+         If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+           1, ($CellContext`y1$ - $CellContext`zPoint$)/($CellContext`y1$ - \
+$CellContext`x1$)]; $CellContext`hL$ = 
+         If[$CellContext`cs$$ == 1, 0.3 $CellContext`leverL$ + 
+           If[$CellContext`nA$$ > 3.1, 
+              0.05 (($CellContext`nA$$ - 3.2)/(6 - 3.2)), 
+              0] $CellContext`step$, 
+           0.3 $CellContext`leverL$ (1 - 
+            0.5 $CellContext`step$)]; $CellContext`piston$ = 
+         If[$CellContext`cs$$ == 1, 
+           
+           If[$CellContext`nA$$ <= 3.1, 
+            2.35 + ((1 - (1/3) ($CellContext`nA$$ - 0.1)) (
+                2.35 - $CellContext`hL$) + $CellContext`hL$ - 
+              2.35) $CellContext`step$, 
+            2.35 + ($CellContext`hL$ - 2.35) $CellContext`step$], 2.35 + 
+           0.5 $CellContext`step$]; $CellContext`step$ = 
+         If[$CellContext`cs$$ == 
+           1, $CellContext`s1$$, $CellContext`s2$$]; $CellContext`add$ = (
+           0.05 + 0.7 (($CellContext`nA$$ - 0.1)/(6 - 0.1))) (
+           1 - $CellContext`step$); $CellContext`p1$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, 0}, {0, 0, 2.75}}], 
+             Cylinder[{{1, 0, 1.375}, {2, 0, 1.375}}, 0.13]}, {
+             Opacity[0.75], 
+             RGBColor[0.07, 1, 0.6], 
+             Cylinder[{{0, 0, 0}, {0, 0, $CellContext`hL$}}], 
+             
+             Cylinder[{{1, 0, 1.375}, {1 + $CellContext`add$, 0, 1.375}}, 
+              0.13]}, 
+            
+            Cylinder[{{1 + $CellContext`add$, 0, 1.375}, {
+              2.1 + $CellContext`add$, 0, 1.375}}, 0.03], {Black, 
+             
+             Cylinder[{{2.1 + $CellContext`add$, 0, 1.375}, {
+               2.125 + $CellContext`add$, 0, 1.375}}, 0.14]}, {Gray, 
+             
+             Cylinder[{{0, 0, $CellContext`piston$}, {
+               0, 0, $CellContext`piston$ + 0.15}}], 
+             Cylinder[{{0, 0, $CellContext`piston$ + 0.15}, {0, 0, 3}}, 
+              0.11]}, 
+            Text[
+             Style[
+              Row[{
+                Subsuperscript[
+                 Style["P", Italic], "O", "sat"], " < ", 
+                Subsuperscript[
+                 Style["P", Italic], "H", "sat"]}], 20], {2, 0, 2.75}], 
+            If[$CellContext`cs$$ == 1, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, "vapor condenses", ""], 18], {
+               2, 0, 1.75}]}, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s2$$ == 1, "liquid evaporates", ""], 18], {
+               2, 0, 1.75}]}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "L"], " = ", 
+                
+                NumberForm[$CellContext`nL$ + ($CellContext`leverL$ \
+($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$) - $CellContext`nL$) \
+$CellContext`step$, {3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["x", Italic], "H"], " = ", 
+                NumberForm[
+                 If[
+                  
+                  And[$CellContext`s1$$ == 
+                   
+                   1, $CellContext`Px$[$CellContext`zPoint$] <= \
+$CellContext`P$], $CellContext`zPoint$, $CellContext`x1$], 2]}], 18], {
+             0, 0, 0.15 $CellContext`hL$}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "V"], " = ", 
+                
+                NumberForm[$CellContext`nV$ + ((
+                    1 - $CellContext`leverL$) ($CellContext`nL$ + \
+$CellContext`nV$ + $CellContext`nA$$) - $CellContext`nV$) $CellContext`step$, \
+{3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["y", Italic], "H"], " = ", 
+                NumberForm[$CellContext`y1$, 2]}], 
+              
+              If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+               Transparent, 18]], 
+             
+             If[$CellContext`piston$ < 0.9, {
+              2.3, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+              0, 0, 0.4 $CellContext`piston$ + $CellContext`hL$}]], 
+            If[
+             
+             And[$CellContext`piston$ < 
+              0.9, $CellContext`Px$[$CellContext`zPoint$] > $CellContext`P$], {
+              Thickness[0.001], 
+              Arrowheads[0.03], 
+              
+              Arrow[{{1.5, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+                0.75, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}}]}, 
+             Text[""]]}, Boxed -> False, Lighting -> {{"Ambient", LightGray}},
+            ViewPoint -> Front, 
+           PlotRange -> {{-1, 3.05}, {-1, 1}, {-0.1, 3}}]; $CellContext`p2$ = 
+         Plot[{
+            $CellContext`Px$[$CellContext`x], 
+            $CellContext`Py$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, {0., 0.25}}, Frame -> 
+           True, FrameLabel -> {
+             Row[{
+               Style["n", Italic], "\[Hyphen]hexane mole fraction"}], 
+             "pressure (bar)"}, LabelStyle -> {17, Black}, PlotRangeClipping -> 
+           False, ImagePadding -> {{60, 30}, {60, 10}}, Epilog -> {
+             Apply[Text[
+               Style[
+                Row[{"pure ", 
+                  Style["n", Italic], " -", #}], 17], {#2, -0.025}]& , {{
+               "octane", 0}, {"hexane", 0.95}}, {1}], 
+             If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, {
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`zPoint$, 0.01}}]}, {Thick, Dashed, Blue, 
+               
+               Line[{{$CellContext`y1$, $CellContext`P$}, \
+{$CellContext`zPoint$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`x1$, $CellContext`P$}}], 
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`x1$, 
+                  0}, {$CellContext`x1$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`y1$, 
+                  0}, {$CellContext`y1$, $CellContext`P$}}]}], {
+              PointSize[0.02], 
+              Point[{$CellContext`zPoint$, $CellContext`P$}]}}]; Show[
+          
+          Switch[$CellContext`ptv$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], ImageSize -> {550, 400}, AspectRatio -> 
+          Full]], "Specifications" :> {{{$CellContext`ptv$$, 1, ""}, {
+         1 -> " piston-cylinder ", 2 -> Row[{
+             Style[" P-x-y", Italic], " diagram "}]}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`cs$$, 1, ""}, {
+         1 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]hexane"}]}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`nA$$, 0.5, "moles to inject"},
+          0.1, 6, 0.1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`s1$$, 0., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 
+         4}, {{$CellContext`s2$$, 0, "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2], SpanFromLeft}, {
+           Manipulate`Place[3], SpanFromLeft, 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{599., {255., 262.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->691821137]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell[TextData[{
+ "Initially an ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane/",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane mixture (20 mol of liquid, 3 mol of vapor) is in vapor-liquid \
+equilibrium in a cylinder with a movable piston. Additional ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane or ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane is added when the inject isothermally play button is pressed. \
+Change the number of moles injected at constant temperature and pressure with \
+the slider. The system is modeled by Raoult\[CloseCurlyQuote]s law. The ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagram shows what happens when additional alkane is injected. The moles \
+in the liquid phase ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["n", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " and the vapor phase ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["n", 
+    StyleBox["V",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " are displayed, as are the corresponding mole fractions of ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SubscriptBox["x", 
+     StyleBox["H",
+      FontSlant->"Plain"]]}], TraditionalForm]], "InlineMath"],
+ " in liquid, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", 
+    StyleBox["H",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " in vapor). Use the reset button to start the process again."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.677607973910252*^9, 3.6776080999186535`*^9}, {
+  3.6780275440363417`*^9, 3.678027544619562*^9}},
+ CellID->292030504]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+    0.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 0., $CellContext`s2$$ = 
+    0, Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 1, ""}, {1 -> " piston-cylinder ", 2 -> Row[{
+          Style[" P-x-y", Italic], " diagram "}]}}, {{
+       Hold[$CellContext`cs$$], 1, ""}, {1 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]hexane"}]}}, {{
+       Hold[$CellContext`nA$$], 0.5, "moles to inject"}, 0.1, 6, 0.1}, {{
+       Hold[$CellContext`s1$$], 0., "inject isothermally"}, 0, 1}, {{
+       Hold[$CellContext`s2$$], 0, "inject isothermally"}, 0, 1}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2], SpanFromLeft}, {
+          Manipulate`Place[3], SpanFromLeft, 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    550., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`ptv$22075$$ = 
+    False, $CellContext`cs$22076$$ = False, $CellContext`nA$22077$$ = 
+    0, $CellContext`s1$22078$$ = 0, $CellContext`s2$22079$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+        0.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 
+        0., $CellContext`s2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$22075$$, False], 
+        Hold[$CellContext`cs$$, $CellContext`cs$22076$$, False], 
+        Hold[$CellContext`nA$$, $CellContext`nA$22077$$, 0], 
+        Hold[$CellContext`s1$$, $CellContext`s1$22078$$, 0], 
+        Hold[$CellContext`s2$$, $CellContext`s2$22079$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`Px$, $CellContext`Py$, $CellContext`x1$, $CellContext`y1$, \
+$CellContext`nL$, $CellContext`nV$, $CellContext`zPoint$, \
+$CellContext`leverL$, $CellContext`hL$, $CellContext`piston$, \
+$CellContext`step$, $CellContext`add$, $CellContext`p1$, $CellContext`p2$}, \
+$CellContext`P$ = 0.12; $CellContext`Psat1$ = 
+         10^(4 - 1171.53/(30 + 224.2)); $CellContext`Psat2$ = 
+         10^(4.05 - 1355/(30 + 209.4)); $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] = $CellContext`x$ $CellContext`Psat1$ + (
+            1 - $CellContext`x$) $CellContext`Psat2$; $CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] = ($CellContext`x$/$CellContext`Psat1$ + (
+             1 - $CellContext`x$)/$CellContext`Psat2$)^(-1); $CellContext`x1$ = 
+         ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Px$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`y1$ = ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Py$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`nL$ = 20; $CellContext`nV$ = 
+         3; $CellContext`zPoint$ = ($CellContext`x1$ $CellContext`nL$ + \
+$CellContext`y1$ $CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$) + (
+            If[$CellContext`cs$$ == 1, 
+              1 - ((1 - $CellContext`x1$) $CellContext`nL$ + (
+                 1 - $CellContext`y1$) $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$), \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$)] - \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ \
+$CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$)) $CellContext`step$; \
+$CellContext`leverL$ = 
+         If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+           1, ($CellContext`y1$ - $CellContext`zPoint$)/($CellContext`y1$ - \
+$CellContext`x1$)]; $CellContext`hL$ = 
+         If[$CellContext`cs$$ == 1, 0.3 $CellContext`leverL$ + 
+           If[$CellContext`nA$$ > 3.1, 
+              0.05 (($CellContext`nA$$ - 3.2)/(6 - 3.2)), 
+              0] $CellContext`step$, 
+           0.3 $CellContext`leverL$ (1 - 
+            0.5 $CellContext`step$)]; $CellContext`piston$ = 
+         If[$CellContext`cs$$ == 1, 
+           
+           If[$CellContext`nA$$ <= 3.1, 
+            2.35 + ((1 - (1/3) ($CellContext`nA$$ - 0.1)) (
+                2.35 - $CellContext`hL$) + $CellContext`hL$ - 
+              2.35) $CellContext`step$, 
+            2.35 + ($CellContext`hL$ - 2.35) $CellContext`step$], 2.35 + 
+           0.5 $CellContext`step$]; $CellContext`step$ = 
+         If[$CellContext`cs$$ == 
+           1, $CellContext`s1$$, $CellContext`s2$$]; $CellContext`add$ = (
+           0.05 + 0.7 (($CellContext`nA$$ - 0.1)/(6 - 0.1))) (
+           1 - $CellContext`step$); $CellContext`p1$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, 0}, {0, 0, 2.75}}], 
+             Cylinder[{{1, 0, 1.375}, {2, 0, 1.375}}, 0.13]}, {
+             Opacity[0.75], 
+             RGBColor[0.07, 1, 0.6], 
+             Cylinder[{{0, 0, 0}, {0, 0, $CellContext`hL$}}], 
+             
+             Cylinder[{{1, 0, 1.375}, {1 + $CellContext`add$, 0, 1.375}}, 
+              0.13]}, 
+            
+            Cylinder[{{1 + $CellContext`add$, 0, 1.375}, {
+              2.1 + $CellContext`add$, 0, 1.375}}, 0.03], {Black, 
+             
+             Cylinder[{{2.1 + $CellContext`add$, 0, 1.375}, {
+               2.125 + $CellContext`add$, 0, 1.375}}, 0.14]}, {Gray, 
+             
+             Cylinder[{{0, 0, $CellContext`piston$}, {
+               0, 0, $CellContext`piston$ + 0.15}}], 
+             Cylinder[{{0, 0, $CellContext`piston$ + 0.15}, {0, 0, 3}}, 
+              0.11]}, 
+            Text[
+             Style[
+              Row[{
+                Subsuperscript[
+                 Style["P", Italic], "O", "sat"], " < ", 
+                Subsuperscript[
+                 Style["P", Italic], "H", "sat"]}], 20], {2, 0, 2.75}], 
+            If[$CellContext`cs$$ == 1, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, "vapor condenses", ""], 18], {
+               2, 0, 1.75}]}, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s2$$ == 1, "liquid evaporates", ""], 18], {
+               2, 0, 1.75}]}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "L"], " = ", 
+                
+                NumberForm[$CellContext`nL$ + ($CellContext`leverL$ \
+($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$) - $CellContext`nL$) \
+$CellContext`step$, {3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["x", Italic], "H"], " = ", 
+                NumberForm[
+                 If[
+                  
+                  And[$CellContext`s1$$ == 
+                   
+                   1, $CellContext`Px$[$CellContext`zPoint$] <= \
+$CellContext`P$], $CellContext`zPoint$, $CellContext`x1$], 2]}], 18], {
+             0, 0, 0.15 $CellContext`hL$}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "V"], " = ", 
+                
+                NumberForm[$CellContext`nV$ + ((
+                    1 - $CellContext`leverL$) ($CellContext`nL$ + \
+$CellContext`nV$ + $CellContext`nA$$) - $CellContext`nV$) $CellContext`step$, \
+{3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["y", Italic], "H"], " = ", 
+                NumberForm[$CellContext`y1$, 2]}], 
+              
+              If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+               Transparent, 18]], 
+             
+             If[$CellContext`piston$ < 0.9, {
+              2.3, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+              0, 0, 0.4 $CellContext`piston$ + $CellContext`hL$}]], 
+            If[
+             
+             And[$CellContext`piston$ < 
+              0.9, $CellContext`Px$[$CellContext`zPoint$] > $CellContext`P$], {
+              Thickness[0.001], 
+              Arrowheads[0.03], 
+              
+              Arrow[{{1.5, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+                0.75, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}}]}, 
+             Text[""]]}, Boxed -> False, Lighting -> {{"Ambient", LightGray}},
+            ViewPoint -> Front, 
+           PlotRange -> {{-1, 3.05}, {-1, 1}, {-0.1, 3}}]; $CellContext`p2$ = 
+         Plot[{
+            $CellContext`Px$[$CellContext`x], 
+            $CellContext`Py$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, {0., 0.25}}, Frame -> 
+           True, FrameLabel -> {
+             Row[{
+               Style["n", Italic], "\[Hyphen]hexane mole fraction"}], 
+             "pressure (bar)"}, LabelStyle -> {17, Black}, PlotRangeClipping -> 
+           False, ImagePadding -> {{60, 30}, {60, 10}}, Epilog -> {
+             Apply[Text[
+               Style[
+                Row[{"pure ", 
+                  Style["n", Italic], " -", #}], 17], {#2, -0.025}]& , {{
+               "octane", 0}, {"hexane", 0.95}}, {1}], 
+             If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, {
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`zPoint$, 0.01}}]}, {Thick, Dashed, Blue, 
+               
+               Line[{{$CellContext`y1$, $CellContext`P$}, \
+{$CellContext`zPoint$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`x1$, $CellContext`P$}}], 
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`x1$, 
+                  0}, {$CellContext`x1$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`y1$, 
+                  0}, {$CellContext`y1$, $CellContext`P$}}]}], {
+              PointSize[0.02], 
+              Point[{$CellContext`zPoint$, $CellContext`P$}]}}]; Show[
+          
+          Switch[$CellContext`ptv$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], ImageSize -> {550, 400}, AspectRatio -> 
+          Full]], "Specifications" :> {{{$CellContext`ptv$$, 1, ""}, {
+         1 -> " piston-cylinder ", 2 -> Row[{
+             Style[" P-x-y", Italic], " diagram "}]}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`cs$$, 1, ""}, {
+         1 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]hexane"}]}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`nA$$, 0.5, "moles to inject"},
+          0.1, 6, 0.1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`s1$$, 0., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 
+         4}, {{$CellContext`s2$$, 0, "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2], SpanFromLeft}, {
+           Manipulate`Place[3], SpanFromLeft, 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{599., {255., 262.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->372538078]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+    4.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 0., $CellContext`s2$$ = 
+    0, Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 1, ""}, {1 -> " piston-cylinder ", 2 -> Row[{
+          Style[" P-x-y", Italic], " diagram "}]}}, {{
+       Hold[$CellContext`cs$$], 1, ""}, {1 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]hexane"}]}}, {{
+       Hold[$CellContext`nA$$], 4.5, "moles to inject"}, 0.1, 6, 0.1}, {{
+       Hold[$CellContext`s1$$], 0., "inject isothermally"}, 0, 1}, {{
+       Hold[$CellContext`s2$$], 0, "inject isothermally"}, 0, 1}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2], SpanFromLeft}, {
+          Manipulate`Place[3], SpanFromLeft, 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    550., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`ptv$22151$$ = 
+    False, $CellContext`cs$22152$$ = False, $CellContext`nA$22153$$ = 
+    0, $CellContext`s1$22154$$ = 0, $CellContext`s2$22155$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+        4.5, $CellContext`ptv$$ = 1, $CellContext`s1$$ = 
+        0., $CellContext`s2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$22151$$, False], 
+        Hold[$CellContext`cs$$, $CellContext`cs$22152$$, False], 
+        Hold[$CellContext`nA$$, $CellContext`nA$22153$$, 0], 
+        Hold[$CellContext`s1$$, $CellContext`s1$22154$$, 0], 
+        Hold[$CellContext`s2$$, $CellContext`s2$22155$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`Px$, $CellContext`Py$, $CellContext`x1$, $CellContext`y1$, \
+$CellContext`nL$, $CellContext`nV$, $CellContext`zPoint$, \
+$CellContext`leverL$, $CellContext`hL$, $CellContext`piston$, \
+$CellContext`step$, $CellContext`add$, $CellContext`p1$, $CellContext`p2$}, \
+$CellContext`P$ = 0.12; $CellContext`Psat1$ = 
+         10^(4 - 1171.53/(30 + 224.2)); $CellContext`Psat2$ = 
+         10^(4.05 - 1355/(30 + 209.4)); $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] = $CellContext`x$ $CellContext`Psat1$ + (
+            1 - $CellContext`x$) $CellContext`Psat2$; $CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] = ($CellContext`x$/$CellContext`Psat1$ + (
+             1 - $CellContext`x$)/$CellContext`Psat2$)^(-1); $CellContext`x1$ = 
+         ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Px$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`y1$ = ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Py$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`nL$ = 20; $CellContext`nV$ = 
+         3; $CellContext`zPoint$ = ($CellContext`x1$ $CellContext`nL$ + \
+$CellContext`y1$ $CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$) + (
+            If[$CellContext`cs$$ == 1, 
+              1 - ((1 - $CellContext`x1$) $CellContext`nL$ + (
+                 1 - $CellContext`y1$) $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$), \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$)] - \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ \
+$CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$)) $CellContext`step$; \
+$CellContext`leverL$ = 
+         If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+           1, ($CellContext`y1$ - $CellContext`zPoint$)/($CellContext`y1$ - \
+$CellContext`x1$)]; $CellContext`hL$ = 
+         If[$CellContext`cs$$ == 1, 0.3 $CellContext`leverL$ + 
+           If[$CellContext`nA$$ > 3.1, 
+              0.05 (($CellContext`nA$$ - 3.2)/(6 - 3.2)), 
+              0] $CellContext`step$, 
+           0.3 $CellContext`leverL$ (1 - 
+            0.5 $CellContext`step$)]; $CellContext`piston$ = 
+         If[$CellContext`cs$$ == 1, 
+           
+           If[$CellContext`nA$$ <= 3.1, 
+            2.35 + ((1 - (1/3) ($CellContext`nA$$ - 0.1)) (
+                2.35 - $CellContext`hL$) + $CellContext`hL$ - 
+              2.35) $CellContext`step$, 
+            2.35 + ($CellContext`hL$ - 2.35) $CellContext`step$], 2.35 + 
+           0.5 $CellContext`step$]; $CellContext`step$ = 
+         If[$CellContext`cs$$ == 
+           1, $CellContext`s1$$, $CellContext`s2$$]; $CellContext`add$ = (
+           0.05 + 0.7 (($CellContext`nA$$ - 0.1)/(6 - 0.1))) (
+           1 - $CellContext`step$); $CellContext`p1$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, 0}, {0, 0, 2.75}}], 
+             Cylinder[{{1, 0, 1.375}, {2, 0, 1.375}}, 0.13]}, {
+             Opacity[0.75], 
+             RGBColor[0.07, 1, 0.6], 
+             Cylinder[{{0, 0, 0}, {0, 0, $CellContext`hL$}}], 
+             
+             Cylinder[{{1, 0, 1.375}, {1 + $CellContext`add$, 0, 1.375}}, 
+              0.13]}, 
+            
+            Cylinder[{{1 + $CellContext`add$, 0, 1.375}, {
+              2.1 + $CellContext`add$, 0, 1.375}}, 0.03], {Black, 
+             
+             Cylinder[{{2.1 + $CellContext`add$, 0, 1.375}, {
+               2.125 + $CellContext`add$, 0, 1.375}}, 0.14]}, {Gray, 
+             
+             Cylinder[{{0, 0, $CellContext`piston$}, {
+               0, 0, $CellContext`piston$ + 0.15}}], 
+             Cylinder[{{0, 0, $CellContext`piston$ + 0.15}, {0, 0, 3}}, 
+              0.11]}, 
+            Text[
+             Style[
+              Row[{
+                Subsuperscript[
+                 Style["P", Italic], "O", "sat"], " < ", 
+                Subsuperscript[
+                 Style["P", Italic], "H", "sat"]}], 20], {2, 0, 2.75}], 
+            If[$CellContext`cs$$ == 1, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, "vapor condenses", ""], 18], {
+               2, 0, 1.75}]}, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s2$$ == 1, "liquid evaporates", ""], 18], {
+               2, 0, 1.75}]}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "L"], " = ", 
+                
+                NumberForm[$CellContext`nL$ + ($CellContext`leverL$ \
+($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$) - $CellContext`nL$) \
+$CellContext`step$, {3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["x", Italic], "H"], " = ", 
+                NumberForm[
+                 If[
+                  
+                  And[$CellContext`s1$$ == 
+                   
+                   1, $CellContext`Px$[$CellContext`zPoint$] <= \
+$CellContext`P$], $CellContext`zPoint$, $CellContext`x1$], 2]}], 18], {
+             0, 0, 0.15 $CellContext`hL$}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "V"], " = ", 
+                
+                NumberForm[$CellContext`nV$ + ((
+                    1 - $CellContext`leverL$) ($CellContext`nL$ + \
+$CellContext`nV$ + $CellContext`nA$$) - $CellContext`nV$) $CellContext`step$, \
+{3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["y", Italic], "H"], " = ", 
+                NumberForm[$CellContext`y1$, 2]}], 
+              
+              If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+               Transparent, 18]], 
+             
+             If[$CellContext`piston$ < 0.9, {
+              2.3, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+              0, 0, 0.4 $CellContext`piston$ + $CellContext`hL$}]], 
+            If[
+             
+             And[$CellContext`piston$ < 
+              0.9, $CellContext`Px$[$CellContext`zPoint$] > $CellContext`P$], {
+              Thickness[0.001], 
+              Arrowheads[0.03], 
+              
+              Arrow[{{1.5, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+                0.75, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}}]}, 
+             Text[""]]}, Boxed -> False, Lighting -> {{"Ambient", LightGray}},
+            ViewPoint -> Front, 
+           PlotRange -> {{-1, 3.05}, {-1, 1}, {-0.1, 3}}]; $CellContext`p2$ = 
+         Plot[{
+            $CellContext`Px$[$CellContext`x], 
+            $CellContext`Py$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, {0., 0.25}}, Frame -> 
+           True, FrameLabel -> {
+             Row[{
+               Style["n", Italic], "\[Hyphen]hexane mole fraction"}], 
+             "pressure (bar)"}, LabelStyle -> {17, Black}, PlotRangeClipping -> 
+           False, ImagePadding -> {{60, 30}, {60, 10}}, Epilog -> {
+             Apply[Text[
+               Style[
+                Row[{"pure ", 
+                  Style["n", Italic], " -", #}], 17], {#2, -0.025}]& , {{
+               "octane", 0}, {"hexane", 0.95}}, {1}], 
+             If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, {
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`zPoint$, 0.01}}]}, {Thick, Dashed, Blue, 
+               
+               Line[{{$CellContext`y1$, $CellContext`P$}, \
+{$CellContext`zPoint$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`x1$, $CellContext`P$}}], 
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`x1$, 
+                  0}, {$CellContext`x1$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`y1$, 
+                  0}, {$CellContext`y1$, $CellContext`P$}}]}], {
+              PointSize[0.02], 
+              Point[{$CellContext`zPoint$, $CellContext`P$}]}}]; Show[
+          
+          Switch[$CellContext`ptv$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], ImageSize -> {550, 400}, AspectRatio -> 
+          Full]], "Specifications" :> {{{$CellContext`ptv$$, 1, ""}, {
+         1 -> " piston-cylinder ", 2 -> Row[{
+             Style[" P-x-y", Italic], " diagram "}]}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`cs$$, 1, ""}, {
+         1 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]hexane"}]}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`nA$$, 4.5, "moles to inject"},
+          0.1, 6, 0.1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`s1$$, 0., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 
+         4}, {{$CellContext`s2$$, 0, "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2], SpanFromLeft}, {
+           Manipulate`Place[3], SpanFromLeft, 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{599., {255., 262.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->481171703],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+    0.6, $CellContext`ptv$$ = 2, $CellContext`s1$$ = 0., $CellContext`s2$$ = 
+    0, Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 2, ""}, {1 -> " piston-cylinder ", 2 -> Row[{
+          Style[" P-x-y", Italic], " diagram "}]}}, {{
+       Hold[$CellContext`cs$$], 1, ""}, {1 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]hexane"}]}}, {{
+       Hold[$CellContext`nA$$], 0.6, "moles to inject"}, 0.1, 6, 0.1}, {{
+       Hold[$CellContext`s1$$], 0., "inject isothermally"}, 0, 1}, {{
+       Hold[$CellContext`s2$$], 0, "inject isothermally"}, 0, 1}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2], SpanFromLeft}, {
+          Manipulate`Place[3], SpanFromLeft, 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    550., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`ptv$22227$$ = 
+    False, $CellContext`cs$22228$$ = False, $CellContext`nA$22229$$ = 
+    0, $CellContext`s1$22230$$ = 0, $CellContext`s2$22231$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+        0.6, $CellContext`ptv$$ = 2, $CellContext`s1$$ = 
+        0., $CellContext`s2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$22227$$, False], 
+        Hold[$CellContext`cs$$, $CellContext`cs$22228$$, False], 
+        Hold[$CellContext`nA$$, $CellContext`nA$22229$$, 0], 
+        Hold[$CellContext`s1$$, $CellContext`s1$22230$$, 0], 
+        Hold[$CellContext`s2$$, $CellContext`s2$22231$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`Px$, $CellContext`Py$, $CellContext`x1$, $CellContext`y1$, \
+$CellContext`nL$, $CellContext`nV$, $CellContext`zPoint$, \
+$CellContext`leverL$, $CellContext`hL$, $CellContext`piston$, \
+$CellContext`step$, $CellContext`add$, $CellContext`p1$, $CellContext`p2$}, \
+$CellContext`P$ = 0.12; $CellContext`Psat1$ = 
+         10^(4 - 1171.53/(30 + 224.2)); $CellContext`Psat2$ = 
+         10^(4.05 - 1355/(30 + 209.4)); $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] = $CellContext`x$ $CellContext`Psat1$ + (
+            1 - $CellContext`x$) $CellContext`Psat2$; $CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] = ($CellContext`x$/$CellContext`Psat1$ + (
+             1 - $CellContext`x$)/$CellContext`Psat2$)^(-1); $CellContext`x1$ = 
+         ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Px$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`y1$ = ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Py$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`nL$ = 20; $CellContext`nV$ = 
+         3; $CellContext`zPoint$ = ($CellContext`x1$ $CellContext`nL$ + \
+$CellContext`y1$ $CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$) + (
+            If[$CellContext`cs$$ == 1, 
+              1 - ((1 - $CellContext`x1$) $CellContext`nL$ + (
+                 1 - $CellContext`y1$) $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$), \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$)] - \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ \
+$CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$)) $CellContext`step$; \
+$CellContext`leverL$ = 
+         If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+           1, ($CellContext`y1$ - $CellContext`zPoint$)/($CellContext`y1$ - \
+$CellContext`x1$)]; $CellContext`hL$ = 
+         If[$CellContext`cs$$ == 1, 0.3 $CellContext`leverL$ + 
+           If[$CellContext`nA$$ > 3.1, 
+              0.05 (($CellContext`nA$$ - 3.2)/(6 - 3.2)), 
+              0] $CellContext`step$, 
+           0.3 $CellContext`leverL$ (1 - 
+            0.5 $CellContext`step$)]; $CellContext`piston$ = 
+         If[$CellContext`cs$$ == 1, 
+           
+           If[$CellContext`nA$$ <= 3.1, 
+            2.35 + ((1 - (1/3) ($CellContext`nA$$ - 0.1)) (
+                2.35 - $CellContext`hL$) + $CellContext`hL$ - 
+              2.35) $CellContext`step$, 
+            2.35 + ($CellContext`hL$ - 2.35) $CellContext`step$], 2.35 + 
+           0.5 $CellContext`step$]; $CellContext`step$ = 
+         If[$CellContext`cs$$ == 
+           1, $CellContext`s1$$, $CellContext`s2$$]; $CellContext`add$ = (
+           0.05 + 0.7 (($CellContext`nA$$ - 0.1)/(6 - 0.1))) (
+           1 - $CellContext`step$); $CellContext`p1$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, 0}, {0, 0, 2.75}}], 
+             Cylinder[{{1, 0, 1.375}, {2, 0, 1.375}}, 0.13]}, {
+             Opacity[0.75], 
+             RGBColor[0.07, 1, 0.6], 
+             Cylinder[{{0, 0, 0}, {0, 0, $CellContext`hL$}}], 
+             
+             Cylinder[{{1, 0, 1.375}, {1 + $CellContext`add$, 0, 1.375}}, 
+              0.13]}, 
+            
+            Cylinder[{{1 + $CellContext`add$, 0, 1.375}, {
+              2.1 + $CellContext`add$, 0, 1.375}}, 0.03], {Black, 
+             
+             Cylinder[{{2.1 + $CellContext`add$, 0, 1.375}, {
+               2.125 + $CellContext`add$, 0, 1.375}}, 0.14]}, {Gray, 
+             
+             Cylinder[{{0, 0, $CellContext`piston$}, {
+               0, 0, $CellContext`piston$ + 0.15}}], 
+             Cylinder[{{0, 0, $CellContext`piston$ + 0.15}, {0, 0, 3}}, 
+              0.11]}, 
+            Text[
+             Style[
+              Row[{
+                Subsuperscript[
+                 Style["P", Italic], "O", "sat"], " < ", 
+                Subsuperscript[
+                 Style["P", Italic], "H", "sat"]}], 20], {2, 0, 2.75}], 
+            If[$CellContext`cs$$ == 1, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, "vapor condenses", ""], 18], {
+               2, 0, 1.75}]}, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s2$$ == 1, "liquid evaporates", ""], 18], {
+               2, 0, 1.75}]}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "L"], " = ", 
+                
+                NumberForm[$CellContext`nL$ + ($CellContext`leverL$ \
+($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$) - $CellContext`nL$) \
+$CellContext`step$, {3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["x", Italic], "H"], " = ", 
+                NumberForm[
+                 If[
+                  
+                  And[$CellContext`s1$$ == 
+                   
+                   1, $CellContext`Px$[$CellContext`zPoint$] <= \
+$CellContext`P$], $CellContext`zPoint$, $CellContext`x1$], 2]}], 18], {
+             0, 0, 0.15 $CellContext`hL$}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "V"], " = ", 
+                
+                NumberForm[$CellContext`nV$ + ((
+                    1 - $CellContext`leverL$) ($CellContext`nL$ + \
+$CellContext`nV$ + $CellContext`nA$$) - $CellContext`nV$) $CellContext`step$, \
+{3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["y", Italic], "H"], " = ", 
+                NumberForm[$CellContext`y1$, 2]}], 
+              
+              If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+               Transparent, 18]], 
+             
+             If[$CellContext`piston$ < 0.9, {
+              2.3, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+              0, 0, 0.4 $CellContext`piston$ + $CellContext`hL$}]], 
+            If[
+             
+             And[$CellContext`piston$ < 
+              0.9, $CellContext`Px$[$CellContext`zPoint$] > $CellContext`P$], {
+              Thickness[0.001], 
+              Arrowheads[0.03], 
+              
+              Arrow[{{1.5, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+                0.75, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}}]}, 
+             Text[""]]}, Boxed -> False, Lighting -> {{"Ambient", LightGray}},
+            ViewPoint -> Front, 
+           PlotRange -> {{-1, 3.05}, {-1, 1}, {-0.1, 3}}]; $CellContext`p2$ = 
+         Plot[{
+            $CellContext`Px$[$CellContext`x], 
+            $CellContext`Py$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, {0., 0.25}}, Frame -> 
+           True, FrameLabel -> {
+             Row[{
+               Style["n", Italic], "\[Hyphen]hexane mole fraction"}], 
+             "pressure (bar)"}, LabelStyle -> {17, Black}, PlotRangeClipping -> 
+           False, ImagePadding -> {{60, 30}, {60, 10}}, Epilog -> {
+             Apply[Text[
+               Style[
+                Row[{"pure ", 
+                  Style["n", Italic], " -", #}], 17], {#2, -0.025}]& , {{
+               "octane", 0}, {"hexane", 0.95}}, {1}], 
+             If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, {
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`zPoint$, 0.01}}]}, {Thick, Dashed, Blue, 
+               
+               Line[{{$CellContext`y1$, $CellContext`P$}, \
+{$CellContext`zPoint$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`x1$, $CellContext`P$}}], 
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`x1$, 
+                  0}, {$CellContext`x1$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`y1$, 
+                  0}, {$CellContext`y1$, $CellContext`P$}}]}], {
+              PointSize[0.02], 
+              Point[{$CellContext`zPoint$, $CellContext`P$}]}}]; Show[
+          
+          Switch[$CellContext`ptv$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], ImageSize -> {550, 400}, AspectRatio -> 
+          Full]], "Specifications" :> {{{$CellContext`ptv$$, 2, ""}, {
+         1 -> " piston-cylinder ", 2 -> Row[{
+             Style[" P-x-y", Italic], " diagram "}]}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`cs$$, 1, ""}, {
+         1 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]hexane"}]}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`nA$$, 0.6, "moles to inject"},
+          0.1, 6, 0.1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`s1$$, 0., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 
+         4}, {{$CellContext`s2$$, 0, "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2], SpanFromLeft}, {
+           Manipulate`Place[3], SpanFromLeft, 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{599., {255., 262.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->53202691],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+    5.1, $CellContext`ptv$$ = 2, $CellContext`s1$$ = 0., $CellContext`s2$$ = 
+    1., Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 2, ""}, {1 -> " piston-cylinder ", 2 -> Row[{
+          Style[" P-x-y", Italic], " diagram "}]}}, {{
+       Hold[$CellContext`cs$$], 1, ""}, {1 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+          Style["n", Italic], "\[Hyphen]hexane"}]}}, {{
+       Hold[$CellContext`nA$$], 5.1, "moles to inject"}, 0.1, 6, 0.1}, {{
+       Hold[$CellContext`s1$$], 0., "inject isothermally"}, 0, 1}, {{
+       Hold[$CellContext`s2$$], 1., "inject isothermally"}, 0, 1}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2], SpanFromLeft}, {
+          Manipulate`Place[3], SpanFromLeft, 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    550., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`ptv$22303$$ = 
+    False, $CellContext`cs$22304$$ = False, $CellContext`nA$22305$$ = 
+    0, $CellContext`s1$22306$$ = 0, $CellContext`s2$22307$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`cs$$ = 1, $CellContext`nA$$ = 
+        5.1, $CellContext`ptv$$ = 2, $CellContext`s1$$ = 
+        0., $CellContext`s2$$ = 1.}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$22303$$, False], 
+        Hold[$CellContext`cs$$, $CellContext`cs$22304$$, False], 
+        Hold[$CellContext`nA$$, $CellContext`nA$22305$$, 0], 
+        Hold[$CellContext`s1$$, $CellContext`s1$22306$$, 0], 
+        Hold[$CellContext`s2$$, $CellContext`s2$22307$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`Px$, $CellContext`Py$, $CellContext`x1$, $CellContext`y1$, \
+$CellContext`nL$, $CellContext`nV$, $CellContext`zPoint$, \
+$CellContext`leverL$, $CellContext`hL$, $CellContext`piston$, \
+$CellContext`step$, $CellContext`add$, $CellContext`p1$, $CellContext`p2$}, \
+$CellContext`P$ = 0.12; $CellContext`Psat1$ = 
+         10^(4 - 1171.53/(30 + 224.2)); $CellContext`Psat2$ = 
+         10^(4.05 - 1355/(30 + 209.4)); $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] = $CellContext`x$ $CellContext`Psat1$ + (
+            1 - $CellContext`x$) $CellContext`Psat2$; $CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            
+            Blank[]]] = ($CellContext`x$/$CellContext`Psat1$ + (
+             1 - $CellContext`x$)/$CellContext`Psat2$)^(-1); $CellContext`x1$ = 
+         ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Px$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`y1$ = ReplaceAll[$CellContext`x, 
+           
+           FindRoot[$CellContext`Py$[$CellContext`x] == $CellContext`P$, \
+{$CellContext`x, 0.1}]]; $CellContext`nL$ = 20; $CellContext`nV$ = 
+         3; $CellContext`zPoint$ = ($CellContext`x1$ $CellContext`nL$ + \
+$CellContext`y1$ $CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$) + (
+            If[$CellContext`cs$$ == 1, 
+              1 - ((1 - $CellContext`x1$) $CellContext`nL$ + (
+                 1 - $CellContext`y1$) $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$), \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ $CellContext`nV$ + \
+$CellContext`nA$$)/($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$)] - \
+($CellContext`x1$ $CellContext`nL$ + $CellContext`y1$ \
+$CellContext`nV$)/($CellContext`nL$ + $CellContext`nV$)) $CellContext`step$; \
+$CellContext`leverL$ = 
+         If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+           1, ($CellContext`y1$ - $CellContext`zPoint$)/($CellContext`y1$ - \
+$CellContext`x1$)]; $CellContext`hL$ = 
+         If[$CellContext`cs$$ == 1, 0.3 $CellContext`leverL$ + 
+           If[$CellContext`nA$$ > 3.1, 
+              0.05 (($CellContext`nA$$ - 3.2)/(6 - 3.2)), 
+              0] $CellContext`step$, 
+           0.3 $CellContext`leverL$ (1 - 
+            0.5 $CellContext`step$)]; $CellContext`piston$ = 
+         If[$CellContext`cs$$ == 1, 
+           
+           If[$CellContext`nA$$ <= 3.1, 
+            2.35 + ((1 - (1/3) ($CellContext`nA$$ - 0.1)) (
+                2.35 - $CellContext`hL$) + $CellContext`hL$ - 
+              2.35) $CellContext`step$, 
+            2.35 + ($CellContext`hL$ - 2.35) $CellContext`step$], 2.35 + 
+           0.5 $CellContext`step$]; $CellContext`step$ = 
+         If[$CellContext`cs$$ == 
+           1, $CellContext`s1$$, $CellContext`s2$$]; $CellContext`add$ = (
+           0.05 + 0.7 (($CellContext`nA$$ - 0.1)/(6 - 0.1))) (
+           1 - $CellContext`step$); $CellContext`p1$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, 0}, {0, 0, 2.75}}], 
+             Cylinder[{{1, 0, 1.375}, {2, 0, 1.375}}, 0.13]}, {
+             Opacity[0.75], 
+             RGBColor[0.07, 1, 0.6], 
+             Cylinder[{{0, 0, 0}, {0, 0, $CellContext`hL$}}], 
+             
+             Cylinder[{{1, 0, 1.375}, {1 + $CellContext`add$, 0, 1.375}}, 
+              0.13]}, 
+            
+            Cylinder[{{1 + $CellContext`add$, 0, 1.375}, {
+              2.1 + $CellContext`add$, 0, 1.375}}, 0.03], {Black, 
+             
+             Cylinder[{{2.1 + $CellContext`add$, 0, 1.375}, {
+               2.125 + $CellContext`add$, 0, 1.375}}, 0.14]}, {Gray, 
+             
+             Cylinder[{{0, 0, $CellContext`piston$}, {
+               0, 0, $CellContext`piston$ + 0.15}}], 
+             Cylinder[{{0, 0, $CellContext`piston$ + 0.15}, {0, 0, 3}}, 
+              0.11]}, 
+            Text[
+             Style[
+              Row[{
+                Subsuperscript[
+                 Style["P", Italic], "O", "sat"], " < ", 
+                Subsuperscript[
+                 Style["P", Italic], "H", "sat"]}], 20], {2, 0, 2.75}], 
+            If[$CellContext`cs$$ == 1, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]octane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, "vapor condenses", ""], 18], {
+               2, 0, 1.75}]}, {
+              Text[
+               Style[
+                If[$CellContext`s1$$ == 1, 
+                 Row[{$CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane added"}], 
+                 Row[{"add ", $CellContext`nA$$, " mol ", 
+                   Style["n", Italic], "\[Hyphen]hexane"}]], 18], {2, 0, 1}], 
+              Text[
+               Style[
+                If[$CellContext`s2$$ == 1, "liquid evaporates", ""], 18], {
+               2, 0, 1.75}]}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "L"], " = ", 
+                
+                NumberForm[$CellContext`nL$ + ($CellContext`leverL$ \
+($CellContext`nL$ + $CellContext`nV$ + $CellContext`nA$$) - $CellContext`nL$) \
+$CellContext`step$, {3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["x", Italic], "H"], " = ", 
+                NumberForm[
+                 If[
+                  
+                  And[$CellContext`s1$$ == 
+                   
+                   1, $CellContext`Px$[$CellContext`zPoint$] <= \
+$CellContext`P$], $CellContext`zPoint$, $CellContext`x1$], 2]}], 18], {
+             0, 0, 0.15 $CellContext`hL$}], 
+            Text[
+             Style[
+              Row[{
+                Superscript[
+                 Style["n", Italic], "V"], " = ", 
+                
+                NumberForm[$CellContext`nV$ + ((
+                    1 - $CellContext`leverL$) ($CellContext`nL$ + \
+$CellContext`nV$ + $CellContext`nA$$) - $CellContext`nV$) $CellContext`step$, \
+{3, 1}], 
+                Spacer[25], 
+                Subscript[
+                 Style["y", Italic], "H"], " = ", 
+                NumberForm[$CellContext`y1$, 2]}], 
+              
+              If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, 
+               Transparent, 18]], 
+             
+             If[$CellContext`piston$ < 0.9, {
+              2.3, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+              0, 0, 0.4 $CellContext`piston$ + $CellContext`hL$}]], 
+            If[
+             
+             And[$CellContext`piston$ < 
+              0.9, $CellContext`Px$[$CellContext`zPoint$] > $CellContext`P$], {
+              Thickness[0.001], 
+              Arrowheads[0.03], 
+              
+              Arrow[{{1.5, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}, {
+                0.75, -1, 0.4 $CellContext`piston$ + $CellContext`hL$}}]}, 
+             Text[""]]}, Boxed -> False, Lighting -> {{"Ambient", LightGray}},
+            ViewPoint -> Front, 
+           PlotRange -> {{-1, 3.05}, {-1, 1}, {-0.1, 3}}]; $CellContext`p2$ = 
+         Plot[{
+            $CellContext`Px$[$CellContext`x], 
+            $CellContext`Py$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+           PlotStyle -> {{Thick, Blue}, {Thick, 
+              RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, {0., 0.25}}, Frame -> 
+           True, FrameLabel -> {
+             Row[{
+               Style["n", Italic], "\[Hyphen]hexane mole fraction"}], 
+             "pressure (bar)"}, LabelStyle -> {17, Black}, PlotRangeClipping -> 
+           False, ImagePadding -> {{60, 30}, {60, 10}}, Epilog -> {
+             Apply[Text[
+               Style[
+                Row[{"pure ", 
+                  Style["n", Italic], " -", #}], 17], {#2, -0.025}]& , {{
+               "octane", 0}, {"hexane", 0.95}}, {1}], 
+             If[$CellContext`Px$[$CellContext`zPoint$] <= $CellContext`P$, {
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`zPoint$, 0.01}}]}, {Thick, Dashed, Blue, 
+               
+               Line[{{$CellContext`y1$, $CellContext`P$}, \
+{$CellContext`zPoint$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`zPoint$, $CellContext`P$}, \
+{$CellContext`x1$, $CellContext`P$}}], 
+               Thickness[0.007], Dotted, Blue, 
+               
+               Line[{{$CellContext`x1$, 
+                  0}, {$CellContext`x1$, $CellContext`P$}}], 
+               RGBColor[0, 0.6, 0], 
+               
+               Line[{{$CellContext`y1$, 
+                  0}, {$CellContext`y1$, $CellContext`P$}}]}], {
+              PointSize[0.02], 
+              Point[{$CellContext`zPoint$, $CellContext`P$}]}}]; Show[
+          
+          Switch[$CellContext`ptv$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], ImageSize -> {550, 400}, AspectRatio -> 
+          Full]], "Specifications" :> {{{$CellContext`ptv$$, 2, ""}, {
+         1 -> " piston-cylinder ", 2 -> Row[{
+             Style[" P-x-y", Italic], " diagram "}]}, ControlType -> Setter, 
+         ControlPlacement -> 1}, {{$CellContext`cs$$, 1, ""}, {
+         1 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]octane"}], 2 -> Row[{"add ", 
+             Style["n", Italic], "\[Hyphen]hexane"}]}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`nA$$, 5.1, "moles to inject"},
+          0.1, 6, 0.1, Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`s1$$, 0., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 
+         4}, {{$CellContext`s2$$, 1., "inject isothermally"}, 0, 1, 
+         ControlType -> Trigger, AnimationRate -> 2, ControlPlacement -> 5}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2], SpanFromLeft}, {
+           Manipulate`Place[3], SpanFromLeft, 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`cs$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{599., {255., 262.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->314168537]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ "This system is assumed to obey Raoult's law. The saturation pressures ",
+ Cell[BoxData[
+  FormBox[
+   SubsuperscriptBox["P", "i", "sat"], TraditionalForm]], "InlineMath"],
+ " (bar) of ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", "=", "1"}], TraditionalForm]], "InlineMath"],
+ ") and ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", "=", "2"}], TraditionalForm]], "InlineMath"],
+ ") are calculated from the Antoine equation, where the Antoine coefficients ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["A", "i"], TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["B", "i"], TraditionalForm]], "InlineMath"],
+ ", and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "i"], TraditionalForm]], "InlineMath"],
+ " are constants and ",
+ Cell[BoxData[
+  FormBox["T", TraditionalForm]], "InlineMath"],
+ " (\[Degree]C) is temperature:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.610894752411235*^9, 3.610894831358751*^9}, {
+  3.6137636737882633`*^9, 3.613763771719865*^9}, {3.6181471550158634`*^9, 
+  3.6181471688674445`*^9}, {3.619443730886237*^9, 3.619443765535219*^9}, {
+  3.6194691052120132`*^9, 3.619469132109198*^9}, {3.61979461845718*^9, 
+  3.619794619656496*^9}, {3.633548483537033*^9, 3.633548530483718*^9}, {
+  3.6335491371714187`*^9, 3.633549137524439*^9}, {3.6344853567476234`*^9, 
+  3.6344853724525213`*^9}, {3.634485640570857*^9, 3.634485642652976*^9}, {
+  3.634486583969776*^9, 3.634486584641816*^9}, {3.634493591982315*^9, 
+  3.6344936105393*^9}, {3.634496503249683*^9, 3.634496516215864*^9}, {
+  3.677847437317518*^9, 3.6778474373331184`*^9}},
+ CellID->102998832],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubsuperscriptBox["P", "i", "sat"], "=", 
+    SuperscriptBox["10", 
+     RowBox[{
+      SubscriptBox["A", "i"], "-", 
+      FractionBox[
+       SubscriptBox["B", "i"], 
+       RowBox[{"T", "+", 
+        SubscriptBox["C", "i"]}]]}]]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610894752411235*^9, 3.610894831358751*^9}, {
+   3.6137636737882633`*^9, 3.613763674036278*^9}, 3.613763777299184*^9, {
+   3.6137644592961917`*^9, 3.613764459300192*^9}, 3.6194691360805693`*^9, {
+   3.633548536546065*^9, 3.6335485744502325`*^9}, {3.67784745705476*^9, 
+   3.67784745721076*^9}},
+ CellID->427618679],
+
+Cell[TextData[{
+ "In order for the components to be in vapor-liquid equilibrium (VLE), the \
+total pressure ",
+ Cell[BoxData[
+  FormBox["P", TraditionalForm]], "InlineMath"],
+ " must equal the sum of the partial pressures:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.610894752411235*^9, 3.610894831358751*^9}, {
+   3.6137636737882633`*^9, 3.613763674036278*^9}, 3.613763777299184*^9, {
+   3.6137644592961917`*^9, 3.6137645259000015`*^9}, {3.6137647018220634`*^9, 
+   3.613764701829064*^9}, 3.613765199635537*^9, 3.6181471757378283`*^9, {
+   3.6194691447092648`*^9, 3.619469156195318*^9}, {3.6195463818516703`*^9, 
+   3.619546385518659*^9}},
+ CellID->450230786],
+
+Cell[TextData[{
+ " ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "=", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["x", 
+       RowBox[{"1", " "}]], 
+      SubsuperscriptBox["P", "1", "sat"]}], "+", 
+     RowBox[{
+      SubscriptBox["x", "2"], 
+      SubsuperscriptBox["P", "2", "sat"]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610894752411235*^9, 3.610894831358751*^9}, {
+   3.6137636737882633`*^9, 3.613763674036278*^9}, 3.613763777299184*^9, {
+   3.6137644592961917`*^9, 3.6137645259000015`*^9}, {3.6137647018220634`*^9, 
+   3.613764702139082*^9}, {3.6194436191038437`*^9, 3.6194436564439793`*^9}, 
+   3.6194691595028954`*^9, {3.634485402447237*^9, 3.634485410379691*^9}},
+ CellID->15997744],
+
+Cell[TextData[{
+ "Here, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "1"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "2"], TraditionalForm]], "InlineMath"],
+ " are the liquid mole fractions of ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane and ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane. The mole fractions of ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane and ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane in the vapor phase are ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "1"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "2"], TraditionalForm]], "InlineMath"],
+ ". Initially the system contains ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane and ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane in VLE. When ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-hexane (the component with the higher vapor pressure) is added at constant \
+temperature, vaporization returns the mixture to VLE. By contrast, if ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ "-octane (lower vapor pressure) is added at constant temperature, \
+condensation returns the mixture to VLE. "
+}], "DetailNotes",
+ CellChangeTimes->{{3.610894752411235*^9, 3.610894831358751*^9}, {
+   3.6137636737882633`*^9, 3.613763674036278*^9}, 3.613763777299184*^9, {
+   3.6137644592961917`*^9, 3.613764525894001*^9}, {3.613764585969437*^9, 
+   3.61376475910334*^9}, {3.613765024784536*^9, 3.6137650812257643`*^9}, {
+   3.613765204810833*^9, 3.6137652072129703`*^9}, {3.6180734982607746`*^9, 
+   3.6180735173252687`*^9}, {3.619794647731791*^9, 3.619794653491091*^9}, {
+   3.634493655703761*^9, 3.634493710952478*^9}, {3.634493756044909*^9, 
+   3.634493837468546*^9}, {3.634493884305491*^9, 3.634493927841058*^9}, {
+   3.6776081507477674`*^9, 3.677608151552786*^9}},
+ CellID->338226376],
+
+Cell["\<\
+The screencast video at [1] explains how to use this Demonstration.\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.6778471828748693`*^9, 3.6778471967186975`*^9}},
+ CellID->146703201],
+
+Cell["Reference", "DetailNotes",
+ CellChangeTimes->{{3.6778471828748693`*^9, 3.6778471988931017`*^9}},
+ CellID->737295646],
+
+Cell[TextData[{
+ "[1] ",
+ StyleBox["Adding One Component to a Binary Vapor-Liquid Equilibrium (VLE) \
+Mixture",
+  FontSlant->"Italic"],
+ ". ",
+ ButtonBox["www.colorado.edu/learncheme/thermodynamics/AddOneComponentVLE.\
+html",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://www.colorado.edu/learncheme/thermodynamics/AddOneComponentVLE.\
+html"], None},
+  ButtonNote->
+   "http://www.colorado.edu/learncheme/thermodynamics/AddOneComponentVLE.\
+html"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6778471828748693`*^9, 3.677847244108451*^9}},
+ CellID->13529885]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6335482611593137`*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6335482644225*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.6335482658415813`*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6335482676436844`*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["VLE", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171325643682`*^9}},
+ CellID->427378638],
+
+Cell["vapor-liquid equilibrium", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171409598484`*^9}},
+ CellID->283671249],
+
+Cell["phase equilibrium", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171875485134`*^9}, {
+  3.613495310765821*^9, 3.613495310770821*^9}},
+ CellID->484047582],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171875485134`*^9}, {
+  3.613495310765821*^9, 3.613495314686045*^9}, {3.6137651401231327`*^9, 
+  3.6137651401271334`*^9}},
+ CellID->15910122],
+
+Cell["piston-cylinder", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171875485134`*^9}, {
+  3.613495310765821*^9, 3.613495314686045*^9}, {3.6137651401231327`*^9, 
+  3.61376514374634*^9}, {3.6180735335727773`*^9, 3.6180735335747814`*^9}},
+ CellID->470095005],
+
+Cell["Raoult's law", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171875485134`*^9}, {
+  3.613495310765821*^9, 3.613495314686045*^9}, {3.6137651401231327`*^9, 
+  3.61376514374634*^9}, {3.6180735335727773`*^9, 3.618073537676695*^9}, {
+  3.618147215795059*^9, 3.6181472157990594`*^9}},
+ CellID->206822353],
+
+Cell["thermodynamics", "SearchTerms",
+ CellChangeTimes->{{3.611417130968277*^9, 3.6114171875485134`*^9}, {
+  3.613495310765821*^9, 3.613495314686045*^9}, {3.6137651401231327`*^9, 
+  3.61376514374634*^9}, {3.6180735335727773`*^9, 3.618073537676695*^9}, {
+  3.618147215795059*^9, 3.618147219426258*^9}},
+ CellID->840782338]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "RelatedLinksSection"],
+
+Cell[TextData[ButtonBox["Adding a Second Component to a Single-Component \
+Vapor-Liquid Equilibrium (VLE) Mixture",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+AddingASecondComponentToASingleComponentVaporLiquidEquilibri/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+AddingASecondComponentToASingleComponentVaporLiquidEquilibri/"]], \
+"RelatedLinks",
+ CellChangeTimes->{{3.6776083233661184`*^9, 3.6776083619072404`*^9}},
+ CellID->53356620],
+
+Cell[TextData[ButtonBox["Adding a Component to a Mixture with an Azeotrope",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+AddAComponentToAMixtureWithAnAzeotrope/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/AddAComponentToAMixtureWithAnAzeotrope/"]\
+], "RelatedLinks",
+ CellChangeTimes->{3.678027381410499*^9},
+ CellID->750867919],
+
+Cell[TextData[ButtonBox["Mass Balances for Binary Vapor-Liquid Equilibrium \
+(VLE)",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+MassBalancesForBinaryVaporLiquidEquilibriumVLE/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+MassBalancesForBinaryVaporLiquidEquilibriumVLE/"]], "RelatedLinks",
+ CellID->21827929]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"]
+}], "Author",
+ CellChangeTimes->{{3.613495288295536*^9, 3.613495306341568*^9}, {
+   3.61376511611676*^9, 3.6137651198559732`*^9}, 3.61376589676241*^9, {
+   3.6776081169007015`*^9, 3.6776081263437233`*^9}, {3.678812369180402*^9, 
+   3.6788123703690042`*^9}},
+ CellID->195968223],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ " and Nick Bongiardina"
+}], "Author",
+ CellChangeTimes->{{3.6780326554435854`*^9, 3.678032661961763*^9}, 
+   3.678032699934698*^9, {3.6788123630931883`*^9, 3.678812372963609*^9}},
+ CellID->58906229],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.6097841105263042`*^9}, 
+   3.6134952872054734`*^9},
+ CellID->233170632]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.4 for Microsoft Windows (64-bit) (April 11, 2016)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[108564, 2451, 355, 9, 22, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[108922, 2462, 678, 16, 22, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[109603, 2480, 340, 11, 22, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[109946, 2493, 637, 15, 22, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[110586, 2510, 883, 22, 22, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[111472, 2534, 395, 10, 22, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[111870, 2546, 1507, 32, 22, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[113380, 2580, 908, 21, 22, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 119051, 2744},
+ {"RotateAndZoomIn3D", 119161, 2747},
+ {"DragLocators", 119272, 2750},
+ {"CreateAndDeleteLocators", 119389, 2753},
+ {"SliderZoom", 119504, 2756},
+ {"GamepadControls", 119611, 2759},
+ {"AutomaticAnimation", 119726, 2762},
+ {"BookmarkAnimation", 119844, 2765}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 218, 4, 74, "DemoTitle"],
+Cell[801, 28, 33, 0, 287, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[859, 32, 29, 0, 192, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[913, 36, 31782, 773, 1597, "Input"],
+Cell[32698, 811, 13359, 271, 529, "Output",
+ CellID->691821137]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[46106, 1088, 36, 0, 169, "ManipulateCaptionSection"],
+Cell[46145, 1090, 1829, 53, 71, "ManipulateCaption",
+ CellID->292030504]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[48011, 1148, 28, 0, 173, "ThumbnailSection"],
+Cell[48042, 1150, 13359, 271, 529, "Output",
+ CellID->372538078]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[61438, 1426, 28, 0, 143, "SnapshotsSection"],
+Cell[61469, 1428, 13359, 271, 529, "Output",
+ CellID->481171703],
+Cell[74831, 1701, 13358, 271, 529, "Output",
+ CellID->53202691],
+Cell[88192, 1974, 13363, 271, 529, "Output",
+ CellID->314168537]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[101592, 2250, 26, 0, 336, "DetailsSection"],
+Cell[101621, 2252, 1770, 46, 41, "DetailNotes",
+ CellID->102998832],
+Cell[103394, 2300, 719, 20, 39, "DetailNotes",
+ CellID->427618679],
+Cell[104116, 2322, 658, 13, 23, "DetailNotes",
+ CellID->450230786],
+Cell[104777, 2337, 743, 21, 25, "DetailNotes",
+ CellID->15997744],
+Cell[105523, 2360, 2074, 54, 54, "DetailNotes",
+ CellID->338226376],
+Cell[107600, 2416, 188, 4, 22, "DetailNotes",
+ CellID->146703201],
+Cell[107791, 2422, 122, 2, 22, "DetailNotes",
+ CellID->737295646],
+Cell[107916, 2426, 571, 18, 22, "DetailNotes",
+ CellID->13529885]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[108524, 2449, 37, 0, 126, "ControlSuggestionsSection"],
+Cell[108564, 2451, 355, 9, 22, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[108922, 2462, 678, 16, 22, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[109603, 2480, 340, 11, 22, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[109946, 2493, 637, 15, 22, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[110586, 2510, 883, 22, 22, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[111472, 2534, 395, 10, 22, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[111870, 2546, 1507, 32, 22, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[113380, 2580, 908, 21, 22, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[114325, 2606, 30, 0, 155, "SearchTermsSection"],
+Cell[114358, 2608, 114, 2, 22, "SearchTerms",
+ CellID->427378638],
+Cell[114475, 2612, 135, 2, 22, "SearchTerms",
+ CellID->283671249],
+Cell[114613, 2616, 177, 3, 22, "SearchTerms",
+ CellID->484047582],
+Cell[114793, 2621, 232, 4, 22, "SearchTerms",
+ CellID->15910122],
+Cell[115028, 2627, 275, 4, 22, "SearchTerms",
+ CellID->470095005],
+Cell[115306, 2633, 321, 5, 22, "SearchTerms",
+ CellID->206822353],
+Cell[115630, 2640, 321, 5, 22, "SearchTerms",
+ CellID->840782338]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[115988, 2650, 31, 0, 141, "RelatedLinksSection"],
+Cell[116022, 2652, 497, 11, 22, "RelatedLinks",
+ CellID->53356620],
+Cell[116522, 2665, 385, 9, 22, "RelatedLinks",
+ CellID->750867919],
+Cell[116910, 2676, 366, 9, 22, "RelatedLinks",
+ CellID->21827929]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[117313, 2690, 25, 0, 141, "AuthorSection"],
+Cell[117341, 2692, 575, 14, 22, "Author",
+ CellID->195968223],
+Cell[117919, 2708, 505, 13, 22, "Author",
+ CellID->58906229],
+Cell[118427, 2723, 227, 6, 22, "Author",
+ CellID->233170632]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

@@ -1,0 +1,4419 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    192384,       4411]
+NotebookOptionsPosition[    186219,       4223]
+NotebookOutlinePosition[    187839,       4274]
+CellTagsIndexPosition[    187503,       4262]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Non-Ideal Vapor-Liquid Equilibrium (VLE) Modeled by the Margules Equation\
+\>", "DemoTitle",
+ CellChangeTimes->{3.666025083096159*^9}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "T", ",", "P", ",", "compP", ",", "compT", ",", "A12", ",", "A21", ",", 
+       "z1", ",", "P1", ",", "T1", ",", "Psat1", ",", "Psat2", ",", 
+       "\[Gamma]1", ",", "\[Gamma]2", ",", "Px", ",", "Py", ",", "j", ",", 
+       "xe", ",", "sol1", ",", "xie", ",", "yie", ",", "Te", ",", "Tx", ",", 
+       "Ty", ",", "sol2", ",", "azeo", ",", "sol3", ",", "x1", ",", "y1", ",",
+        "lever", ",", "barchart"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"T", "=", "110"}], ";", 
+      RowBox[{"(*", "C", "*)"}], 
+      RowBox[{"P", "=", "1.6"}], ";", 
+      RowBox[{"(*", "bar", "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"OMM", "\[Equal]", "1"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"compP", "=", "compPp"}], ";", 
+          RowBox[{"compT", "=", "compTp"}], ";", 
+          RowBox[{"A12", "=", "A12p"}], ";", 
+          RowBox[{"A21", "=", "A21p"}], ";"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"compP", "=", "compPn"}], ";", 
+          RowBox[{"compT", "=", "compTn"}], ";", 
+          RowBox[{"A12", "=", "A12n"}], ";", 
+          RowBox[{"A21", "=", "A21n"}], ";"}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"z1", "=", 
+       RowBox[{"First", "@", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"FOB", "\[Equal]", "1"}], ",", "compP", ",", "compT"}], 
+         "]"}]}]}], ";", 
+      RowBox[{"P1", "=", 
+       RowBox[{"Last", "@", "compP"}]}], ";", 
+      RowBox[{"T1", "=", 
+       RowBox[{"Last", "@", "compT"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Psat1", "[", "temp_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "/", "750"}], ")"}], "*", 
+        RowBox[{"10", "^", 
+         RowBox[{"(", 
+          RowBox[{"6.84", "-", 
+           RowBox[{"1196.76", "/", 
+            RowBox[{"(", 
+             RowBox[{"temp", "+", "219.161"}], ")"}]}]}], ")"}]}]}]}], " ", 
+      ";", 
+      RowBox[{"(*", "bar", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Psat2", "[", "temp_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "/", "750"}], ")"}], "*", 
+        RowBox[{"10", "^", 
+         RowBox[{"(", 
+          RowBox[{"6.95087", "-", 
+           RowBox[{"1342.31", "/", 
+            RowBox[{"(", 
+             RowBox[{"temp", "+", "219.187"}], ")"}]}]}], ")"}]}]}]}], " ", 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Gamma]1", "[", "x_", "]"}], ":=", 
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"(", 
+           RowBox[{"1", "-", "x"}], ")"}], "2"], "*", 
+         RowBox[{"(", 
+          RowBox[{"A12", "+", 
+           RowBox[{"2", "*", 
+            RowBox[{"(", 
+             RowBox[{"A21", "-", "A12"}], ")"}], "*", "x"}]}], ")"}]}], 
+        "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Gamma]2", "[", "x_", "]"}], ":=", 
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         SuperscriptBox["x", "2"], "*", 
+         RowBox[{"(", 
+          RowBox[{"A21", "+", 
+           RowBox[{"2", "*", 
+            RowBox[{"(", 
+             RowBox[{"A12", "-", "A21"}], ")"}], "*", 
+            RowBox[{"(", 
+             RowBox[{"1", "-", "x"}], ")"}]}]}], ")"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Px", "[", 
+        RowBox[{"x_", ",", "temp_"}], "]"}], ":=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"\[Gamma]1", "[", "x", "]"}], "*", "x", "*", 
+         RowBox[{"Psat1", "[", "temp", "]"}]}], "+", 
+        RowBox[{
+         RowBox[{"\[Gamma]2", "[", "x", "]"}], "*", 
+         RowBox[{"(", 
+          RowBox[{"1", "-", "x"}], ")"}], "*", 
+         RowBox[{"Psat2", "[", "temp", "]"}]}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py", "[", 
+        RowBox[{"x_", ",", "temp_"}], "]"}], ":=", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"x", "/", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"\[Gamma]1", "[", "x", "]"}], "*", 
+             RowBox[{"Psat1", "[", "temp", "]"}]}], ")"}]}], "+", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"1", "-", "x"}], ")"}], "/", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"\[Gamma]2", "[", "x", "]"}], "*", 
+             RowBox[{"Psat2", "[", "temp", "]"}]}], ")"}]}]}], ")"}], 
+        RowBox[{"-", "1"}]]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"j", "=", "0"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Quiet", "@", 
+       RowBox[{"While", "[", 
+        RowBox[{
+         RowBox[{"j", "<", "101"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"xe", "=", 
+            RowBox[{"0.01", "*", "j"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"sol1", "=", 
+             RowBox[{"FindRoot", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"Px", "[", 
+                 RowBox[{"xe", ",", "Te"}], "]"}], "\[Equal]", "P"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"Te", ",", "90", ",", "140"}], "}"}]}], "]"}]}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"xie", "[", "j", "]"}], "=", "xe"}]}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"yie", "[", "j", "]"}], "=", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"\[Gamma]1", "[", "xe", "]"}], "*", "xe", "*", 
+                RowBox[{"Psat1", "[", "Te", "]"}]}], ")"}], "/", "P"}], "/.", 
+             "sol1"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Te", "[", "j", "]"}], "=", 
+            RowBox[{"Te", "/.", "sol1"}]}], ",", 
+           RowBox[{"j", "++"}]}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Tx", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Interpolation", "[", 
+         RowBox[{
+          RowBox[{"Table", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"xie", "[", "j", "]"}], ",", 
+              RowBox[{"Te", "[", "j", "]"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"j", ",", "0", ",", "100", ",", "2"}], "}"}]}], "]"}], 
+          ",", 
+          RowBox[{"InterpolationOrder", "\[Rule]", "1"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Ty", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Interpolation", "[", 
+         RowBox[{
+          RowBox[{"Table", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"yie", "[", "j", "]"}], ",", 
+              RowBox[{"Te", "[", "j", "]"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"j", ",", "0", ",", "100", ",", "2"}], "}"}]}], "]"}], 
+          ",", 
+          RowBox[{"InterpolationOrder", "\[Rule]", "1"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"sol2", "=", 
+       RowBox[{"x", "/.", 
+        RowBox[{"Quiet", "@", 
+         RowBox[{"FindRoot", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Px", "[", 
+             RowBox[{"x", ",", "T"}], "]"}], "\[Equal]", 
+            RowBox[{"Py", "[", 
+             RowBox[{"x", ",", "T"}], "]"}]}], ",", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", "0.45"}], "}"}]}], "]"}]}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"azeo", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{
+         RowBox[{"sol2", "\[LessEqual]", "1*^-5"}], ",", "0", ",", 
+         RowBox[{"sol2", "\[GreaterEqual]", "1"}], ",", "1", ",", 
+         RowBox[{"1*^-5", "<", "sol2", "<", "1"}], ",", "sol2"}], "]"}]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Switch", "[", 
+       RowBox[{"FOB", ",", "\[IndentingNewLine]", "1", ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"sol3", "=", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"x", "/.", 
+              RowBox[{"Quiet", "@", 
+               RowBox[{"FindRoot", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Px", "[", 
+                   RowBox[{"x", ",", "T"}], "]"}], "\[Equal]", "P1"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"x", ",", "z1"}], "}"}]}], "]"}]}]}], ",", 
+             RowBox[{"x", "/.", 
+              RowBox[{"Quiet", "@", 
+               RowBox[{"FindRoot", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Py", "[", 
+                   RowBox[{"x", ",", "T"}], "]"}], "\[Equal]", "P1"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"x", ",", "z1"}], "}"}]}], "]"}]}]}]}], "}"}]}], 
+          ";", "\[IndentingNewLine]", 
+          RowBox[{"x1", "=", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"P1", ">", 
+              RowBox[{"Px", "[", 
+               RowBox[{"z1", ",", "T"}], "]"}]}], ",", "z1", ",", 
+             RowBox[{"First", "@", "sol3"}]}], "]"}]}], ";", 
+          RowBox[{"y1", "=", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"P1", "<", 
+              RowBox[{"Py", "[", 
+               RowBox[{"z1", ",", "T"}], "]"}]}], ",", "z1", ",", 
+             RowBox[{"Last", "@", "sol3"}]}], "]"}]}], ";"}], "}"}], ",", 
+        "\[IndentingNewLine]", "2", ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"sol3", "=", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"x", "/.", 
+              RowBox[{"Quiet", "@", 
+               RowBox[{"FindRoot", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Tx", "[", "x", "]"}], "\[Equal]", "T1"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"x", ",", "z1"}], "}"}]}], "]"}]}]}], ",", 
+             RowBox[{"x", "/.", 
+              RowBox[{"Quiet", "@", 
+               RowBox[{"FindRoot", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Ty", "[", "x", "]"}], "\[Equal]", "T1"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"x", ",", "z1"}], "}"}]}], "]"}]}]}]}], "}"}]}], 
+          ";", "\[IndentingNewLine]", 
+          RowBox[{"x1", "=", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"T1", "<", 
+              RowBox[{"Tx", "[", "z1", "]"}]}], ",", "z1", ",", 
+             RowBox[{"First", "@", "sol3"}]}], "]"}]}], ";", 
+          RowBox[{"y1", "=", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"T1", ">", 
+              RowBox[{"Ty", "[", "z1", "]"}]}], ",", "z1", ",", 
+             RowBox[{"Last", "@", "sol3"}]}], "]"}]}], ";"}], "}"}]}], "]"}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"lever", "=", 
+       RowBox[{"Switch", "[", 
+        RowBox[{"FOB", ",", "\[IndentingNewLine]", "1", ",", 
+         RowBox[{"Which", "[", 
+          RowBox[{
+           RowBox[{"P1", "<", 
+            RowBox[{"Py", "[", 
+             RowBox[{"z1", ",", "T"}], "]"}]}], ",", "0", ",", 
+           RowBox[{"P1", ">", 
+            RowBox[{"Px", "[", 
+             RowBox[{"z1", ",", "T"}], "]"}]}], ",", "1", ",", 
+           RowBox[{
+            RowBox[{"Py", "[", 
+             RowBox[{"z1", ",", "T"}], "]"}], "\[LessEqual]", "P1", 
+            "\[LessEqual]", 
+            RowBox[{"Px", "[", 
+             RowBox[{"z1", ",", "T"}], "]"}]}], ",", 
+           FractionBox[
+            RowBox[{"y1", "-", "z1"}], 
+            RowBox[{"y1", "-", "x1"}]]}], "]"}], ",", "\[IndentingNewLine]", 
+         "2", ",", 
+         RowBox[{"Which", "[", 
+          RowBox[{
+           RowBox[{"T1", ">", 
+            RowBox[{"Ty", "[", "z1", "]"}]}], ",", "0", ",", 
+           RowBox[{"T1", "<", 
+            RowBox[{"Tx", "[", "z1", "]"}]}], ",", "1", ",", 
+           RowBox[{
+            RowBox[{"Tx", "[", "z1", "]"}], "\[LessEqual]", "T1", 
+            "\[LessEqual]", 
+            RowBox[{"Ty", "[", "z1", "]"}]}], ",", 
+           FractionBox[
+            RowBox[{"y1", "-", "z1"}], 
+            RowBox[{"y1", "-", "x1"}]]}], "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"barchart", "=", 
+       RowBox[{"Column", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Text", "@", 
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"FOB", "\[Equal]", "1"}], ",", 
+                RowBox[{"Row", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                   "\"\< = \>\"", ",", 
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"P1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "2"}], "}"}]}], "]"}], ",", 
+                   "\"\< bar\>\""}], "}"}], "]"}], ",", 
+                RowBox[{"Row", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<T\>\"", ",", "Italic"}], "]"}], ",", 
+                   "\"\< = \>\"", ",", 
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"T1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                   "\"\< \[Degree]C\>\""}], "}"}], "]"}]}], "]"}], ",", 
+              "18"}], "]"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"BarChart", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"lever", ",", 
+               RowBox[{"1", "-", "lever"}]}], "}"}], ",", 
+             RowBox[{"ChartStyle", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"Blue", ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], ",", 
+             RowBox[{"ChartLayout", "\[Rule]", "\"\<Stacked\>\""}], ",", 
+             RowBox[{"Frame", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"True", ",", "None"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"None", ",", "None"}], "}"}]}], "}"}]}], ",", 
+             RowBox[{
+             "FrameLabel", "\[Rule]", 
+              "\"\<liquid and vapor amounts (mol)\>\""}], ",", 
+             RowBox[{"LabelStyle", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+             RowBox[{"ImageSize", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"140", ",", "375"}], "}"}]}], ",", 
+             RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Epilog", "\[Rule]", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"lever", ">", "0"}], ",", 
+                  RowBox[{"Text", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"x1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"2", ",", "2"}], "}"}]}], "]"}]}], "}"}], "]"}], 
+                    ",", "18", ",", "White", ",", "Bold"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", 
+                    RowBox[{"lever", "/", "2"}]}], "}"}]}], "]"}]}], "]"}], 
+                ",", "\[IndentingNewLine]", 
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"1", "-", "lever"}], ">", "0"}], ",", 
+                  RowBox[{"Text", "[", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"y1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"2", ",", "2"}], "}"}]}], "]"}]}], "}"}], "]"}], 
+                    ",", "18", ",", "White", ",", "Bold"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", 
+                    RowBox[{"lever", "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"1", "-", "lever"}], ")"}], "/", "2"}]}]}], 
+                    "}"}]}], "]"}]}], "]"}]}], "}"}]}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", "Right"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Grid", "[", 
+       RowBox[{"{", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Show", "[", 
+           RowBox[{
+            RowBox[{"Switch", "[", 
+             RowBox[{"FOB", ",", "\[IndentingNewLine]", "1", ",", 
+              RowBox[{"Show", "[", 
+               RowBox[{
+                RowBox[{"Plot", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Px", "[", 
+                    RowBox[{"x", ",", "T"}], "]"}], ",", 
+                    RowBox[{"Py", "[", 
+                    RowBox[{"x", ",", "T"}], "]"}]}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"x", ",", "0", ",", "1"}], "}"}], ",", 
+                  RowBox[{"PlotStyle", "\[Rule]", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], 
+                    "}"}]}], ",", 
+                  RowBox[{"PlotRange", "\[Rule]", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.93", ",", "2.67"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.73", ",", "2.27"}], "}"}]}], "]"}]}], "}"}]}], 
+                  ",", 
+                  RowBox[{"PlotLabel", "\[Rule]", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<T\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", "T", ",", "\"\< \[Degree]C\>\""}], 
+                    "}"}], "]"}], ",", "18"}], "]"}]}]}], "]"}], ",", 
+                "\[IndentingNewLine]", 
+                RowBox[{"Graphics", "@", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"z1", "\[Equal]", "y1"}], "\[Or]", 
+                    RowBox[{"z1", "\[Equal]", "x1"}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"{", 
+                    RowBox[{"Dotted", ",", 
+                    RowBox[{"Thickness", "@", "0.008"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"z1", "\[Equal]", "y1"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", "Blue"}],
+                     "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "P1"}], "}"}]}], "}"}], "]"}]}], "}"}],
+                     ",", "\[IndentingNewLine]", 
+                    RowBox[{"{", 
+                    RowBox[{"Dashed", ",", "Thick", ",", "Blue", ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "P1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "P1"}], "}"}]}], "}"}], "]"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "P1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "P1"}], "}"}]}], "}"}], "]"}], ",", 
+                    "\[IndentingNewLine]", "Dotted", ",", 
+                    RowBox[{"Thickness", "@", "0.008"}], ",", "Blue", ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "P1"}], "}"}]}], "}"}], "]"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "P1"}], "}"}]}], "}"}], "]"}]}], 
+                    "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"#1", ",", "18", ",", 
+                    RowBox[{"GrayLevel", "@", "0.5"}], ",", 
+                    RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+                    "#2"}], "]"}], "&"}], "@@@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<liquid\>\"", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.1", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", "2.5", ",", 
+                    "2.1"}], "]"}]}], "}"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<vapor\>\"", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.9", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", "1.05", ",", 
+                    "0.85"}], "]"}]}], "}"}]}], "}"}]}], "}"}]}]}], 
+                  "\[IndentingNewLine]", "}"}]}], ",", "\[IndentingNewLine]", 
+                RowBox[{"Graphics", "@", 
+                 RowBox[{"Switch", "[", 
+                  RowBox[{"OMM", ",", "\[IndentingNewLine]", "1", ",", 
+                   RowBox[{"Locator", "[", 
+                    RowBox[{
+                    RowBox[{"Dynamic", "[", 
+                    RowBox[{"compPp", ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"compPp", "=", 
+                    RowBox[{"clip", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.001", ",", "0.93"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.999", ",", "2.67"}], "}"}]}], "]"}]}], ")"}], 
+                    "&"}]}], "]"}], ",", 
+                    RowBox[{"Graphics", "[", 
+                    RowBox[{
+                    RowBox[{"Disk", "[", "]"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "11"}]}], "]"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", "True"}]}], "]"}], ",", 
+                   "\[IndentingNewLine]", "2", ",", 
+                   RowBox[{"Locator", "[", 
+                    RowBox[{
+                    RowBox[{"Dynamic", "[", 
+                    RowBox[{"compPn", ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"compPn", "=", 
+                    RowBox[{"clip", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.001", ",", "0.8"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.999", ",", "2.2"}], "}"}]}], "]"}]}], ")"}], 
+                    "&"}]}], "]"}], ",", 
+                    RowBox[{"Graphics", "[", 
+                    RowBox[{
+                    RowBox[{"Disk", "[", "]"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "11"}]}], "]"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", "True"}]}], "]"}]}], 
+                  "]"}]}]}], "\[IndentingNewLine]", "]"}], ",", 
+              "\[IndentingNewLine]", "2", ",", 
+              RowBox[{"Show", "[", 
+               RowBox[{
+                RowBox[{"Plot", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Tx", "[", "x", "]"}], ",", 
+                    RowBox[{"Ty", "[", "x", "]"}]}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"x", ",", "0", ",", "1"}], "}"}], ",", 
+                  RowBox[{"PlotStyle", "\[Rule]", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}]}], 
+                    "}"}]}], ",", 
+                  RowBox[{"PlotRange", "\[Rule]", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"90", ",", "130"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"90", ",", "140"}], "}"}]}], "]"}]}], "}"}]}], 
+                  ",", 
+                  RowBox[{"PlotLabel", "\[Rule]", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", "P", ",", "\"\< bar\>\""}], "}"}], 
+                    "]"}], ",", "18"}], "]"}]}]}], "]"}], ",", 
+                "\[IndentingNewLine]", 
+                RowBox[{"Graphics", "@", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"z1", "\[Equal]", "y1"}], "\[Or]", 
+                    RowBox[{"z1", "\[Equal]", "x1"}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"{", 
+                    RowBox[{"Dotted", ",", 
+                    RowBox[{"Thickness", "@", "0.008"}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"z1", "\[Equal]", "y1"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", "Blue"}],
+                     "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "T1"}], "}"}]}], "}"}], "]"}]}], "}"}],
+                     ",", "\[IndentingNewLine]", 
+                    RowBox[{"{", 
+                    RowBox[{"Dashed", ",", "Thick", ",", "Blue", ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "T1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "T1"}], "}"}]}], "}"}], "]"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "T1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"z1", ",", "T1"}], "}"}]}], "}"}], "]"}], ",", 
+                    "\[IndentingNewLine]", "Dotted", ",", 
+                    RowBox[{"Thickness", "@", "0.008"}], ",", "Blue", ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"x1", ",", "T1"}], "}"}]}], "}"}], "]"}], ",", 
+                    RowBox[{"RGBColor", "[", 
+                    RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                    RowBox[{"Line", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "0"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"y1", ",", "T1"}], "}"}]}], "}"}], "]"}]}], 
+                    "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"#1", ",", "18", ",", 
+                    RowBox[{"GrayLevel", "@", "0.5"}], ",", 
+                    RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+                    "#2"}], "]"}], "&"}], "@@@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<liquid\>\"", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.1", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", "93", ",", "94"}], 
+                    "]"}]}], "}"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<vapor\>\"", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.9", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"OMM", "\[Equal]", "1"}], ",", "126", ",", 
+                    "135"}], "]"}]}], "}"}]}], "}"}]}], "}"}]}]}], 
+                  "\[IndentingNewLine]", "}"}]}], ",", "\[IndentingNewLine]", 
+                RowBox[{"Graphics", "@", 
+                 RowBox[{"Switch", "[", 
+                  RowBox[{"OMM", ",", "\[IndentingNewLine]", "1", ",", 
+                   RowBox[{"Locator", "[", 
+                    RowBox[{
+                    RowBox[{"Dynamic", "[", 
+                    RowBox[{"compTp", ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"compTp", "=", 
+                    RowBox[{"clip", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.001", ",", "90"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.999", ",", "130"}], "}"}]}], "]"}]}], ")"}], 
+                    "&"}]}], "]"}], ",", 
+                    RowBox[{"Graphics", "[", 
+                    RowBox[{
+                    RowBox[{"Disk", "[", "]"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "11"}]}], "]"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", "True"}]}], "]"}], ",", 
+                   "\[IndentingNewLine]", "2", ",", 
+                   RowBox[{"Locator", "[", 
+                    RowBox[{
+                    RowBox[{"Dynamic", "[", 
+                    RowBox[{"compTn", ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"compTn", "=", 
+                    RowBox[{"clip", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.001", ",", "90"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.999", ",", "140"}], "}"}]}], "]"}]}], ")"}], 
+                    "&"}]}], "]"}], ",", 
+                    RowBox[{"Graphics", "[", 
+                    RowBox[{
+                    RowBox[{"Disk", "[", "]"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "11"}]}], "]"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", "True"}]}], "]"}]}], 
+                  "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+             "\[IndentingNewLine]", "]"}], ",", 
+            RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+            RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+            RowBox[{"FrameLabel", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"\"\<mole fraction of component 1\>\"", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"FOB", "\[Equal]", "1"}], ",", 
+                 "\"\<pressure (bar)\>\"", ",", 
+                 "\"\<temperature (\[Degree]C)\>\""}], "]"}]}], "}"}]}], ",", 
+            RowBox[{"LabelStyle", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"450", ",", "400"}], "}"}]}], ",", 
+            RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Spacer", "@", "1"}], ",", "barchart"}], "}"}], "}"}], 
+       "]"}]}]}], "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"FOB", ",", "1", ",", "\"\<diagram\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", 
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\< P\[Hyphen]x\[Hyphen]y \>\"", ",", "Italic"}], 
+                "]"}]}], ",", 
+              RowBox[{"2", "\[Rule]", 
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\< T\[Hyphen]x\[Hyphen]y \>\"", ",", "Italic"}], 
+                "]"}]}]}], "}"}], ",", "Setter"}], "}"}], "]"}], ",", 
+         RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "OMM", ",", "1", ",", "\"\<deviation from Raoult's law\>\""}], 
+             "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< positive \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< negative \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"Grid", "[", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Control", "[", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"A12p", ",", "0", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<A\>\"", ",", "Italic"}], "]"}], ",", "12"}], 
+                    "]"}]}], "}"}], ",", "0", ",", "2", ",", "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], 
+                    "}"}], "]"}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"Control", "[", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"A21p", ",", "0", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<A\>\"", ",", "Italic"}], "]"}], ",", "21"}], 
+                    "]"}]}], "}"}], ",", "0", ",", "2", ",", "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], 
+                    "}"}], "]"}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"PaneSelector", "[", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"1", "\[Rule]", 
+                    RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"compPp", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.65", ",", "1.6"}], "}"}]}], "}"}], ",", 
+                    "None"}], "}"}], "]"}]}], ",", 
+                    RowBox[{"2", "\[Rule]", 
+                    RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"compTp", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.65", ",", "110"}], "}"}]}], "}"}], ",", 
+                    "None"}], "}"}], "]"}]}]}], "}"}], ",", 
+                    RowBox[{"Dynamic", "@", "FOB"}]}], "]"}]}], "}"}], 
+                "\[IndentingNewLine]", "}"}], "]"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"Grid", "[", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Control", "[", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"A12n", ",", "0", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<A\>\"", ",", "Italic"}], "]"}], ",", "12"}], 
+                    "]"}]}], "}"}], ",", 
+                    RowBox[{"-", "2"}], ",", "0", ",", "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], 
+                    "}"}], "]"}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"Control", "[", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"A21n", ",", "0", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<A\>\"", ",", "Italic"}], "]"}], ",", "21"}], 
+                    "]"}]}], "}"}], ",", 
+                    RowBox[{"-", "2"}], ",", "0", ",", "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], 
+                    "}"}], "]"}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"PaneSelector", "[", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"1", "\[Rule]", 
+                    RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"compPn", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.65", ",", "1.6"}], "}"}]}], "}"}], ",", 
+                    "None"}], "}"}], "]"}]}], ",", 
+                    RowBox[{"2", "\[Rule]", 
+                    RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"compTn", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.6", ",", "110"}], "}"}]}], "}"}], ",", 
+                    "None"}], "}"}], "]"}]}]}], "}"}], ",", 
+                    RowBox[{"Dynamic", "@", "FOB"}]}], "]"}]}], "}"}], 
+                "\[IndentingNewLine]", "}"}], "]"}]}]}], 
+            "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "OMM"}]}], "]"}], ",", "SpanFromLeft"}], 
+        "}"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Initialization", "\[RuleDelayed]", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"clip", "[", 
+       RowBox[{
+        RowBox[{"pt", ":", 
+         RowBox[{"{", 
+          RowBox[{"x_", ",", "y_"}], "}"}]}], ",", 
+        RowBox[{"{", 
+         RowBox[{"xMin_", ",", "yMin_"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"xMax_", ",", "yMax_"}], "}"}]}], "]"}], ":=", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Clip", "[", 
+         RowBox[{"x", ",", 
+          RowBox[{"{", 
+           RowBox[{"xMin", ",", "xMax"}], "}"}]}], "]"}], ",", 
+        RowBox[{"Clip", "[", 
+         RowBox[{"y", ",", 
+          RowBox[{"{", 
+           RowBox[{"yMin", ",", "yMax"}], "}"}]}], "]"}]}], "}"}]}], 
+     ")"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6659577210907125`*^9, 3.6659577658712735`*^9}, {
+   3.665957823955596*^9, 3.6659579348439384`*^9}, {3.665957974398201*^9, 
+   3.665958031874488*^9}, {3.6659580871576505`*^9, 3.6659582762984686`*^9}, {
+   3.665958307813271*^9, 3.665958374854106*^9}, {3.665958431420341*^9, 
+   3.665958434325507*^9}, {3.665958569920263*^9, 3.665958705632025*^9}, {
+   3.6659587479174433`*^9, 3.665958882637149*^9}, {3.665958915418024*^9, 
+   3.665959401794843*^9}, {3.665959444459284*^9, 3.66595963672128*^9}, {
+   3.6659596970877333`*^9, 3.665959749501731*^9}, {3.6659597816165676`*^9, 
+   3.6659599015494275`*^9}, {3.665959951824303*^9, 3.6659599547984734`*^9}, {
+   3.6659600168120203`*^9, 3.6659603289768753`*^9}, {3.665960365287952*^9, 
+   3.6659603667500353`*^9}, {3.6659604129976807`*^9, 3.665960423248267*^9}, {
+   3.665960457407221*^9, 3.665960517129637*^9}, {3.665960607260792*^9, 
+   3.665960639680646*^9}, {3.665960699061043*^9, 3.665960793739458*^9}, {
+   3.665960833751746*^9, 3.665961080486859*^9}, {3.665961133242876*^9, 
+   3.665961147957718*^9}, {3.665961208813199*^9, 3.6659612376628485`*^9}, {
+   3.6659612691136475`*^9, 3.6659613778798685`*^9}, 3.6659614116878023`*^9, {
+   3.665961447571855*^9, 3.665961458995508*^9}, {3.66596150622721*^9, 
+   3.66596152791545*^9}, {3.6659615885719194`*^9, 3.6659615994965444`*^9}, {
+   3.665961629558264*^9, 3.6659616972961383`*^9}, {3.665961731335085*^9, 
+   3.6659617826240187`*^9}, {3.6659618802076006`*^9, 
+   3.6659621775306063`*^9}, {3.6659622640505548`*^9, 
+   3.6659622955803585`*^9}, {3.6659623412079678`*^9, 3.6659623994362984`*^9}, 
+   3.665962431019105*^9, {3.66596247043736*^9, 3.6659625493908753`*^9}, {
+   3.665962604555031*^9, 3.6659626075782037`*^9}, {3.6659626652365017`*^9, 
+   3.6659626663895674`*^9}, {3.665962719883627*^9, 3.6659628382953997`*^9}, {
+   3.6659628720863323`*^9, 3.6659632410064335`*^9}, {3.6659632789266024`*^9, 
+   3.665963341419177*^9}, 3.66596340511582*^9, {3.665963463231144*^9, 
+   3.6659634871595125`*^9}, {3.665963562597828*^9, 3.6659636287086086`*^9}, {
+   3.6659637023298197`*^9, 3.6659637973942575`*^9}, {3.6659638406937337`*^9, 
+   3.6659640391710863`*^9}, {3.6659640729560184`*^9, 
+   3.6659641582578974`*^9}, {3.6659642049085655`*^9, 3.66596447721014*^9}, {
+   3.665964515945356*^9, 3.665964762796475*^9}, {3.6659648417609916`*^9, 
+   3.6659649433057995`*^9}, {3.6659650682399454`*^9, 3.665965190489938*^9}, {
+   3.6660233659650636`*^9, 3.666023366294072*^9}, {3.6660234175435247`*^9, 
+   3.6660235247852077`*^9}, {3.666023570718082*^9, 3.666023571575091*^9}, {
+   3.6660236305905237`*^9, 3.666023670636302*^9}, {3.666023766805502*^9, 
+   3.6660237692860165`*^9}, {3.6660238095863*^9, 3.666023814490819*^9}, {
+   3.666023946203655*^9, 3.6660239472946587`*^9}, {3.6660239794048944`*^9, 
+   3.6660240308442755`*^9}, {3.6660240772681007`*^9, 
+   3.6660240968832293`*^9}, {3.666024134918977*^9, 3.666024192890502*^9}, 
+   3.6660242255298004`*^9, {3.666024256087013*^9, 3.666024415626715*^9}, {
+   3.666024584622859*^9, 3.6660245854998684`*^9}, {3.6660247109951377`*^9, 
+   3.666024712321647*^9}, {3.666024809244917*^9, 3.6660248429216704`*^9}, {
+   3.6660250076325245`*^9, 3.666025050968377*^9}, {3.666026437723874*^9, 
+   3.666026572041769*^9}, {3.6660267790095215`*^9, 3.6660267824970617`*^9}, {
+   3.666033365883343*^9, 3.666033377877486*^9}, {3.6660341572646513`*^9, 
+   3.666034159925171*^9}, {3.6661152828093824`*^9, 3.666115286037904*^9}, 
+   3.6661155716278276`*^9, {3.6661156232881603`*^9, 3.666115627604193*^9}, 
+   3.6756214210067387`*^9, {3.675621461408249*^9, 3.6756214692008657`*^9}, {
+   3.6756215321291914`*^9, 3.6756216800959296`*^9}, {3.6756217124878545`*^9, 
+   3.6756219495870028`*^9}, {3.6756219950613112`*^9, 
+   3.6756220316115847`*^9}, {3.6756221228286095`*^9, 3.675622463876646*^9}, {
+   3.675622494322507*^9, 3.6756224946657076`*^9}, {3.675622526965972*^9, 
+   3.675622713306261*^9}, {3.675623212114044*^9, 3.675623213145646*^9}, {
+   3.6761420362512093`*^9, 3.676142056891892*^9}, {3.67614230211735*^9, 
+   3.676142523310437*^9}, {3.676392061765727*^9, 3.6763920689927635`*^9}, {
+   3.676392109544973*^9, 3.6763921230540333`*^9}, {3.676392162065242*^9, 
+   3.676392187453884*^9}, {3.67639221930807*^9, 3.67639223591916*^9}, {
+   3.6763922672889566`*^9, 3.67639235500995*^9}, {3.6763924074042573`*^9, 
+   3.67639240806126*^9}, {3.676392490412199*^9, 3.6763925503425283`*^9}, {
+   3.676735924143485*^9, 3.6767360300857325`*^9}, {3.677349080268037*^9, 
+   3.6773491658526683`*^9}, {3.677423623442979*^9, 3.6774236379829183`*^9}, {
+   3.678815257347515*^9, 3.678815377348078*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+    0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+    0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65, 
+    1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+    0.65, 110}, $CellContext`FOB$$ = 1, $CellContext`OMM$$ = 1, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`FOB$$], 1, "diagram"}, {
+      1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+       Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}}, {{
+       Hold[$CellContext`OMM$$], 1, "deviation from Raoult's law"}, {
+      1 -> " positive ", 2 -> " negative "}}, {{
+       Hold[$CellContext`A12p$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`A21p$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`compPp$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTp$$], {0.65, 110}}, 0}, {{
+       Hold[$CellContext`A12n$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`A21n$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`compPn$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTn$$], {0.6, 110}}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          Manipulate`Place[2]}, {
+          PaneSelector[{1 -> Grid[{{
+                Manipulate`Place[3], 
+                Manipulate`Place[4], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                 Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                Manipulate`Place[7], 
+                Manipulate`Place[8], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                 Dynamic[$CellContext`FOB$$]]}}]}, 
+           Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    607., {197.3544921875, 202.6455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`FOB$66176$$ = False, $CellContext`OMM$66177$$ = 
+    False, $CellContext`A12p$66178$$ = 0, $CellContext`A21p$66179$$ = 
+    0, $CellContext`A12n$66180$$ = 0, $CellContext`A21n$66181$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+        0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+        0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65,
+          1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+         0.65, 110}, $CellContext`FOB$$ = 1, $CellContext`OMM$$ = 1}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`FOB$$, $CellContext`FOB$66176$$, False], 
+        Hold[$CellContext`OMM$$, $CellContext`OMM$66177$$, False], 
+        Hold[$CellContext`A12p$$, $CellContext`A12p$66178$$, 0], 
+        Hold[$CellContext`A21p$$, $CellContext`A21p$66179$$, 0], 
+        Hold[$CellContext`A12n$$, $CellContext`A12n$66180$$, 0], 
+        Hold[$CellContext`A21n$$, $CellContext`A21n$66181$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`T$, $CellContext`P$, $CellContext`compP$, \
+$CellContext`compT$, $CellContext`A12$, $CellContext`A21$, $CellContext`z1$, \
+$CellContext`P1$, $CellContext`T1$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`Px$, \
+$CellContext`Py$, $CellContext`j$, $CellContext`xe$, $CellContext`sol1$, \
+$CellContext`xie$, $CellContext`yie$, $CellContext`Te$, $CellContext`Tx$, \
+$CellContext`Ty$, $CellContext`sol2$, $CellContext`azeo$, $CellContext`sol3$, \
+$CellContext`x1$, $CellContext`y1$, $CellContext`lever$, \
+$CellContext`barchart$}, $CellContext`T$ = 110; $CellContext`P$ = 1.6; 
+        If[$CellContext`OMM$$ == 
+          1, {$CellContext`compP$ = $CellContext`compPp$$; \
+$CellContext`compT$ = $CellContext`compTp$$; $CellContext`A12$ = \
+$CellContext`A12p$$; $CellContext`A21$ = $CellContext`A21p$$; 
+           Null}, {$CellContext`compP$ = $CellContext`compPn$$; \
+$CellContext`compT$ = $CellContext`compTn$$; $CellContext`A12$ = \
+$CellContext`A12n$$; $CellContext`A21$ = $CellContext`A21n$$; 
+           Null}]; $CellContext`z1$ = First[
+           
+           If[$CellContext`FOB$$ == 
+            1, $CellContext`compP$, $CellContext`compT$]]; $CellContext`P1$ = 
+         Last[$CellContext`compP$]; $CellContext`T1$ = 
+         Last[$CellContext`compT$]; $CellContext`Psat1$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.84 - 1196.76/($CellContext`temp + 
+            219.161)); $CellContext`Psat2$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.95087 - 1342.31/($CellContext`temp + 
+            219.187)); $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[(1 - $CellContext`x$)^2 ($CellContext`A12$ + (
+              2 ($CellContext`A21$ - $CellContext`A12$)) $CellContext`x$)]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[$CellContext`x$^2 ($CellContext`A21$ + (
+              2 ($CellContext`A12$ - $CellContext`A21$)) (
+              1 - $CellContext`x$))]; $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := ($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`x$) $CellContext`Psat1$[$CellContext`temp$] + ($CellContext`\
+\[Gamma]2$[$CellContext`x$] (
+             1 - $CellContext`x$)) $CellContext`Psat2$[$CellContext`temp$]; \
+$CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := \
+($CellContext`x$/($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`Psat1$[$CellContext`temp$]) + (
+             1 - $CellContext`x$)/($CellContext`\[Gamma]2$[$CellContext`x$] \
+$CellContext`Psat2$[$CellContext`temp$]))^(-1); $CellContext`j$ = 0; Quiet[
+          
+          While[$CellContext`j$ < 
+           101, {$CellContext`xe$ = 
+            0.01 $CellContext`j$, $CellContext`sol1$ = 
+             FindRoot[$CellContext`Px$[$CellContext`xe$, $CellContext`Te$] == \
+$CellContext`P$, {$CellContext`Te$, 90, 
+                140}]; $CellContext`xie$[$CellContext`j$] = $CellContext`xe$, \
+$CellContext`yie$[$CellContext`j$] = 
+            ReplaceAll[(($CellContext`\[Gamma]1$[$CellContext`xe$] \
+$CellContext`xe$) $CellContext`Psat1$[$CellContext`Te$])/$CellContext`P$, \
+$CellContext`sol1$], $CellContext`Te$[$CellContext`j$] = 
+            ReplaceAll[$CellContext`Te$, $CellContext`sol1$], 
+            Increment[$CellContext`j$]}]]; $CellContext`Tx$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`xie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`Ty$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`yie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`sol2$ = 
+         ReplaceAll[$CellContext`x, 
+           Quiet[
+            
+            FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`Py$[$CellContext`x, $CellContext`T$], {$CellContext`x, 
+              0.45}]]]; $CellContext`azeo$ = 
+         Which[$CellContext`sol2$ <= Rational[1, 100000], 
+           0, $CellContext`sol2$ >= 1, 1, 
+           Rational[1, 100000] < $CellContext`sol2$ < 1, $CellContext`sol2$]; 
+        Switch[$CellContext`FOB$$, 1, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Py$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}, 2, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Tx$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Ty$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], \
+$CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], \
+$CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}]; $CellContext`lever$ = 
+         Switch[$CellContext`FOB$$, 1, 
+           
+           Which[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], 
+            0, $CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], 
+            1, $CellContext`Py$[$CellContext`z1$, $CellContext`T$] <= \
+$CellContext`P1$ <= $CellContext`Px$[$CellContext`z1$, $CellContext`T$], \
+($CellContext`y1$ - $CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)], 
+           2, 
+           
+           Which[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], 
+            0, $CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], 
+            1, $CellContext`Tx$[$CellContext`z1$] <= $CellContext`T1$ <= \
+$CellContext`Ty$[$CellContext`z1$], ($CellContext`y1$ - \
+$CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)]]; \
+$CellContext`barchart$ = Column[{
+            Text[
+             Style[
+              If[$CellContext`FOB$$ == 1, 
+               Row[{
+                 Style["P", Italic], " = ", 
+                 NumberForm[$CellContext`P1$, {3, 2}], " bar"}], 
+               Row[{
+                 Style["T", Italic], " = ", 
+                 NumberForm[$CellContext`T1$, {3, 0}], " \[Degree]C"}]], 18]], 
+            
+            BarChart[{$CellContext`lever$, 1 - $CellContext`lever$}, 
+             ChartStyle -> {Blue, 
+               RGBColor[0, 0.6, 0]}, ChartLayout -> "Stacked", 
+             Frame -> {{True, None}, {None, None}}, FrameLabel -> 
+             "liquid and vapor amounts (mol)", LabelStyle -> {17, Black}, 
+             ImageSize -> {140, 375}, AspectRatio -> Full, Epilog -> {
+               If[$CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`x1$, {2, 2}]}], 18, White, 
+                  Bold], {1, $CellContext`lever$/2}]], 
+               If[1 - $CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {2, 2}]}], 18, White, 
+                  Bold], {
+                 1, $CellContext`lever$ + (1 - $CellContext`lever$)/2}]]}]}, 
+           Right]; Grid[{{
+            Show[
+             Switch[$CellContext`FOB$$, 1, 
+              Show[
+               Plot[{
+                 $CellContext`Px$[$CellContext`x, $CellContext`T$], 
+                 $CellContext`Py$[$CellContext`x, $CellContext`T$]}, \
+{$CellContext`x, 0, 1}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {0.93, 2.67}, {0.73, 2.27}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["T", Italic], " = ", $CellContext`T$, 
+                    " \[Degree]C"}], 18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`P1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`P1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 2.5, 2.1]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 1.05, 0.85]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPp$$, ($CellContext`compPp$$ = \
+$CellContext`clip[#, {0.001, 0.93}, {0.999, 2.67}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPn$$, ($CellContext`compPn$$ = \
+$CellContext`clip[#, {0.001, 0.8}, {0.999, 2.2}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]], 2, 
+              Show[
+               Plot[{
+                 $CellContext`Tx$[$CellContext`x], 
+                 $CellContext`Ty$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+                PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {90, 130}, {90, 140}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["P", Italic], " = ", $CellContext`P$, " bar"}], 
+                  18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`T1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`T1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 93, 94]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 126, 135]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTp$$, ($CellContext`compTp$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 130}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTn$$, ($CellContext`compTn$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 140}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]]], Axes -> 
+             False, Frame -> True, 
+             FrameLabel -> {"mole fraction of component 1", 
+               
+               If[$CellContext`FOB$$ == 1, "pressure (bar)", 
+                "temperature (\[Degree]C)"]}, LabelStyle -> {17, Black}, 
+             ImageSize -> {450, 400}, AspectRatio -> Full], 
+            Spacer[1], $CellContext`barchart$}}]], 
+      "Specifications" :> {{{$CellContext`FOB$$, 1, "diagram"}, {
+         1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+          Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`OMM$$, 1, "deviation from Raoult's law"}, {
+         1 -> " positive ", 2 -> " negative "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`A12p$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`A21p$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 4}, {{$CellContext`compPp$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         5}, {{$CellContext`compTp$$, {0.65, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 6}, {{$CellContext`A12n$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 7}, {{$CellContext`A21n$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 8}, {{$CellContext`compPn$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         9}, {{$CellContext`compTn$$, {0.6, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 10}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           Manipulate`Place[2]}, {
+           PaneSelector[{1 -> Grid[{{
+                 Manipulate`Place[3], 
+                 Manipulate`Place[4], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                  Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                 Manipulate`Place[7], 
+                 Manipulate`Place[8], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                  Dynamic[$CellContext`FOB$$]]}}]}, 
+            Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]},
+       "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{650., {256., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>($CellContext`clip[
+        Pattern[$CellContext`pt, {
+          Pattern[$CellContext`x, 
+           Blank[]], 
+          Pattern[$CellContext`y, 
+           Blank[]]}], {
+         Pattern[$CellContext`xMin, 
+          Blank[]], 
+         Pattern[$CellContext`yMin, 
+          Blank[]]}, {
+         Pattern[$CellContext`xMax, 
+          Blank[]], 
+         Pattern[$CellContext`yMax, 
+          Blank[]]}] := {
+        Clip[$CellContext`x, {$CellContext`xMin, $CellContext`xMax}], 
+        Clip[$CellContext`y, {$CellContext`yMin, $CellContext`yMax}]}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->574020093]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"T", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagrams are generated for one mole of a binary mixture in vapor-liquid \
+equilibrium (VLE). The ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagram is shown at a temperature of 110 \[Degree]C, and the ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"T", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagram is shown at a pressure of 1.6 bar. The solid blue curve represents \
+the liquid-phase boundary (bubble point) and the solid green curve represents \
+the vapor-phase boundary (dew point). The bar chart displays the moles of \
+liquid (blue) and vapor (green) in equilibrium and the mole fraction of \
+component ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath"],
+ " in each phase ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SubscriptBox["x", "1"]}], TraditionalForm]], "InlineMath"],
+ " for liquid, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "1"], TraditionalForm]], "InlineMath"],
+ " for vapor); the relative amounts are calculated using the lever rule. \
+Click and drag the black dot on the diagrams to change the mole fraction of \
+component ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath"],
+ " and the temperature (on  ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"T", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagram) or pressure (on ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "-", "x", "-", "y"}], TraditionalForm]], "InlineMath"],
+ " diagram)."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.6756229187306643`*^9, 3.6756230479853754`*^9}, {
+   3.675623142159025*^9, 3.675623148099036*^9}, 3.6757108843627*^9, {
+   3.6757109710583467`*^9, 3.6757109916658177`*^9}, {3.6764176392142253`*^9, 
+   3.6764176400749745`*^9}},
+ CellID->76523920],
+
+Cell[TextData[{
+ "The non-ideal liquid mixture is modeled using the two-parameter Margules \
+model. The interaction between the two components can be attractive (where \
+attractive interactions between components ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox["2", TraditionalForm]], "InlineMath"],
+ " are stronger than the average of the pure-component interactions); this \
+results in negative deviations from Raoult's law.  The interaction can be \
+repulsive (where attractive interactions between components ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox["2", TraditionalForm]], "InlineMath"],
+ " are weaker than the average of pure-component interactions); this results \
+in positive deviations from Raoult's law. Use sliders to change the degree of \
+interaction by changing the Margules parameters ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SubscriptBox["A", "12"]}], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["A", "21"], TraditionalForm]], "InlineMath"],
+ "), which are used to calculate the activity coefficients. When the Margules \
+parameters are zero, the liquid solution is ideal and the activity \
+coefficients equal 1. When the activity coefficients deviate significantly \
+from 1, the system has an azeotrope."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.675623078283452*^9, 3.6756231672365065`*^9}},
+ CellID->136251409]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+    0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+    0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65, 
+    1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+    0.65, 110}, $CellContext`FOB$$ = 1, $CellContext`OMM$$ = 1, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`FOB$$], 1, "diagram"}, {
+      1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+       Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}}, {{
+       Hold[$CellContext`OMM$$], 1, "deviation from Raoult's law"}, {
+      1 -> " positive ", 2 -> " negative "}}, {{
+       Hold[$CellContext`A12p$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`A21p$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`compPp$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTp$$], {0.65, 110}}, 0}, {{
+       Hold[$CellContext`A12n$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`A21n$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`compPn$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTn$$], {0.6, 110}}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          Manipulate`Place[2]}, {
+          PaneSelector[{1 -> Grid[{{
+                Manipulate`Place[3], 
+                Manipulate`Place[4], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                 Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                Manipulate`Place[7], 
+                Manipulate`Place[8], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                 Dynamic[$CellContext`FOB$$]]}}]}, 
+           Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    607., {197.3544921875, 202.6455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`FOB$66271$$ = False, $CellContext`OMM$66272$$ = 
+    False, $CellContext`A12p$66273$$ = 0, $CellContext`A21p$66274$$ = 
+    0, $CellContext`A12n$66275$$ = 0, $CellContext`A21n$66276$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+        0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+        0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65,
+          1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+         0.65, 110}, $CellContext`FOB$$ = 1, $CellContext`OMM$$ = 1}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`FOB$$, $CellContext`FOB$66271$$, False], 
+        Hold[$CellContext`OMM$$, $CellContext`OMM$66272$$, False], 
+        Hold[$CellContext`A12p$$, $CellContext`A12p$66273$$, 0], 
+        Hold[$CellContext`A21p$$, $CellContext`A21p$66274$$, 0], 
+        Hold[$CellContext`A12n$$, $CellContext`A12n$66275$$, 0], 
+        Hold[$CellContext`A21n$$, $CellContext`A21n$66276$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`T$, $CellContext`P$, $CellContext`compP$, \
+$CellContext`compT$, $CellContext`A12$, $CellContext`A21$, $CellContext`z1$, \
+$CellContext`P1$, $CellContext`T1$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`Px$, \
+$CellContext`Py$, $CellContext`j$, $CellContext`xe$, $CellContext`sol1$, \
+$CellContext`xie$, $CellContext`yie$, $CellContext`Te$, $CellContext`Tx$, \
+$CellContext`Ty$, $CellContext`sol2$, $CellContext`azeo$, $CellContext`sol3$, \
+$CellContext`x1$, $CellContext`y1$, $CellContext`lever$, \
+$CellContext`barchart$}, $CellContext`T$ = 110; $CellContext`P$ = 1.6; 
+        If[$CellContext`OMM$$ == 
+          1, {$CellContext`compP$ = $CellContext`compPp$$; \
+$CellContext`compT$ = $CellContext`compTp$$; $CellContext`A12$ = \
+$CellContext`A12p$$; $CellContext`A21$ = $CellContext`A21p$$; 
+           Null}, {$CellContext`compP$ = $CellContext`compPn$$; \
+$CellContext`compT$ = $CellContext`compTn$$; $CellContext`A12$ = \
+$CellContext`A12n$$; $CellContext`A21$ = $CellContext`A21n$$; 
+           Null}]; $CellContext`z1$ = First[
+           
+           If[$CellContext`FOB$$ == 
+            1, $CellContext`compP$, $CellContext`compT$]]; $CellContext`P1$ = 
+         Last[$CellContext`compP$]; $CellContext`T1$ = 
+         Last[$CellContext`compT$]; $CellContext`Psat1$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.84 - 1196.76/($CellContext`temp + 
+            219.161)); $CellContext`Psat2$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.95087 - 1342.31/($CellContext`temp + 
+            219.187)); $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[(1 - $CellContext`x$)^2 ($CellContext`A12$ + (
+              2 ($CellContext`A21$ - $CellContext`A12$)) $CellContext`x$)]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[$CellContext`x$^2 ($CellContext`A21$ + (
+              2 ($CellContext`A12$ - $CellContext`A21$)) (
+              1 - $CellContext`x$))]; $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := ($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`x$) $CellContext`Psat1$[$CellContext`temp$] + ($CellContext`\
+\[Gamma]2$[$CellContext`x$] (
+             1 - $CellContext`x$)) $CellContext`Psat2$[$CellContext`temp$]; \
+$CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := \
+($CellContext`x$/($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`Psat1$[$CellContext`temp$]) + (
+             1 - $CellContext`x$)/($CellContext`\[Gamma]2$[$CellContext`x$] \
+$CellContext`Psat2$[$CellContext`temp$]))^(-1); $CellContext`j$ = 0; Quiet[
+          
+          While[$CellContext`j$ < 
+           101, {$CellContext`xe$ = 
+            0.01 $CellContext`j$, $CellContext`sol1$ = 
+             FindRoot[$CellContext`Px$[$CellContext`xe$, $CellContext`Te$] == \
+$CellContext`P$, {$CellContext`Te$, 90, 
+                140}]; $CellContext`xie$[$CellContext`j$] = $CellContext`xe$, \
+$CellContext`yie$[$CellContext`j$] = 
+            ReplaceAll[(($CellContext`\[Gamma]1$[$CellContext`xe$] \
+$CellContext`xe$) $CellContext`Psat1$[$CellContext`Te$])/$CellContext`P$, \
+$CellContext`sol1$], $CellContext`Te$[$CellContext`j$] = 
+            ReplaceAll[$CellContext`Te$, $CellContext`sol1$], 
+            Increment[$CellContext`j$]}]]; $CellContext`Tx$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`xie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`Ty$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`yie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`sol2$ = 
+         ReplaceAll[$CellContext`x, 
+           Quiet[
+            
+            FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`Py$[$CellContext`x, $CellContext`T$], {$CellContext`x, 
+              0.45}]]]; $CellContext`azeo$ = 
+         Which[$CellContext`sol2$ <= Rational[1, 100000], 
+           0, $CellContext`sol2$ >= 1, 1, 
+           Rational[1, 100000] < $CellContext`sol2$ < 1, $CellContext`sol2$]; 
+        Switch[$CellContext`FOB$$, 1, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Py$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}, 2, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Tx$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Ty$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], \
+$CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], \
+$CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}]; $CellContext`lever$ = 
+         Switch[$CellContext`FOB$$, 1, 
+           
+           Which[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], 
+            0, $CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], 
+            1, $CellContext`Py$[$CellContext`z1$, $CellContext`T$] <= \
+$CellContext`P1$ <= $CellContext`Px$[$CellContext`z1$, $CellContext`T$], \
+($CellContext`y1$ - $CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)], 
+           2, 
+           
+           Which[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], 
+            0, $CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], 
+            1, $CellContext`Tx$[$CellContext`z1$] <= $CellContext`T1$ <= \
+$CellContext`Ty$[$CellContext`z1$], ($CellContext`y1$ - \
+$CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)]]; \
+$CellContext`barchart$ = Column[{
+            Text[
+             Style[
+              If[$CellContext`FOB$$ == 1, 
+               Row[{
+                 Style["P", Italic], " = ", 
+                 NumberForm[$CellContext`P1$, {3, 2}], " bar"}], 
+               Row[{
+                 Style["T", Italic], " = ", 
+                 NumberForm[$CellContext`T1$, {3, 0}], " \[Degree]C"}]], 18]], 
+            
+            BarChart[{$CellContext`lever$, 1 - $CellContext`lever$}, 
+             ChartStyle -> {Blue, 
+               RGBColor[0, 0.6, 0]}, ChartLayout -> "Stacked", 
+             Frame -> {{True, None}, {None, None}}, FrameLabel -> 
+             "liquid and vapor amounts (mol)", LabelStyle -> {17, Black}, 
+             ImageSize -> {140, 375}, AspectRatio -> Full, Epilog -> {
+               If[$CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`x1$, {2, 2}]}], 18, White, 
+                  Bold], {1, $CellContext`lever$/2}]], 
+               If[1 - $CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {2, 2}]}], 18, White, 
+                  Bold], {
+                 1, $CellContext`lever$ + (1 - $CellContext`lever$)/2}]]}]}, 
+           Right]; Grid[{{
+            Show[
+             Switch[$CellContext`FOB$$, 1, 
+              Show[
+               Plot[{
+                 $CellContext`Px$[$CellContext`x, $CellContext`T$], 
+                 $CellContext`Py$[$CellContext`x, $CellContext`T$]}, \
+{$CellContext`x, 0, 1}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {0.93, 2.67}, {0.73, 2.27}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["T", Italic], " = ", $CellContext`T$, 
+                    " \[Degree]C"}], 18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`P1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`P1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 2.5, 2.1]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 1.05, 0.85]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPp$$, ($CellContext`compPp$$ = \
+$CellContext`clip[#, {0.001, 0.93}, {0.999, 2.67}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPn$$, ($CellContext`compPn$$ = \
+$CellContext`clip[#, {0.001, 0.8}, {0.999, 2.2}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]], 2, 
+              Show[
+               Plot[{
+                 $CellContext`Tx$[$CellContext`x], 
+                 $CellContext`Ty$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+                PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {90, 130}, {90, 140}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["P", Italic], " = ", $CellContext`P$, " bar"}], 
+                  18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`T1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`T1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 93, 94]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 126, 135]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTp$$, ($CellContext`compTp$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 130}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTn$$, ($CellContext`compTn$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 140}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]]], Axes -> 
+             False, Frame -> True, 
+             FrameLabel -> {"mole fraction of component 1", 
+               
+               If[$CellContext`FOB$$ == 1, "pressure (bar)", 
+                "temperature (\[Degree]C)"]}, LabelStyle -> {17, Black}, 
+             ImageSize -> {450, 400}, AspectRatio -> Full], 
+            Spacer[1], $CellContext`barchart$}}]], 
+      "Specifications" :> {{{$CellContext`FOB$$, 1, "diagram"}, {
+         1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+          Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`OMM$$, 1, "deviation from Raoult's law"}, {
+         1 -> " positive ", 2 -> " negative "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`A12p$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`A21p$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 4}, {{$CellContext`compPp$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         5}, {{$CellContext`compTp$$, {0.65, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 6}, {{$CellContext`A12n$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 7}, {{$CellContext`A21n$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 8}, {{$CellContext`compPn$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         9}, {{$CellContext`compTn$$, {0.6, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 10}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           Manipulate`Place[2]}, {
+           PaneSelector[{1 -> Grid[{{
+                 Manipulate`Place[3], 
+                 Manipulate`Place[4], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                  Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                 Manipulate`Place[7], 
+                 Manipulate`Place[8], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                  Dynamic[$CellContext`FOB$$]]}}]}, 
+            Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]},
+       "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{650., {256., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>($CellContext`clip[
+        Pattern[$CellContext`pt, {
+          Pattern[$CellContext`x, 
+           Blank[]], 
+          Pattern[$CellContext`y, 
+           Blank[]]}], {
+         Pattern[$CellContext`xMin, 
+          Blank[]], 
+         Pattern[$CellContext`yMin, 
+          Blank[]]}, {
+         Pattern[$CellContext`xMax, 
+          Blank[]], 
+         Pattern[$CellContext`yMax, 
+          Blank[]]}] := {
+        Clip[$CellContext`x, {$CellContext`xMin, $CellContext`xMax}], 
+        Clip[$CellContext`y, {$CellContext`yMin, $CellContext`yMax}]}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->213095641]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+    0.9, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+    1., $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65, 
+    1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+    0.65, 110}, $CellContext`FOB$$ = 1, $CellContext`OMM$$ = 1, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`FOB$$], 1, "diagram"}, {
+      1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+       Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}}, {{
+       Hold[$CellContext`OMM$$], 1, "deviation from Raoult's law"}, {
+      1 -> " positive ", 2 -> " negative "}}, {{
+       Hold[$CellContext`A12p$$], 0.9, 
+       Subscript[
+        Style["A", Italic], 12]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`A21p$$], 1., 
+       Subscript[
+        Style["A", Italic], 21]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`compPp$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTp$$], {0.65, 110}}, 0}, {{
+       Hold[$CellContext`A12n$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`A21n$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`compPn$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTn$$], {0.6, 110}}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          Manipulate`Place[2]}, {
+          PaneSelector[{1 -> Grid[{{
+                Manipulate`Place[3], 
+                Manipulate`Place[4], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                 Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                Manipulate`Place[7], 
+                Manipulate`Place[8], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                 Dynamic[$CellContext`FOB$$]]}}]}, 
+           Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    607., {197.3544921875, 202.6455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`FOB$66366$$ = False, $CellContext`OMM$66367$$ = 
+    False, $CellContext`A12p$66368$$ = 0, $CellContext`A21p$66369$$ = 
+    0, $CellContext`A12n$66370$$ = 0, $CellContext`A21n$66371$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+        0.9, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+        1., $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {
+         0.65, 1.6}, $CellContext`compTn$$ = {
+         0.6, 110}, $CellContext`compTp$$ = {0.65, 110}, $CellContext`FOB$$ = 
+        1, $CellContext`OMM$$ = 1}, "ControllerVariables" :> {
+        Hold[$CellContext`FOB$$, $CellContext`FOB$66366$$, False], 
+        Hold[$CellContext`OMM$$, $CellContext`OMM$66367$$, False], 
+        Hold[$CellContext`A12p$$, $CellContext`A12p$66368$$, 0], 
+        Hold[$CellContext`A21p$$, $CellContext`A21p$66369$$, 0], 
+        Hold[$CellContext`A12n$$, $CellContext`A12n$66370$$, 0], 
+        Hold[$CellContext`A21n$$, $CellContext`A21n$66371$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`T$, $CellContext`P$, $CellContext`compP$, \
+$CellContext`compT$, $CellContext`A12$, $CellContext`A21$, $CellContext`z1$, \
+$CellContext`P1$, $CellContext`T1$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`Px$, \
+$CellContext`Py$, $CellContext`j$, $CellContext`xe$, $CellContext`sol1$, \
+$CellContext`xie$, $CellContext`yie$, $CellContext`Te$, $CellContext`Tx$, \
+$CellContext`Ty$, $CellContext`sol2$, $CellContext`azeo$, $CellContext`sol3$, \
+$CellContext`x1$, $CellContext`y1$, $CellContext`lever$, \
+$CellContext`barchart$}, $CellContext`T$ = 110; $CellContext`P$ = 1.6; 
+        If[$CellContext`OMM$$ == 
+          1, {$CellContext`compP$ = $CellContext`compPp$$; \
+$CellContext`compT$ = $CellContext`compTp$$; $CellContext`A12$ = \
+$CellContext`A12p$$; $CellContext`A21$ = $CellContext`A21p$$; 
+           Null}, {$CellContext`compP$ = $CellContext`compPn$$; \
+$CellContext`compT$ = $CellContext`compTn$$; $CellContext`A12$ = \
+$CellContext`A12n$$; $CellContext`A21$ = $CellContext`A21n$$; 
+           Null}]; $CellContext`z1$ = First[
+           
+           If[$CellContext`FOB$$ == 
+            1, $CellContext`compP$, $CellContext`compT$]]; $CellContext`P1$ = 
+         Last[$CellContext`compP$]; $CellContext`T1$ = 
+         Last[$CellContext`compT$]; $CellContext`Psat1$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.84 - 1196.76/($CellContext`temp + 
+            219.161)); $CellContext`Psat2$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.95087 - 1342.31/($CellContext`temp + 
+            219.187)); $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[(1 - $CellContext`x$)^2 ($CellContext`A12$ + (
+              2 ($CellContext`A21$ - $CellContext`A12$)) $CellContext`x$)]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[$CellContext`x$^2 ($CellContext`A21$ + (
+              2 ($CellContext`A12$ - $CellContext`A21$)) (
+              1 - $CellContext`x$))]; $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := ($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`x$) $CellContext`Psat1$[$CellContext`temp$] + ($CellContext`\
+\[Gamma]2$[$CellContext`x$] (
+             1 - $CellContext`x$)) $CellContext`Psat2$[$CellContext`temp$]; \
+$CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := \
+($CellContext`x$/($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`Psat1$[$CellContext`temp$]) + (
+             1 - $CellContext`x$)/($CellContext`\[Gamma]2$[$CellContext`x$] \
+$CellContext`Psat2$[$CellContext`temp$]))^(-1); $CellContext`j$ = 0; Quiet[
+          
+          While[$CellContext`j$ < 
+           101, {$CellContext`xe$ = 
+            0.01 $CellContext`j$, $CellContext`sol1$ = 
+             FindRoot[$CellContext`Px$[$CellContext`xe$, $CellContext`Te$] == \
+$CellContext`P$, {$CellContext`Te$, 90, 
+                140}]; $CellContext`xie$[$CellContext`j$] = $CellContext`xe$, \
+$CellContext`yie$[$CellContext`j$] = 
+            ReplaceAll[(($CellContext`\[Gamma]1$[$CellContext`xe$] \
+$CellContext`xe$) $CellContext`Psat1$[$CellContext`Te$])/$CellContext`P$, \
+$CellContext`sol1$], $CellContext`Te$[$CellContext`j$] = 
+            ReplaceAll[$CellContext`Te$, $CellContext`sol1$], 
+            Increment[$CellContext`j$]}]]; $CellContext`Tx$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`xie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`Ty$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`yie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`sol2$ = 
+         ReplaceAll[$CellContext`x, 
+           Quiet[
+            
+            FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`Py$[$CellContext`x, $CellContext`T$], {$CellContext`x, 
+              0.45}]]]; $CellContext`azeo$ = 
+         Which[$CellContext`sol2$ <= Rational[1, 100000], 
+           0, $CellContext`sol2$ >= 1, 1, 
+           Rational[1, 100000] < $CellContext`sol2$ < 1, $CellContext`sol2$]; 
+        Switch[$CellContext`FOB$$, 1, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Py$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}, 2, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Tx$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Ty$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], \
+$CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], \
+$CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}]; $CellContext`lever$ = 
+         Switch[$CellContext`FOB$$, 1, 
+           
+           Which[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], 
+            0, $CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], 
+            1, $CellContext`Py$[$CellContext`z1$, $CellContext`T$] <= \
+$CellContext`P1$ <= $CellContext`Px$[$CellContext`z1$, $CellContext`T$], \
+($CellContext`y1$ - $CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)], 
+           2, 
+           
+           Which[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], 
+            0, $CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], 
+            1, $CellContext`Tx$[$CellContext`z1$] <= $CellContext`T1$ <= \
+$CellContext`Ty$[$CellContext`z1$], ($CellContext`y1$ - \
+$CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)]]; \
+$CellContext`barchart$ = Column[{
+            Text[
+             Style[
+              If[$CellContext`FOB$$ == 1, 
+               Row[{
+                 Style["P", Italic], " = ", 
+                 NumberForm[$CellContext`P1$, {3, 2}], " bar"}], 
+               Row[{
+                 Style["T", Italic], " = ", 
+                 NumberForm[$CellContext`T1$, {3, 0}], " \[Degree]C"}]], 18]], 
+            
+            BarChart[{$CellContext`lever$, 1 - $CellContext`lever$}, 
+             ChartStyle -> {Blue, 
+               RGBColor[0, 0.6, 0]}, ChartLayout -> "Stacked", 
+             Frame -> {{True, None}, {None, None}}, FrameLabel -> 
+             "liquid and vapor amounts (mol)", LabelStyle -> {17, Black}, 
+             ImageSize -> {140, 375}, AspectRatio -> Full, Epilog -> {
+               If[$CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`x1$, {2, 2}]}], 18, White, 
+                  Bold], {1, $CellContext`lever$/2}]], 
+               If[1 - $CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {2, 2}]}], 18, White, 
+                  Bold], {
+                 1, $CellContext`lever$ + (1 - $CellContext`lever$)/2}]]}]}, 
+           Right]; Grid[{{
+            Show[
+             Switch[$CellContext`FOB$$, 1, 
+              Show[
+               Plot[{
+                 $CellContext`Px$[$CellContext`x, $CellContext`T$], 
+                 $CellContext`Py$[$CellContext`x, $CellContext`T$]}, \
+{$CellContext`x, 0, 1}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {0.93, 2.67}, {0.73, 2.27}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["T", Italic], " = ", $CellContext`T$, 
+                    " \[Degree]C"}], 18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`P1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`P1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 2.5, 2.1]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 1.05, 0.85]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPp$$, ($CellContext`compPp$$ = \
+$CellContext`clip[#, {0.001, 0.93}, {0.999, 2.67}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPn$$, ($CellContext`compPn$$ = \
+$CellContext`clip[#, {0.001, 0.8}, {0.999, 2.2}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]], 2, 
+              Show[
+               Plot[{
+                 $CellContext`Tx$[$CellContext`x], 
+                 $CellContext`Ty$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+                PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {90, 130}, {90, 140}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["P", Italic], " = ", $CellContext`P$, " bar"}], 
+                  18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`T1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`T1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 93, 94]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 126, 135]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTp$$, ($CellContext`compTp$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 130}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTn$$, ($CellContext`compTn$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 140}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]]], Axes -> 
+             False, Frame -> True, 
+             FrameLabel -> {"mole fraction of component 1", 
+               
+               If[$CellContext`FOB$$ == 1, "pressure (bar)", 
+                "temperature (\[Degree]C)"]}, LabelStyle -> {17, Black}, 
+             ImageSize -> {450, 400}, AspectRatio -> Full], 
+            Spacer[1], $CellContext`barchart$}}]], 
+      "Specifications" :> {{{$CellContext`FOB$$, 1, "diagram"}, {
+         1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+          Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`OMM$$, 1, "deviation from Raoult's law"}, {
+         1 -> " positive ", 2 -> " negative "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`A12p$$, 0.9, 
+          Subscript[
+           Style["A", Italic], 12]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`A21p$$, 1., 
+          Subscript[
+           Style["A", Italic], 21]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 4}, {{$CellContext`compPp$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         5}, {{$CellContext`compTp$$, {0.65, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 6}, {{$CellContext`A12n$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 7}, {{$CellContext`A21n$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 8}, {{$CellContext`compPn$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         9}, {{$CellContext`compTn$$, {0.6, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 10}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           Manipulate`Place[2]}, {
+           PaneSelector[{1 -> Grid[{{
+                 Manipulate`Place[3], 
+                 Manipulate`Place[4], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                  Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                 Manipulate`Place[7], 
+                 Manipulate`Place[8], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                  Dynamic[$CellContext`FOB$$]]}}]}, 
+            Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]},
+       "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{650., {256., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>($CellContext`clip[
+        Pattern[$CellContext`pt, {
+          Pattern[$CellContext`x, 
+           Blank[]], 
+          Pattern[$CellContext`y, 
+           Blank[]]}], {
+         Pattern[$CellContext`xMin, 
+          Blank[]], 
+         Pattern[$CellContext`yMin, 
+          Blank[]]}, {
+         Pattern[$CellContext`xMax, 
+          Blank[]], 
+         Pattern[$CellContext`yMax, 
+          Blank[]]}] := {
+        Clip[$CellContext`x, {$CellContext`xMin, $CellContext`xMax}], 
+        Clip[$CellContext`y, {$CellContext`yMin, $CellContext`yMax}]}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->690271337],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`A12n$$ = -1.4, $CellContext`A12p$$ = 
+    0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+    0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65, 
+    1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+    0.65, 110}, $CellContext`FOB$$ = 2, $CellContext`OMM$$ = 2, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`FOB$$], 2, "diagram"}, {
+      1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+       Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}}, {{
+       Hold[$CellContext`OMM$$], 2, "deviation from Raoult's law"}, {
+      1 -> " positive ", 2 -> " negative "}}, {{
+       Hold[$CellContext`A12p$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`A21p$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`compPp$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTp$$], {0.65, 110}}, 0}, {{
+       Hold[$CellContext`A12n$$], -1.4, 
+       Subscript[
+        Style["A", Italic], 12]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`A21n$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`compPn$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTn$$], {0.6, 110}}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          Manipulate`Place[2]}, {
+          PaneSelector[{1 -> Grid[{{
+                Manipulate`Place[3], 
+                Manipulate`Place[4], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                 Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                Manipulate`Place[7], 
+                Manipulate`Place[8], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                 Dynamic[$CellContext`FOB$$]]}}]}, 
+           Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    607., {197.3544921875, 202.6455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`FOB$66461$$ = False, $CellContext`OMM$66462$$ = 
+    False, $CellContext`A12p$66463$$ = 0, $CellContext`A21p$66464$$ = 
+    0, $CellContext`A12n$66465$$ = 0, $CellContext`A21n$66466$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`A12n$$ = -1.4, $CellContext`A12p$$ = 
+        0, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+        0, $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {0.65,
+          1.6}, $CellContext`compTn$$ = {0.6, 110}, $CellContext`compTp$$ = {
+         0.65, 110}, $CellContext`FOB$$ = 2, $CellContext`OMM$$ = 2}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`FOB$$, $CellContext`FOB$66461$$, False], 
+        Hold[$CellContext`OMM$$, $CellContext`OMM$66462$$, False], 
+        Hold[$CellContext`A12p$$, $CellContext`A12p$66463$$, 0], 
+        Hold[$CellContext`A21p$$, $CellContext`A21p$66464$$, 0], 
+        Hold[$CellContext`A12n$$, $CellContext`A12n$66465$$, 0], 
+        Hold[$CellContext`A21n$$, $CellContext`A21n$66466$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`T$, $CellContext`P$, $CellContext`compP$, \
+$CellContext`compT$, $CellContext`A12$, $CellContext`A21$, $CellContext`z1$, \
+$CellContext`P1$, $CellContext`T1$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`Px$, \
+$CellContext`Py$, $CellContext`j$, $CellContext`xe$, $CellContext`sol1$, \
+$CellContext`xie$, $CellContext`yie$, $CellContext`Te$, $CellContext`Tx$, \
+$CellContext`Ty$, $CellContext`sol2$, $CellContext`azeo$, $CellContext`sol3$, \
+$CellContext`x1$, $CellContext`y1$, $CellContext`lever$, \
+$CellContext`barchart$}, $CellContext`T$ = 110; $CellContext`P$ = 1.6; 
+        If[$CellContext`OMM$$ == 
+          1, {$CellContext`compP$ = $CellContext`compPp$$; \
+$CellContext`compT$ = $CellContext`compTp$$; $CellContext`A12$ = \
+$CellContext`A12p$$; $CellContext`A21$ = $CellContext`A21p$$; 
+           Null}, {$CellContext`compP$ = $CellContext`compPn$$; \
+$CellContext`compT$ = $CellContext`compTn$$; $CellContext`A12$ = \
+$CellContext`A12n$$; $CellContext`A21$ = $CellContext`A21n$$; 
+           Null}]; $CellContext`z1$ = First[
+           
+           If[$CellContext`FOB$$ == 
+            1, $CellContext`compP$, $CellContext`compT$]]; $CellContext`P1$ = 
+         Last[$CellContext`compP$]; $CellContext`T1$ = 
+         Last[$CellContext`compT$]; $CellContext`Psat1$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.84 - 1196.76/($CellContext`temp + 
+            219.161)); $CellContext`Psat2$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.95087 - 1342.31/($CellContext`temp + 
+            219.187)); $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[(1 - $CellContext`x$)^2 ($CellContext`A12$ + (
+              2 ($CellContext`A21$ - $CellContext`A12$)) $CellContext`x$)]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[$CellContext`x$^2 ($CellContext`A21$ + (
+              2 ($CellContext`A12$ - $CellContext`A21$)) (
+              1 - $CellContext`x$))]; $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := ($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`x$) $CellContext`Psat1$[$CellContext`temp$] + ($CellContext`\
+\[Gamma]2$[$CellContext`x$] (
+             1 - $CellContext`x$)) $CellContext`Psat2$[$CellContext`temp$]; \
+$CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := \
+($CellContext`x$/($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`Psat1$[$CellContext`temp$]) + (
+             1 - $CellContext`x$)/($CellContext`\[Gamma]2$[$CellContext`x$] \
+$CellContext`Psat2$[$CellContext`temp$]))^(-1); $CellContext`j$ = 0; Quiet[
+          
+          While[$CellContext`j$ < 
+           101, {$CellContext`xe$ = 
+            0.01 $CellContext`j$, $CellContext`sol1$ = 
+             FindRoot[$CellContext`Px$[$CellContext`xe$, $CellContext`Te$] == \
+$CellContext`P$, {$CellContext`Te$, 90, 
+                140}]; $CellContext`xie$[$CellContext`j$] = $CellContext`xe$, \
+$CellContext`yie$[$CellContext`j$] = 
+            ReplaceAll[(($CellContext`\[Gamma]1$[$CellContext`xe$] \
+$CellContext`xe$) $CellContext`Psat1$[$CellContext`Te$])/$CellContext`P$, \
+$CellContext`sol1$], $CellContext`Te$[$CellContext`j$] = 
+            ReplaceAll[$CellContext`Te$, $CellContext`sol1$], 
+            Increment[$CellContext`j$]}]]; $CellContext`Tx$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`xie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`Ty$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`yie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`sol2$ = 
+         ReplaceAll[$CellContext`x, 
+           Quiet[
+            
+            FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`Py$[$CellContext`x, $CellContext`T$], {$CellContext`x, 
+              0.45}]]]; $CellContext`azeo$ = 
+         Which[$CellContext`sol2$ <= Rational[1, 100000], 
+           0, $CellContext`sol2$ >= 1, 1, 
+           Rational[1, 100000] < $CellContext`sol2$ < 1, $CellContext`sol2$]; 
+        Switch[$CellContext`FOB$$, 1, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Py$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}, 2, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Tx$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Ty$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], \
+$CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], \
+$CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}]; $CellContext`lever$ = 
+         Switch[$CellContext`FOB$$, 1, 
+           
+           Which[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], 
+            0, $CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], 
+            1, $CellContext`Py$[$CellContext`z1$, $CellContext`T$] <= \
+$CellContext`P1$ <= $CellContext`Px$[$CellContext`z1$, $CellContext`T$], \
+($CellContext`y1$ - $CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)], 
+           2, 
+           
+           Which[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], 
+            0, $CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], 
+            1, $CellContext`Tx$[$CellContext`z1$] <= $CellContext`T1$ <= \
+$CellContext`Ty$[$CellContext`z1$], ($CellContext`y1$ - \
+$CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)]]; \
+$CellContext`barchart$ = Column[{
+            Text[
+             Style[
+              If[$CellContext`FOB$$ == 1, 
+               Row[{
+                 Style["P", Italic], " = ", 
+                 NumberForm[$CellContext`P1$, {3, 2}], " bar"}], 
+               Row[{
+                 Style["T", Italic], " = ", 
+                 NumberForm[$CellContext`T1$, {3, 0}], " \[Degree]C"}]], 18]], 
+            
+            BarChart[{$CellContext`lever$, 1 - $CellContext`lever$}, 
+             ChartStyle -> {Blue, 
+               RGBColor[0, 0.6, 0]}, ChartLayout -> "Stacked", 
+             Frame -> {{True, None}, {None, None}}, FrameLabel -> 
+             "liquid and vapor amounts (mol)", LabelStyle -> {17, Black}, 
+             ImageSize -> {140, 375}, AspectRatio -> Full, Epilog -> {
+               If[$CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`x1$, {2, 2}]}], 18, White, 
+                  Bold], {1, $CellContext`lever$/2}]], 
+               If[1 - $CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {2, 2}]}], 18, White, 
+                  Bold], {
+                 1, $CellContext`lever$ + (1 - $CellContext`lever$)/2}]]}]}, 
+           Right]; Grid[{{
+            Show[
+             Switch[$CellContext`FOB$$, 1, 
+              Show[
+               Plot[{
+                 $CellContext`Px$[$CellContext`x, $CellContext`T$], 
+                 $CellContext`Py$[$CellContext`x, $CellContext`T$]}, \
+{$CellContext`x, 0, 1}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {0.93, 2.67}, {0.73, 2.27}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["T", Italic], " = ", $CellContext`T$, 
+                    " \[Degree]C"}], 18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`P1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`P1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 2.5, 2.1]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 1.05, 0.85]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPp$$, ($CellContext`compPp$$ = \
+$CellContext`clip[#, {0.001, 0.93}, {0.999, 2.67}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPn$$, ($CellContext`compPn$$ = \
+$CellContext`clip[#, {0.001, 0.8}, {0.999, 2.2}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]], 2, 
+              Show[
+               Plot[{
+                 $CellContext`Tx$[$CellContext`x], 
+                 $CellContext`Ty$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+                PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {90, 130}, {90, 140}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["P", Italic], " = ", $CellContext`P$, " bar"}], 
+                  18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`T1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`T1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 93, 94]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 126, 135]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTp$$, ($CellContext`compTp$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 130}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTn$$, ($CellContext`compTn$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 140}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]]], Axes -> 
+             False, Frame -> True, 
+             FrameLabel -> {"mole fraction of component 1", 
+               
+               If[$CellContext`FOB$$ == 1, "pressure (bar)", 
+                "temperature (\[Degree]C)"]}, LabelStyle -> {17, Black}, 
+             ImageSize -> {450, 400}, AspectRatio -> Full], 
+            Spacer[1], $CellContext`barchart$}}]], 
+      "Specifications" :> {{{$CellContext`FOB$$, 2, "diagram"}, {
+         1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+          Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`OMM$$, 2, "deviation from Raoult's law"}, {
+         1 -> " positive ", 2 -> " negative "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`A12p$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`A21p$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 4}, {{$CellContext`compPp$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         5}, {{$CellContext`compTp$$, {0.65, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 6}, {{$CellContext`A12n$$, -1.4, 
+          Subscript[
+           Style["A", Italic], 12]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 7}, {{$CellContext`A21n$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 8}, {{$CellContext`compPn$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         9}, {{$CellContext`compTn$$, {0.6, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 10}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           Manipulate`Place[2]}, {
+           PaneSelector[{1 -> Grid[{{
+                 Manipulate`Place[3], 
+                 Manipulate`Place[4], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                  Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                 Manipulate`Place[7], 
+                 Manipulate`Place[8], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                  Dynamic[$CellContext`FOB$$]]}}]}, 
+            Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]},
+       "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{4.503599627370496*^15, {256., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>($CellContext`clip[
+        Pattern[$CellContext`pt, {
+          Pattern[$CellContext`x, 
+           Blank[]], 
+          Pattern[$CellContext`y, 
+           Blank[]]}], {
+         Pattern[$CellContext`xMin, 
+          Blank[]], 
+         Pattern[$CellContext`yMin, 
+          Blank[]]}, {
+         Pattern[$CellContext`xMax, 
+          Blank[]], 
+         Pattern[$CellContext`yMax, 
+          Blank[]]}] := {
+        Clip[$CellContext`x, {$CellContext`xMin, $CellContext`xMax}], 
+        Clip[$CellContext`y, {$CellContext`yMin, $CellContext`yMax}]}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->155660946],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+    1.8, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+    2., $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {
+    0.8768041237113399, 2.4135746606334942`}, $CellContext`compTn$$ = {
+    0.6, 110}, $CellContext`compTp$$ = {0.65, 110}, $CellContext`FOB$$ = 
+    1, $CellContext`OMM$$ = 1, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`FOB$$], 1, "diagram"}, {
+      1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+       Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}}, {{
+       Hold[$CellContext`OMM$$], 1, "deviation from Raoult's law"}, {
+      1 -> " positive ", 2 -> " negative "}}, {{
+       Hold[$CellContext`A12p$$], 1.8, 
+       Subscript[
+        Style["A", Italic], 12]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`A21p$$], 2., 
+       Subscript[
+        Style["A", Italic], 21]}, 0, 2, 0.1}, {{
+       Hold[$CellContext`compPp$$], {0.8768041237113399, 
+       2.4135746606334942`}}, 0}, {{
+       Hold[$CellContext`compTp$$], {0.65, 110}}, 0}, {{
+       Hold[$CellContext`A12n$$], 0, 
+       Subscript[
+        Style["A", Italic], 12]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`A21n$$], 0, 
+       Subscript[
+        Style["A", Italic], 21]}, -2, 0, 0.1}, {{
+       Hold[$CellContext`compPn$$], {0.65, 1.6}}, 0}, {{
+       Hold[$CellContext`compTn$$], {0.6, 110}}, 0}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          Manipulate`Place[2]}, {
+          PaneSelector[{1 -> Grid[{{
+                Manipulate`Place[3], 
+                Manipulate`Place[4], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                 Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                Manipulate`Place[7], 
+                Manipulate`Place[8], 
+                
+                PaneSelector[{
+                 1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                 Dynamic[$CellContext`FOB$$]]}}]}, 
+           Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    607., {197.3544921875, 202.6455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`FOB$66556$$ = False, $CellContext`OMM$66557$$ = 
+    False, $CellContext`A12p$66558$$ = 0, $CellContext`A21p$66559$$ = 
+    0, $CellContext`A12n$66560$$ = 0, $CellContext`A21n$66561$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`A12n$$ = 0, $CellContext`A12p$$ = 
+        1.8, $CellContext`A21n$$ = 0, $CellContext`A21p$$ = 
+        2., $CellContext`compPn$$ = {0.65, 1.6}, $CellContext`compPp$$ = {
+         0.8768041237113399, 2.4135746606334942`}, $CellContext`compTn$$ = {
+         0.6, 110}, $CellContext`compTp$$ = {0.65, 110}, $CellContext`FOB$$ = 
+        1, $CellContext`OMM$$ = 1}, "ControllerVariables" :> {
+        Hold[$CellContext`FOB$$, $CellContext`FOB$66556$$, False], 
+        Hold[$CellContext`OMM$$, $CellContext`OMM$66557$$, False], 
+        Hold[$CellContext`A12p$$, $CellContext`A12p$66558$$, 0], 
+        Hold[$CellContext`A21p$$, $CellContext`A21p$66559$$, 0], 
+        Hold[$CellContext`A12n$$, $CellContext`A12n$66560$$, 0], 
+        Hold[$CellContext`A21n$$, $CellContext`A21n$66561$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`T$, $CellContext`P$, $CellContext`compP$, \
+$CellContext`compT$, $CellContext`A12$, $CellContext`A21$, $CellContext`z1$, \
+$CellContext`P1$, $CellContext`T1$, $CellContext`Psat1$, $CellContext`Psat2$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`Px$, \
+$CellContext`Py$, $CellContext`j$, $CellContext`xe$, $CellContext`sol1$, \
+$CellContext`xie$, $CellContext`yie$, $CellContext`Te$, $CellContext`Tx$, \
+$CellContext`Ty$, $CellContext`sol2$, $CellContext`azeo$, $CellContext`sol3$, \
+$CellContext`x1$, $CellContext`y1$, $CellContext`lever$, \
+$CellContext`barchart$}, $CellContext`T$ = 110; $CellContext`P$ = 1.6; 
+        If[$CellContext`OMM$$ == 
+          1, {$CellContext`compP$ = $CellContext`compPp$$; \
+$CellContext`compT$ = $CellContext`compTp$$; $CellContext`A12$ = \
+$CellContext`A12p$$; $CellContext`A21$ = $CellContext`A21p$$; 
+           Null}, {$CellContext`compP$ = $CellContext`compPn$$; \
+$CellContext`compT$ = $CellContext`compTn$$; $CellContext`A12$ = \
+$CellContext`A12n$$; $CellContext`A21$ = $CellContext`A21n$$; 
+           Null}]; $CellContext`z1$ = First[
+           
+           If[$CellContext`FOB$$ == 
+            1, $CellContext`compP$, $CellContext`compT$]]; $CellContext`P1$ = 
+         Last[$CellContext`compP$]; $CellContext`T1$ = 
+         Last[$CellContext`compT$]; $CellContext`Psat1$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.84 - 1196.76/($CellContext`temp + 
+            219.161)); $CellContext`Psat2$[
+           Pattern[$CellContext`temp, 
+            Blank[]]] := (1/750) 
+          10^(6.95087 - 1342.31/($CellContext`temp + 
+            219.187)); $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[(1 - $CellContext`x$)^2 ($CellContext`A12$ + (
+              2 ($CellContext`A21$ - $CellContext`A12$)) $CellContext`x$)]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`x$, 
+            Blank[]]] := 
+         Exp[$CellContext`x$^2 ($CellContext`A21$ + (
+              2 ($CellContext`A12$ - $CellContext`A21$)) (
+              1 - $CellContext`x$))]; $CellContext`Px$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := ($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`x$) $CellContext`Psat1$[$CellContext`temp$] + ($CellContext`\
+\[Gamma]2$[$CellContext`x$] (
+             1 - $CellContext`x$)) $CellContext`Psat2$[$CellContext`temp$]; \
+$CellContext`Py$[
+           Pattern[$CellContext`x$, 
+            Blank[]], 
+           Pattern[$CellContext`temp$, 
+            
+            Blank[]]] := \
+($CellContext`x$/($CellContext`\[Gamma]1$[$CellContext`x$] \
+$CellContext`Psat1$[$CellContext`temp$]) + (
+             1 - $CellContext`x$)/($CellContext`\[Gamma]2$[$CellContext`x$] \
+$CellContext`Psat2$[$CellContext`temp$]))^(-1); $CellContext`j$ = 0; Quiet[
+          
+          While[$CellContext`j$ < 
+           101, {$CellContext`xe$ = 
+            0.01 $CellContext`j$, $CellContext`sol1$ = 
+             FindRoot[$CellContext`Px$[$CellContext`xe$, $CellContext`Te$] == \
+$CellContext`P$, {$CellContext`Te$, 90, 
+                140}]; $CellContext`xie$[$CellContext`j$] = $CellContext`xe$, \
+$CellContext`yie$[$CellContext`j$] = 
+            ReplaceAll[(($CellContext`\[Gamma]1$[$CellContext`xe$] \
+$CellContext`xe$) $CellContext`Psat1$[$CellContext`Te$])/$CellContext`P$, \
+$CellContext`sol1$], $CellContext`Te$[$CellContext`j$] = 
+            ReplaceAll[$CellContext`Te$, $CellContext`sol1$], 
+            Increment[$CellContext`j$]}]]; $CellContext`Tx$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`xie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`Ty$ = Quiet[
+           Interpolation[
+            Table[{
+              $CellContext`yie$[$CellContext`j$], 
+              $CellContext`Te$[$CellContext`j$]}, {$CellContext`j$, 0, 100, 
+              2}], InterpolationOrder -> 1]]; $CellContext`sol2$ = 
+         ReplaceAll[$CellContext`x, 
+           Quiet[
+            
+            FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`Py$[$CellContext`x, $CellContext`T$], {$CellContext`x, 
+              0.45}]]]; $CellContext`azeo$ = 
+         Which[$CellContext`sol2$ <= Rational[1, 100000], 
+           0, $CellContext`sol2$ >= 1, 1, 
+           Rational[1, 100000] < $CellContext`sol2$ < 1, $CellContext`sol2$]; 
+        Switch[$CellContext`FOB$$, 1, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Px$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Py$[$CellContext`x, $CellContext`T$] == \
+$CellContext`P1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], $CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}, 2, {$CellContext`sol3$ = {
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Tx$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]], 
+              ReplaceAll[$CellContext`x, 
+               Quiet[
+                
+                FindRoot[$CellContext`Ty$[$CellContext`x] == \
+$CellContext`T1$, {$CellContext`x, $CellContext`z1$}]]]}; $CellContext`x1$ = 
+            If[$CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], \
+$CellContext`z1$, 
+              First[$CellContext`sol3$]]; $CellContext`y1$ = 
+            If[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], \
+$CellContext`z1$, 
+              Last[$CellContext`sol3$]]; Null}]; $CellContext`lever$ = 
+         Switch[$CellContext`FOB$$, 1, 
+           
+           Which[$CellContext`P1$ < $CellContext`Py$[$CellContext`z1$, \
+$CellContext`T$], 
+            0, $CellContext`P1$ > $CellContext`Px$[$CellContext`z1$, \
+$CellContext`T$], 
+            1, $CellContext`Py$[$CellContext`z1$, $CellContext`T$] <= \
+$CellContext`P1$ <= $CellContext`Px$[$CellContext`z1$, $CellContext`T$], \
+($CellContext`y1$ - $CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)], 
+           2, 
+           
+           Which[$CellContext`T1$ > $CellContext`Ty$[$CellContext`z1$], 
+            0, $CellContext`T1$ < $CellContext`Tx$[$CellContext`z1$], 
+            1, $CellContext`Tx$[$CellContext`z1$] <= $CellContext`T1$ <= \
+$CellContext`Ty$[$CellContext`z1$], ($CellContext`y1$ - \
+$CellContext`z1$)/($CellContext`y1$ - $CellContext`x1$)]]; \
+$CellContext`barchart$ = Column[{
+            Text[
+             Style[
+              If[$CellContext`FOB$$ == 1, 
+               Row[{
+                 Style["P", Italic], " = ", 
+                 NumberForm[$CellContext`P1$, {3, 2}], " bar"}], 
+               Row[{
+                 Style["T", Italic], " = ", 
+                 NumberForm[$CellContext`T1$, {3, 0}], " \[Degree]C"}]], 18]], 
+            
+            BarChart[{$CellContext`lever$, 1 - $CellContext`lever$}, 
+             ChartStyle -> {Blue, 
+               RGBColor[0, 0.6, 0]}, ChartLayout -> "Stacked", 
+             Frame -> {{True, None}, {None, None}}, FrameLabel -> 
+             "liquid and vapor amounts (mol)", LabelStyle -> {17, Black}, 
+             ImageSize -> {140, 375}, AspectRatio -> Full, Epilog -> {
+               If[$CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`x1$, {2, 2}]}], 18, White, 
+                  Bold], {1, $CellContext`lever$/2}]], 
+               If[1 - $CellContext`lever$ > 0, 
+                Text[
+                 Style[
+                  Row[{
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {2, 2}]}], 18, White, 
+                  Bold], {
+                 1, $CellContext`lever$ + (1 - $CellContext`lever$)/2}]]}]}, 
+           Right]; Grid[{{
+            Show[
+             Switch[$CellContext`FOB$$, 1, 
+              Show[
+               Plot[{
+                 $CellContext`Px$[$CellContext`x, $CellContext`T$], 
+                 $CellContext`Py$[$CellContext`x, $CellContext`T$]}, \
+{$CellContext`x, 0, 1}, PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {0.93, 2.67}, {0.73, 2.27}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["T", Italic], " = ", $CellContext`T$, 
+                    " \[Degree]C"}], 18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`P1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`P1$}, \
+{$CellContext`z1$, $CellContext`P1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`P1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`P1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 2.5, 2.1]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 1.05, 0.85]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPp$$, ($CellContext`compPp$$ = \
+$CellContext`clip[#, {0.001, 0.93}, {0.999, 2.67}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compPn$$, ($CellContext`compPn$$ = \
+$CellContext`clip[#, {0.001, 0.8}, {0.999, 2.2}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]], 2, 
+              Show[
+               Plot[{
+                 $CellContext`Tx$[$CellContext`x], 
+                 $CellContext`Ty$[$CellContext`x]}, {$CellContext`x, 0, 1}, 
+                PlotStyle -> {{Thick, Blue}, {Thick, 
+                   RGBColor[0, 0.6, 0]}}, PlotRange -> {{0, 1}, 
+                  If[$CellContext`OMM$$ == 1, {90, 130}, {90, 140}]}, 
+                PlotLabel -> Style[
+                  Row[{
+                    Style["P", Italic], " = ", $CellContext`P$, " bar"}], 
+                  18]], 
+               Graphics[{
+                 If[
+                  
+                  Or[$CellContext`z1$ == $CellContext`y1$, $CellContext`z1$ == \
+$CellContext`x1$], {Dotted, 
+                   Thickness[0.008], 
+                   If[$CellContext`z1$ == $CellContext`y1$, 
+                    RGBColor[0, 0.6, 0], Blue], 
+                   
+                   Line[{{$CellContext`z1$, 
+                    0}, {$CellContext`z1$, $CellContext`T1$}}]}, {
+                  Dashed, Thick, Blue, 
+                   
+                   Line[{{$CellContext`y1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`x1$, $CellContext`T1$}, \
+{$CellContext`z1$, $CellContext`T1$}}], Dotted, 
+                   Thickness[0.008], Blue, 
+                   Line[{{$CellContext`x1$, 
+                    0}, {$CellContext`x1$, $CellContext`T1$}}], 
+                   RGBColor[0, 0.6, 0], 
+                   
+                   Line[{{$CellContext`y1$, 
+                    0}, {$CellContext`y1$, $CellContext`T1$}}]}], 
+                 Apply[Text[
+                   Style[#, 18, 
+                    GrayLevel[0.5], Background -> White], #2]& , {{
+                   "liquid", {0.1, 
+                    If[$CellContext`OMM$$ == 1, 93, 94]}}, {"vapor", {0.9, 
+                    If[$CellContext`OMM$$ == 1, 126, 135]}}}, {1}]}], 
+               Graphics[
+                Switch[$CellContext`OMM$$, 1, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTp$$, ($CellContext`compTp$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 130}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True], 2, 
+                 Locator[
+                  
+                  Dynamic[$CellContext`compTn$$, ($CellContext`compTn$$ = \
+$CellContext`clip[#, {0.001, 90}, {0.999, 140}])& ], 
+                  Graphics[
+                   Disk[], ImageSize -> 11], Enabled -> True]]]]], Axes -> 
+             False, Frame -> True, 
+             FrameLabel -> {"mole fraction of component 1", 
+               
+               If[$CellContext`FOB$$ == 1, "pressure (bar)", 
+                "temperature (\[Degree]C)"]}, LabelStyle -> {17, Black}, 
+             ImageSize -> {450, 400}, AspectRatio -> Full], 
+            Spacer[1], $CellContext`barchart$}}]], 
+      "Specifications" :> {{{$CellContext`FOB$$, 1, "diagram"}, {
+         1 -> Style[" P\[Hyphen]x\[Hyphen]y ", Italic], 2 -> 
+          Style[" T\[Hyphen]x\[Hyphen]y ", Italic]}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`OMM$$, 1, "deviation from Raoult's law"}, {
+         1 -> " positive ", 2 -> " negative "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, {{$CellContext`A12p$$, 1.8, 
+          Subscript[
+           Style["A", Italic], 12]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 3}, {{$CellContext`A21p$$, 2., 
+          Subscript[
+           Style["A", Italic], 21]}, 0, 2, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 
+         4}, {{$CellContext`compPp$$, {0.8768041237113399, 
+          2.4135746606334942`}}, 0, ControlType -> None, ControlPlacement -> 
+         5}, {{$CellContext`compTp$$, {0.65, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 6}, {{$CellContext`A12n$$, 0, 
+          Subscript[
+           Style["A", Italic], 12]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 7}, {{$CellContext`A21n$$, 0, 
+          Subscript[
+           Style["A", Italic], 21]}, -2, 0, 0.1, Appearance -> "Labeled", 
+         ControlPlacement -> 8}, {{$CellContext`compPn$$, {0.65, 1.6}}, 0, 
+         ControlType -> None, ControlPlacement -> 
+         9}, {{$CellContext`compTn$$, {0.6, 110}}, 0, ControlType -> None, 
+         ControlPlacement -> 10}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           Manipulate`Place[2]}, {
+           PaneSelector[{1 -> Grid[{{
+                 Manipulate`Place[3], 
+                 Manipulate`Place[4], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[5], 2 -> Manipulate`Place[6]}, 
+                  Dynamic[$CellContext`FOB$$]]}}], 2 -> Grid[{{
+                 Manipulate`Place[7], 
+                 Manipulate`Place[8], 
+                 
+                 PaneSelector[{
+                  1 -> Manipulate`Place[9], 2 -> Manipulate`Place[10]}, 
+                  Dynamic[$CellContext`FOB$$]]}}]}, 
+            Dynamic[$CellContext`OMM$$]], SpanFromLeft}}, Alignment -> Left]},
+       "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{650., {256., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>($CellContext`clip[
+        Pattern[$CellContext`pt, {
+          Pattern[$CellContext`x, 
+           Blank[]], 
+          Pattern[$CellContext`y, 
+           Blank[]]}], {
+         Pattern[$CellContext`xMin, 
+          Blank[]], 
+         Pattern[$CellContext`yMin, 
+          Blank[]]}, {
+         Pattern[$CellContext`xMax, 
+          Blank[]], 
+         Pattern[$CellContext`yMax, 
+          Blank[]]}] := {
+        Clip[$CellContext`x, {$CellContext`xMin, $CellContext`xMax}], 
+        Clip[$CellContext`y, {$CellContext`yMin, $CellContext`yMax}]}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1490993]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ "The saturation pressure of component ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", "=", 
+    RowBox[{"(", 
+     RowBox[{"1", ",", "2"}], ")"}]}], TraditionalForm]], "InlineMath"],
+ " is calculated using the Antoine equation:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.666025243885019*^9, 3.6660252790967956`*^9}, {
+  3.6756227353733206`*^9, 3.675622739164343*^9}},
+ CellID->97495145],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubsuperscriptBox["P", "i", "sat"], "=", 
+    SuperscriptBox["10", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["A", "i"], "-", 
+       FractionBox[
+        SubscriptBox["B", "i"], 
+        RowBox[{"T", "+", 
+         SubscriptBox["C", "i"]}]]}], ")"}]]}], TraditionalForm]], 
+  "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.666025243885019*^9, 3.6660252790947957`*^9}, {
+  3.6660253620043507`*^9, 3.6660254021007247`*^9}},
+ CellID->160728285],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubsuperscriptBox["P", "i", "sat"], TraditionalForm]], "InlineMath"],
+ " is saturation pressure of component ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"i", "=", "1"}], ",", "2"}], TraditionalForm]], "InlineMath"],
+ " (bar), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["A", "i"], TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["B", "i"], TraditionalForm]], "InlineMath"],
+ ", and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "i"], TraditionalForm]], "InlineMath"],
+ " are Antoine constants, and ",
+ Cell[BoxData[
+  FormBox["T", TraditionalForm]], "InlineMath"],
+ " is temperature (\[Degree]C)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.666025243885019*^9, 3.6660252790947957`*^9}, {
+  3.6660253620043507`*^9, 3.6660254921169624`*^9}, {3.6788154773873467`*^9, 
+  3.6788155134144354`*^9}, {3.679245739512752*^9, 3.679245741269497*^9}},
+ CellID->597338291],
+
+Cell[TextData[{
+ "The two-parameter Margules model is used to calculate the activity \
+coefficients for a non-ideal liquid mixture of components ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " and ",
+ Cell[BoxData[
+  FormBox["2", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ ". This model fits the excess Gibbs free energy:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.666025243885019*^9, 3.6660252790947957`*^9}, {
+   3.6660253620043507`*^9, 3.6660254921169624`*^9}, {3.666025527652423*^9, 
+   3.666025611499095*^9}, 3.666026014235922*^9},
+ CellID->386896553],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     SuperscriptBox[
+      StyleBox["G",
+       FontSlant->"Plain"], "E"], 
+     RowBox[{"R", " ", "T"}]], "=", 
+    RowBox[{
+     SubscriptBox["x", "1"], " ", 
+     SubscriptBox["x", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        SubscriptBox["A", "21"], " ", 
+        SubscriptBox["x", "1"]}], "+", 
+       RowBox[{
+        SubscriptBox["A", "12"], " ", 
+        SubscriptBox["x", "2"]}]}], ")"}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.666025243885019*^9, 3.6660252790947957`*^9}, {
+  3.6660253620043507`*^9, 3.6660254921169624`*^9}, {3.666025527652423*^9, 
+  3.6660256413738174`*^9}},
+ CellID->288150894],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    StyleBox["G",
+     FontSlant->"Plain"], "E"], TraditionalForm]], "InlineMath"],
+ " is excess Gibbs energy, and ",
+ Cell[BoxData[
+  FormBox["R", TraditionalForm]], "InlineMath"],
+ " is the ideal gas constant."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.610298447090356*^9}, 3.610298586248315*^9, {
+   3.61029886502526*^9, 3.610298903362453*^9}, {3.6102997036862288`*^9, 
+   3.610299707501447*^9}, {3.610378376718859*^9, 3.6103783767268596`*^9}, 
+   3.619528594774375*^9, 3.61953723579781*^9, 3.6660260429930983`*^9},
+ CellID->87215270],
+
+Cell[TextData[{
+ "The activity coefficients ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[Gamma]", "1"], TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[Gamma]", "2"], TraditionalForm]], "InlineMath"],
+ " are given by:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6103783867814345`*^9, 3.6103784401424866`*^9}, {
+  3.620398792065559*^9, 3.620398800040023*^9}, {3.620486079711825*^9, 
+  3.6204861048141613`*^9}, {3.66602565348242*^9, 3.666025655058431*^9}},
+ CellID->257253482],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"ln", " ", 
+     SubscriptBox["\[Gamma]", "1"]}], "=", 
+    RowBox[{
+     SubsuperscriptBox["x", "2", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["A", "12"], "+", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SubscriptBox["A", "21"], "-", 
+          SubscriptBox["A", "12"]}], ")"}], " ", 
+        SubscriptBox["x", "1"]}]}], ")"}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.610298587925411*^9}, 3.61029955911296*^9, 3.619537248442418*^9, {
+   3.6660256604605045`*^9, 3.6660256685725775`*^9}, {3.678815528476079*^9, 
+   3.678815532265687*^9}},
+ CellID->563817770],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"ln", " ", 
+     SubscriptBox["\[Gamma]", "2"]}], "=", 
+    RowBox[{
+     SubsuperscriptBox["x", "1", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["A", "21"], "+", 
+       RowBox[{"2", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          SubscriptBox["A", "12"], "-", 
+          SubscriptBox["A", "21"]}], ")"}], " ", 
+        SubscriptBox["x", "2"]}]}], ")"}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245645065`*^9}, 3.610299560619046*^9, 3.619537249568144*^9, {
+   3.6660256639220343`*^9, 3.6660256725506124`*^9}, {3.678815534660492*^9, 
+   3.6788155404951043`*^9}},
+ CellID->431494],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "1"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "2"], TraditionalForm]], "InlineMath"],
+ " are the liquid mole fractions of components ",
+ Cell[BoxData[
+  FormBox["1", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " and ",
+ Cell[BoxData[
+  FormBox["2", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["x", "1"], "+", 
+     SubscriptBox["x", "2"]}], "=", "1"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ ", and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["A", "21"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["A", "12"], TraditionalForm]], "InlineMath"],
+ " are the Margules parameters."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119789457`*^9}, {3.6103784537582655`*^9, 
+   3.610378523487254*^9}, {3.611428722852295*^9, 3.6114287318498096`*^9}, 
+   3.6114323926291943`*^9, {3.619537263012898*^9, 3.6195372882002363`*^9}, {
+   3.6660256812681847`*^9, 3.6660256863237247`*^9}, {3.6660259374537864`*^9, 
+   3.6660259595429773`*^9}, 3.666026069672792*^9},
+ CellID->55001805],
+
+Cell[TextData[{
+ "The modified Raoult's law is used to calculate the bubble-point and \
+dew-point pressures using the ",
+ Cell[BoxData[
+  FormBox["K", TraditionalForm]], "InlineMath"],
+ " factors:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.610299023444321*^9}, 3.610299581077216*^9, {3.6103785331698074`*^9, 
+   3.6103785957823887`*^9}, {3.6103791991719007`*^9, 3.610379204488205*^9}, 
+   3.6109923300709486`*^9, 3.6114287396462555`*^9, {3.6195373041524763`*^9, 
+   3.619537310744686*^9}, {3.66602609238894*^9, 3.6660260927489414`*^9}},
+ CellID->180537395],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["K", "i"], "=", 
+    RowBox[{
+     FractionBox[
+      SubscriptBox["y", "i"], 
+      SubscriptBox["x", "i"]], "=", 
+     RowBox[{
+      SubscriptBox["\[Gamma]", "i"], " ", 
+      FractionBox[
+       SubsuperscriptBox["P", "i", "sat"], "P"]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.6102990560671873`*^9}, {3.610299297723009*^9, 3.6102993026152887`*^9}, {
+   3.610299490768051*^9, 3.6102994907710505`*^9}, 3.610299563242196*^9, 
+   3.619537320768805*^9, {3.6660257350092125`*^9, 3.666025752088865*^9}},
+ CellID->59305079],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "i"], TraditionalForm]], "InlineMath"],
+ " is the vapor mole fraction and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SubscriptBox["y", "1"], "+", 
+     SubscriptBox["y", "2"]}], "=", "1"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ ", and ",
+ Cell[BoxData[
+  FormBox["P", TraditionalForm]], "InlineMath"],
+ " is the total pressure (bar)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.6102990560671873`*^9}, {3.610299297723009*^9, 3.6102993026152887`*^9}, {
+   3.610299490768051*^9, 3.610299553030612*^9}, {3.610378558430252*^9, 
+   3.61037856573467*^9}, {3.6103789003168073`*^9, 3.610378901852895*^9}, 
+   3.6195286102412596`*^9, {3.6660257574754033`*^9, 3.6660257971706853`*^9}, {
+   3.6660259696925783`*^9, 3.6660259766641393`*^9}},
+ CellID->103575368],
+
+Cell["Bubble-point pressure calculation:", "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+  3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+  3.6102986245605063`*^9}, {3.6102986791496286`*^9, 3.6102987780202837`*^9}, {
+  3.6102988314153376`*^9, 3.610298862201099*^9}, {3.6102989093497953`*^9, 
+  3.6102989119719453`*^9}, {3.610298955373428*^9, 3.6102990560671873`*^9}, {
+  3.610299297723009*^9, 3.6102993334190507`*^9}},
+ CellID->454777598],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "=", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["x", "1"], " ", 
+      SubscriptBox["\[Gamma]", "1"], " ", 
+      SubsuperscriptBox["P", "1", "sat"]}], "+", 
+     RowBox[{
+      SubscriptBox["x", "2"], " ", 
+      SubscriptBox["\[Gamma]", "2"], " ", 
+      SubsuperscriptBox["P", "2", "sat"]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.6102990560671873`*^9}, {3.610299297723009*^9, 3.6102994547259893`*^9}, 
+   3.610299566065357*^9, {3.6102997178880415`*^9, 3.610299717892041*^9}, {
+   3.610299943786962*^9, 3.6102999481892138`*^9}, 3.6103001084783816`*^9, {
+   3.611428751681944*^9, 3.611428759801408*^9}, {3.6660258068422403`*^9, 
+   3.666025835021962*^9}},
+ CellID->30697517],
+
+Cell["Dew-point pressure calculation:", "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.6102990560671873`*^9}, {3.610299297723009*^9, 3.6102994547259893`*^9}, 
+   3.610299566065357*^9, {3.6102997178880415`*^9, 3.610299731120798*^9}, {
+   3.610299767448876*^9, 3.610299792011281*^9}},
+ CellID->130288822],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "=", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       FractionBox[
+        SubscriptBox["y", "1"], 
+        RowBox[{
+         SubscriptBox["\[Gamma]", "1"], " ", 
+         SubsuperscriptBox["P", "1", "sat"]}]], "+", 
+       FractionBox[
+        SubscriptBox["y", "2"], 
+        RowBox[{
+         SubscriptBox["\[Gamma]", "2"], " ", 
+         SubsuperscriptBox["P", "2", "sat"]}]]}], ")"}], 
+     RowBox[{"-", "1"}]]}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+   3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+   3.6102986245605063`*^9}, {3.6102986791496286`*^9, 
+   3.6102987780202837`*^9}, {3.6102988314153376`*^9, 3.610298862201099*^9}, {
+   3.6102989093497953`*^9, 3.6102989119719453`*^9}, {3.610298955373428*^9, 
+   3.6102990560671873`*^9}, {3.610299297723009*^9, 3.610299454703988*^9}, {
+   3.6102999100230308`*^9, 3.6103000732633677`*^9}, {3.6195373748362722`*^9, 
+   3.619537376377479*^9}, {3.6756227485427613`*^9, 3.6756227491395626`*^9}, 
+   3.6775904181632547`*^9},
+ CellID->382708008],
+
+Cell["\<\
+The screencast video at [2] shows how to use this Demonstration.\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.675622750905366*^9, 3.6756227653273954`*^9}},
+ CellID->83734890],
+
+Cell["References", "DetailNotes",
+ CellChangeTimes->{{3.610298218205264*^9, 3.6102982518631897`*^9}, {
+  3.6102982824519386`*^9, 3.6102985385445867`*^9}, {3.6102985879214106`*^9, 
+  3.6102986245605063`*^9}, {3.6102986791496286`*^9, 3.6102987780202837`*^9}, {
+  3.6102988314153376`*^9, 3.610298862201099*^9}, {3.6102989093497953`*^9, 
+  3.6102989119719453`*^9}, {3.610298955373428*^9, 3.6102990560671873`*^9}, {
+  3.610299297723009*^9, 3.610299454703988*^9}, {3.6102999100230308`*^9, 
+  3.6103000732633677`*^9}, {3.6195373748362722`*^9, 3.619537376377479*^9}, {
+  3.6756227485427613`*^9, 3.6756227681384*^9}},
+ CellID->314990668],
+
+Cell[TextData[{
+ "[1] J. R. Elliott and C. T. Lira, ",
+ StyleBox["Introductory Chemical Engineering Thermodynamics",
+  FontSlant->"Italic"],
+ ", New York: Prentice Hall, 2012 pp. 372\[Dash]377, 430."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6103000821728773`*^9, 3.610300099930893*^9}, {
+  3.6195373788526363`*^9, 3.619537386434987*^9}},
+ CellID->214248134],
+
+Cell[TextData[{
+ "[2] ",
+ StyleBox["Non-Ideal Vapor-Liquid Equilibrium (VLE) Modeled by the Margules \
+Equation",
+  FontSlant->"Italic"],
+ ". ",
+ ButtonBox["www.colorado.edu/learncheme/thermodynamics/NonIdealVLEMargules.\
+html",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://www.colorado.edu/learncheme/thermodynamics/\
+NonIdealVLEMargules.html"], None},
+  ButtonNote->
+   "http://www.colorado.edu/learncheme/thermodynamics/NonIdealVLEMargules.\
+html"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.675622769935404*^9, 3.675622822804432*^9}},
+ CellID->28449161]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6660251534566355`*^9, 3.679245764984044*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.666025154797141*^9},
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6660251557366457`*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.6660251570921717`*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.666025156685666*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["VLE", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432047802471*^9}, {
+  3.6149363066151485`*^9, 3.6149363066151485`*^9}, {3.6149365839524355`*^9, 
+  3.614936606759676*^9}},
+ CellID->460783613],
+
+Cell["attractive interactions", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432047802471*^9}, {
+  3.6149363066151485`*^9, 3.6149363066151485`*^9}, {3.6149365839524355`*^9, 
+  3.614936613046487*^9}},
+ CellID->268356881],
+
+Cell["repulsive interactions", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432047802471*^9}, {
+   3.6149363066151485`*^9, 3.6149363066151485`*^9}, {3.6149365839524355`*^9, 
+   3.614936617742095*^9}, 3.614953324084592*^9},
+ CellID->65539167],
+
+Cell["vapor-liquid equilibrium", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432047802471*^9}, {
+  3.6149363066151485`*^9, 3.6149363066151485`*^9}, {3.6149365839524355`*^9, 
+  3.614936592750851*^9}},
+ CellID->509817374],
+
+Cell["non-ideal solution", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432047802471*^9}, {
+  3.6149363066151485`*^9, 3.6149363079411507`*^9}, {3.6149365774628243`*^9, 
+  3.6149365804424295`*^9}},
+ CellID->89244470],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.6114320526767497`*^9}},
+ CellID->520951544],
+
+Cell["thermodynamics", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.6114320579700527`*^9}},
+ CellID->566914325],
+
+Cell["P-x-y diagram", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432059811158*^9}, {
+  3.6149365620655975`*^9, 3.6149365637192*^9}, {3.6149365966820583`*^9, 
+  3.6149365983824615`*^9}},
+ CellID->223907544],
+
+Cell["T-x-y diagram", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.6114320613782473`*^9}, {
+  3.6149365666676054`*^9, 3.61493656921041*^9}, {3.614936601128066*^9, 
+  3.6149366022356677`*^9}},
+ CellID->315118508],
+
+Cell["Margules equation", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432075007027*^9}, {
+  3.614936570801613*^9, 3.6149365740308185`*^9}, {3.615573253463081*^9, 
+  3.6155732534650817`*^9}},
+ CellID->56182486],
+
+Cell["azeotrope", "SearchTerms",
+ CellChangeTimes->{{3.611432046405391*^9, 3.611432075007027*^9}, {
+  3.614936570801613*^9, 3.6149365740308185`*^9}, {3.615573253463081*^9, 
+  3.615573257881032*^9}},
+ CellID->375658948]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "RelatedLinksSection"],
+
+Cell[TextData[ButtonBox["P-x-y and T-x-y Diagrams for Vapor-Liquid \
+Equilibrium (VLE)",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+PXYAndTXYDiagramsForVaporLiquidEquilibriumVLE/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+PXYAndTXYDiagramsForVaporLiquidEquilibriumVLE/"]], "RelatedLinks",
+ CellChangeTimes->{{3.675621268328661*^9, 3.6756213004103823`*^9}},
+ CellID->521887438],
+
+Cell[TextData[ButtonBox["Vapor-Liquid Equilibrium Diagram for Non-Ideal \
+Mixture",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+VaporLiquidEquilibriumDiagramForNonIdealMixture/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+VaporLiquidEquilibriumDiagramForNonIdealMixture/"]], "RelatedLinks",
+ CellChangeTimes->{{3.610728315480735*^9, 3.6107283155050488`*^9}, {
+  3.6767360801359587`*^9, 3.676736081947961*^9}},
+ CellID->1932888285],
+
+Cell[TextData[ButtonBox["Mass Balances for Binary Vapor-Liquid Equilibrium \
+(VLE)",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+MassBalancesForBinaryVaporLiquidEquilibriumVLE/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+MassBalancesForBinaryVaporLiquidEquilibriumVLE/"]], "RelatedLinks",
+ CellChangeTimes->{{3.6756201587528105`*^9, 3.6756201898393326`*^9}},
+ CellID->299629124]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"]
+}], "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.609784090103136*^9}, 
+   3.60978412565917*^9, {3.6109793544694567`*^9, 3.6109793544704585`*^9}, {
+   3.6109921182558336`*^9, 3.6109921182578335`*^9}},
+ CellID->31372289],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ " and Nick Bongiardina"
+}], "Author",
+ CellChangeTimes->{{3.675622894260601*^9, 3.675622894666202*^9}, 
+   3.6775893694109592`*^9},
+ CellID->365130295],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.6097841105263042`*^9}, {
+  3.610992060718543*^9, 3.610992060722543*^9}},
+ CellID->122665613]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{680, 822},
+WindowMargins->{{Automatic, 6}, {Automatic, 2}},
+FrontEndVersion->"10.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (July 6, \
+2015)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[175231, 3916, 378, 9, 29, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[175612, 3927, 678, 16, 29, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[176293, 3945, 381, 12, 29, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[176677, 3959, 637, 15, 29, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[177317, 3976, 887, 22, 29, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[178207, 4000, 395, 10, 29, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[178605, 4012, 1505, 32, 29, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[180113, 4046, 908, 21, 29, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 186595, 4235},
+ {"RotateAndZoomIn3D", 186705, 4238},
+ {"DragLocators", 186816, 4241},
+ {"CreateAndDeleteLocators", 186933, 4244},
+ {"SliderZoom", 187048, 4247},
+ {"GamepadControls", 187155, 4250},
+ {"AutomaticAnimation", 187270, 4253},
+ {"BookmarkAnimation", 187388, 4256}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 144, 3, 108, "DemoTitle"],
+Cell[727, 27, 33, 0, 275, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[785, 31, 29, 0, 201, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[839, 35, 47807, 1074, 2591, "Input"],
+Cell[48649, 1111, 21280, 446, 529, "Output",
+ CellID->574020093]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69978, 1563, 36, 0, 181, "ManipulateCaptionSection"],
+Cell[70017, 1565, 2000, 52, 151, "ManipulateCaption",
+ CellID->76523920],
+Cell[72020, 1619, 1500, 34, 167, "ManipulateCaption",
+ CellID->136251409]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73557, 1658, 28, 0, 179, "ThumbnailSection"],
+Cell[73588, 1660, 21280, 446, 529, "Output",
+ CellID->213095641]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[94905, 2111, 28, 0, 149, "SnapshotsSection"],
+Cell[94936, 2113, 21294, 446, 529, "Output",
+ CellID->690271337],
+Cell[116233, 2561, 21309, 446, 529, "Output",
+ CellID->155660946],
+Cell[137545, 3009, 21436, 449, 529, "Output",
+ CellID->1490993]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[159018, 3463, 26, 0, 357, "DetailsSection"],
+Cell[159047, 3465, 399, 11, 23, "DetailNotes",
+ CellID->97495145],
+Cell[159449, 3478, 559, 19, 36, "DetailNotes",
+ CellID->160728285],
+Cell[160011, 3499, 961, 30, 40, "DetailNotes",
+ CellID->597338291],
+Cell[160975, 3531, 635, 15, 39, "DetailNotes",
+ CellID->386896553],
+Cell[161613, 3548, 750, 26, 34, "DetailNotes",
+ CellID->288150894],
+Cell[162366, 3576, 684, 17, 24, "DetailNotes",
+ CellID->87215270],
+Cell[163053, 3595, 513, 14, 23, "DetailNotes",
+ CellID->257253482],
+Cell[163569, 3611, 857, 25, 25, "DetailNotes",
+ CellID->563817770],
+Cell[164429, 3638, 859, 25, 25, "DetailNotes",
+ CellID->431494],
+Cell[165291, 3665, 1576, 44, 39, "DetailNotes",
+ CellID->55001805],
+Cell[166870, 3711, 893, 16, 39, "DetailNotes",
+ CellID->180537395],
+Cell[167766, 3729, 977, 24, 39, "DetailNotes",
+ CellID->59305079],
+Cell[168746, 3755, 1204, 28, 23, "DetailNotes",
+ CellID->103575368],
+Cell[169953, 3785, 504, 7, 23, "DetailNotes",
+ CellID->454777598],
+Cell[170460, 3794, 1124, 26, 25, "DetailNotes",
+ CellID->30697517],
+Cell[171587, 3822, 630, 9, 23, "DetailNotes",
+ CellID->130288822],
+Cell[172220, 3833, 1181, 29, 41, "DetailNotes",
+ CellID->382708008],
+Cell[173404, 3864, 182, 4, 23, "DetailNotes",
+ CellID->83734890],
+Cell[173589, 3870, 628, 9, 23, "DetailNotes",
+ CellID->314990668],
+Cell[174220, 3881, 357, 8, 39, "DetailNotes",
+ CellID->214248134],
+Cell[174580, 3891, 574, 18, 39, "DetailNotes",
+ CellID->28449161]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[175191, 3914, 37, 0, 131, "ControlSuggestionsSection"],
+Cell[175231, 3916, 378, 9, 29, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[175612, 3927, 678, 16, 29, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[176293, 3945, 381, 12, 29, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[176677, 3959, 637, 15, 29, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[177317, 3976, 887, 22, 29, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[178207, 4000, 395, 10, 29, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[178605, 4012, 1505, 32, 29, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[180113, 4046, 908, 21, 29, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[181058, 4072, 30, 0, 165, "SearchTermsSection"],
+Cell[181091, 4074, 216, 4, 23, "SearchTerms",
+ CellID->460783613],
+Cell[181310, 4080, 236, 4, 23, "SearchTerms",
+ CellID->268356881],
+Cell[181549, 4086, 258, 4, 23, "SearchTerms",
+ CellID->65539167],
+Cell[181810, 4092, 237, 4, 23, "SearchTerms",
+ CellID->509817374],
+Cell[182050, 4098, 232, 4, 23, "SearchTerms",
+ CellID->89244470],
+Cell[182285, 4104, 131, 2, 23, "SearchTerms",
+ CellID->520951544],
+Cell[182419, 4108, 125, 2, 23, "SearchTerms",
+ CellID->566914325],
+Cell[182547, 4112, 224, 4, 23, "SearchTerms",
+ CellID->223907544],
+Cell[182774, 4118, 225, 4, 23, "SearchTerms",
+ CellID->315118508],
+Cell[183002, 4124, 227, 4, 23, "SearchTerms",
+ CellID->56182486],
+Cell[183232, 4130, 218, 4, 23, "SearchTerms",
+ CellID->375658948]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[183487, 4139, 31, 0, 149, "RelatedLinksSection"],
+Cell[183521, 4141, 437, 10, 23, "RelatedLinks",
+ CellID->521887438],
+Cell[183961, 4153, 488, 11, 23, "RelatedLinks",
+ CellID->1932888285],
+Cell[184452, 4166, 437, 10, 23, "RelatedLinks",
+ CellID->299629124]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[184926, 4181, 25, 0, 149, "AuthorSection"],
+Cell[184954, 4183, 525, 13, 23, "Author",
+ CellID->31372289],
+Cell[185482, 4198, 458, 13, 23, "Author",
+ CellID->365130295],
+Cell[185943, 4213, 248, 6, 23, "Author",
+ CellID->122665613]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

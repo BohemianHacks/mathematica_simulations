@@ -1,0 +1,847 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     34960,        839]
+NotebookOptionsPosition[     29935,        742]
+NotebookOutlinePosition[     31957,        792]
+CellTagsIndexPosition[     31637,        780]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Flash Distillation", "DemoTitle",
+ CellChangeTimes->{{3.740172809185878*^9, 
+  3.7401728126670465`*^9}},ExpressionUUID->"903a134f-bc63-4aa0-8f8e-\
+925fd1103494"],
+
+Cell["", "InitializationSection",ExpressionUUID->"4364f1ee-a3ca-4df2-941e-e53eb891274f"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection",ExpressionUUID->"aab66179-a609-4253-ad54-b7f6d9280e54"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "A12", ",", "A21", ",", "P", ",", "q", ",", "zf", ",", "F", ",", "xd", 
+       ",", "xb", ",", "VPa", ",", "VPb", ",", "\[Gamma]1", ",", "\[Gamma]2", 
+       ",", "i", ",", "x2", ",", "T", ",", "y2", ",", "tb", ",", "equilb", 
+       ",", "randInt", ",", "seed"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"SeedRandom", "[", "reset", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "Margules", " ", "coefficients", " ", "and", " ", "system", " ", 
+         "pressure"}], ",", " ", "respectively"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"A12", "=", 
+       RowBox[{"RandomReal", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"A21", "=", 
+       RowBox[{"RandomReal", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", ".5"}], ",", "1"}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"P", "=", 
+       RowBox[{"RandomReal", "[", 
+        RowBox[{"{", 
+         RowBox[{"100", ",", "300"}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"*", "Feed", " ", "q", " ", "is", " ", "randomized"}], "**)"}],
+       "\[IndentingNewLine]", 
+      RowBox[{"q", "=", 
+       RowBox[{"RandomChoice", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", ".2"}], ",", "0.05", ",", ".22", ",", ".49", ",", 
+          ".75", ",", ".95", ",", "1.13"}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "*", "Feed", " ", "composition", " ", "is", " ", "randomized"}], 
+       "**)"}], "\[IndentingNewLine]", 
+      RowBox[{"zf", "=", 
+       RowBox[{
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"30", ",", "70"}], "}"}], "]"}], "/", "100."}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "*", "Vapor", " ", "pressure", " ", "of", " ", "two", " ", 
+        "components", " ", "as", " ", "a", " ", "function", " ", "of", " ", 
+        "temperature", " ", 
+        RowBox[{"(", 
+         RowBox[{"deg", ".", " ", "C"}], ")"}]}], "**)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"VPa", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"8.08097", "-", 
+          FractionBox["1582.271", 
+           RowBox[{"T", "+", "239.726"}]]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"VPb", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"8.07131", "-", 
+          FractionBox["1730.63", 
+           RowBox[{"T", "+", "233.426"}]]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"*", "Defines", " ", "activity", " ", "coefficient"}], "**)"}],
+       "\[IndentingNewLine]", 
+      RowBox[{"Clear", "[", 
+       RowBox[{"T", ",", "i"}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Gamma]1", "[", "i_", "]"}], "=", 
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"x2", "[", "i", "]"}], "2"], "*", 
+         RowBox[{"(", 
+          RowBox[{"A12", "+", 
+           RowBox[{"2", "*", 
+            RowBox[{"(", 
+             RowBox[{"A21", "-", "A12"}], ")"}], "*", 
+            RowBox[{"(", 
+             RowBox[{"1", "-", 
+              RowBox[{"x2", "[", "i", "]"}]}], ")"}]}]}], ")"}]}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"\[Gamma]2", "[", "i_", "]"}], "=", 
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"(", 
+           RowBox[{"1", "-", 
+            RowBox[{"x2", "[", "i", "]"}]}], ")"}], "2"], "*", 
+         RowBox[{"(", 
+          RowBox[{"A21", "+", 
+           RowBox[{"2", "*", 
+            RowBox[{"(", 
+             RowBox[{"A12", "-", "A21"}], ")"}], "*", 
+            RowBox[{"x2", "[", "i", "]"}]}]}], ")"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "*", "Creates", " ", "table", " ", "of", " ", "values", " ", 
+        "defining", " ", "random", " ", "equilibrium", " ", "curve", " ", 
+        "using", " ", "modified", " ", 
+        RowBox[{"Raoult", "'"}], "s", " ", "Law"}], "**)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"i", "=", "0"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"While", "[", 
+       RowBox[{
+        RowBox[{"i", "<", "101"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"x2", "[", "i", "]"}], "=", 
+           RowBox[{"i", "*", "0.01"}]}], ",", 
+          RowBox[{
+           RowBox[{"T", "[", "i", "]"}], "=", 
+           RowBox[{
+            RowBox[{"FindRoot", "[", 
+             RowBox[{
+              RowBox[{"P", "==", 
+               RowBox[{
+                RowBox[{"VPb", "*", 
+                 RowBox[{"\[Gamma]1", "[", "i", "]"}], "*", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "-", 
+                   RowBox[{"x2", "[", "i", "]"}]}], ")"}]}], "+", 
+                RowBox[{"VPa", "*", 
+                 RowBox[{"\[Gamma]2", "[", "i", "]"}], "*", 
+                 RowBox[{"x2", "[", "i", "]"}]}]}]}], ",", 
+              RowBox[{"{", 
+               RowBox[{"T", ",", "60"}], "}"}], ",", 
+              RowBox[{"AccuracyGoal", "\[Rule]", "3"}]}], "]"}], "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ",", "2"}], "]"}], "]"}]}], ",", 
+          RowBox[{
+           RowBox[{"y2", "[", "i", "]"}], "=", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"x2", "[", "i", "]"}], "+", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"VPa", "*", 
+                 RowBox[{"\[Gamma]2", "[", "i", "]"}], "*", 
+                 RowBox[{
+                  RowBox[{"x2", "[", "i", "]"}], "/", "P"}]}], ")"}], "-", 
+               RowBox[{"x2", "[", "i", "]"}]}], ")"}]}], "/.", 
+            RowBox[{"T", "->", 
+             RowBox[{"T", "[", "i", "]"}]}]}]}], ",", 
+          RowBox[{"i", "++"}]}], "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"tb", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"x2", "[", "i", "]"}], ",", 
+           RowBox[{"y2", "[", "i", "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"i", ",", "0", ",", "100"}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "*", "The", " ", "consolidated", " ", "\"\<function\>\"", " ", "of", 
+        " ", "the", " ", "equilibrium", " ", "curve", " ", "generated", " ", 
+        "from", " ", "the", " ", "table", " ", "of", " ", "values"}], "**)"}],
+       "\[IndentingNewLine]", 
+      RowBox[{"equilb", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Interpolation", "[", "tb", "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", "\[IndentingNewLine]", 
+       RowBox[{"Which", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"page", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Graphics", "[", 
+          RowBox[{
+           RowBox[{"Style", "[", 
+            RowBox[{
+             RowBox[{"Text", "[", "\"\<column graphic here\>\"", "]"}], ",", 
+             "20"}], "]"}], ",", 
+           RowBox[{"ImageSize", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"600", ",", "400"}], "}"}]}], ",", 
+           RowBox[{"ImageMargins", "->", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"10", ",", "10"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"8", ",", "8"}], "}"}]}], "}"}]}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"page", "\[Equal]", "2"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Labeled", "[", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Plot", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"equilb", "[", "x", "]"}], ",", "x"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"x", ",", "0", ",", "1"}], "}"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"ImageSize", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"600", ",", "400"}], "}"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"AxesStyle", "\[Rule]", "17"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"PlotStyle", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"Thick", ",", "Black"}], "}"}]}], "}"}]}]}], "]"}], 
+           ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Subscript", "[", 
+              RowBox[{"\"\<y\>\"", ",", "\"\<B\>\""}], "]"}], ",", 
+             RowBox[{"Subscript", "[", 
+              RowBox[{"\"\<y\>\"", ",", "\"\<B\>\""}], "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"Left", ",", "Bottom"}], "}"}], ",", 
+           RowBox[{"RotateLabel", "\[Rule]", "True"}], ",", 
+           RowBox[{"LabelStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"Black", ",", "17"}], "}"}]}], ",", 
+           RowBox[{"ImageMargins", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"0", ",", "0"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}]}], "]"}]}], "]"}], 
+       "\[IndentingNewLine]", "]"}]}]}], "\[IndentingNewLine]", "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Grid", "@", 
+    RowBox[{"{", 
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Spacer", "[", 
+        RowBox[{"{", 
+         RowBox[{"250", ",", "10"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"page", ",", "2", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\<column\>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\<x / y diagram\>\""}]}], "}"}], ",", 
+          "RadioButtonBar"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Button", "[", 
+        RowBox[{"\"\< new problem \>\"", ",", 
+         RowBox[{"reset", "++"}]}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"reset", ",", 
+            RowBox[{"Round", "[", 
+             RowBox[{"AbsoluteTime", "[", "]"}], "]"}]}], "}"}], ",", 
+          "None"}], "}"}], "]"}]}], "\[IndentingNewLine]", "}"}], "}"}]}], 
+   ",", 
+   RowBox[{"SaveDefinitions", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellChangeTimes->CompressedData["
+1:eJwdzFsogwEABeC/uY1alAdK0yRD5sFCxlZb6Z9mszU0ZGI2t9QuzR5oi2IP
+bg1FuawsLTVt8oDiYWm0p7USSvGiNmskheFB/vM/nL46dU6Jzqg2MAiCYFOB
+CrlQGn1ISkaMniEYslnSvihvNZO0z+IaJhSzwoWQlD1x4XxwpgLyVhL1sE9U
+3gRVAq8L1jq1Hjj+S+zDhlDZERzmh4+hzEUG6T1pu4Q9N5Z7OFgZiEP9NfkN
+WXftGSlKJmc7G7bEFLlQL/MVwEV17E3xmJRccHnv0NFu/oSbS3spGPQvMNoo
+D6scWbAjUlUEt3x5xTDTpCyF0+wp2siOSgT7BdVieHWy1gwZq6QU9ghZrTC4
+PqaBurixFzZqrbSe2VMd/JNXG2C32z9K//1FTVCgfLXCn5yzCViYnm+HDoJD
+y4i7Z2DCfe6Ec9LOZbr/6KLl8Oc3oLhuwA1fdgNeyDfbD+A/Jqz/Cg==
+  "],
+ CellLabel->"In[2]:=",ExpressionUUID->"910b99dc-ce23-49b6-b41b-c6d62b6561f5"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`page$$ = 2, $CellContext`reset$$ = 
+    3740410117, Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`page$$], 2, ""}, {
+      1 -> "column", 2 -> "x / y diagram"}}, {{
+       Hold[$CellContext`reset$$], 3740410117}, 0}, {
+      Hold[
+       Grid[{{
+          Spacer[{250, 10}], 
+          Manipulate`Place[1], 
+          Button[" new problem ", 
+           Increment[$CellContext`reset$$]], 
+          Manipulate`Place[2]}}]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {620., {205., 211.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    False, $CellContext`page$11931$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`page$$ = 2, $CellContext`reset$$ = 
+        3740410117}, "ControllerVariables" :> {
+        Hold[$CellContext`page$$, $CellContext`page$11931$$, False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`A12$, $CellContext`A21$, $CellContext`P$, \
+$CellContext`q$, $CellContext`zf$, $CellContext`F$, $CellContext`xd$, \
+$CellContext`xb$, $CellContext`VPa$, $CellContext`VPb$, \
+$CellContext`\[Gamma]1$, $CellContext`\[Gamma]2$, $CellContext`i$, \
+$CellContext`x2$, $CellContext`T$, $CellContext`y2$, $CellContext`tb$, \
+$CellContext`equilb$, $CellContext`randInt$, $CellContext`seed$}, 
+        SeedRandom[$CellContext`reset$$]; $CellContext`A12$ = 
+         RandomReal[]; $CellContext`A21$ = 
+         RandomReal[{-0.5, 1}]; $CellContext`P$ = 
+         RandomReal[{100, 300}]; $CellContext`q$ = 
+         RandomChoice[{-0.2, 0.05, 0.22, 0.49, 0.75, 0.95, 
+           1.13}]; $CellContext`zf$ = 
+         RandomInteger[{30, 70}]/100.; $CellContext`VPa$ = 
+         10^(8.08097 - 1582.271/($CellContext`T$ + 
+           239.726)); $CellContext`VPb$ = 
+         10^(8.07131 - 1730.63/($CellContext`T$ + 233.426)); 
+        Clear[$CellContext`T$, $CellContext`i$]; $CellContext`\[Gamma]1$[
+           Pattern[$CellContext`i$, 
+            Blank[]]] = 
+         Exp[$CellContext`x2$[$CellContext`i$]^2 ($CellContext`A12$ + 
+            2 ($CellContext`A21$ - $CellContext`A12$) (
+              1 - $CellContext`x2$[$CellContext`i$]))]; \
+$CellContext`\[Gamma]2$[
+           Pattern[$CellContext`i$, 
+            Blank[]]] = 
+         Exp[(1 - $CellContext`x2$[$CellContext`i$])^2 ($CellContext`A21$ + 
+            2 ($CellContext`A12$ - $CellContext`A21$) \
+$CellContext`x2$[$CellContext`i$])]; $CellContext`i$ = 0; 
+        While[$CellContext`i$ < 
+          101, {$CellContext`x2$[$CellContext`i$] = $CellContext`i$ 
+            0.01, $CellContext`T$[$CellContext`i$] = Part[
+             
+             FindRoot[$CellContext`P$ == $CellContext`VPb$ $CellContext`\
+\[Gamma]1$[$CellContext`i$] (
+                 1 - $CellContext`x2$[$CellContext`i$]) + $CellContext`VPa$ \
+$CellContext`\[Gamma]2$[$CellContext`i$] $CellContext`x2$[$CellContext`i$], \
+{$CellContext`T$, 60}, AccuracyGoal -> 3], 1, 
+             2], $CellContext`y2$[$CellContext`i$] = 
+           ReplaceAll[$CellContext`x2$[$CellContext`i$] + ($CellContext`VPa$ \
+$CellContext`\[Gamma]2$[$CellContext`i$] \
+($CellContext`x2$[$CellContext`i$]/$CellContext`P$) - \
+$CellContext`x2$[$CellContext`i$]), $CellContext`T$ -> \
+$CellContext`T$[$CellContext`i$]], 
+           Increment[$CellContext`i$]}]; $CellContext`tb$ = Table[{
+            $CellContext`x2$[$CellContext`i$], 
+            $CellContext`y2$[$CellContext`i$]}, {$CellContext`i$, 0, 
+            100}]; $CellContext`equilb$ = Quiet[
+           Interpolation[$CellContext`tb$]]; Show[
+          Which[$CellContext`page$$ == 1, 
+           Graphics[
+            Style[
+             Text["column graphic here"], 20], ImageSize -> {600, 400}, 
+            ImageMargins -> {{10, 10}, {8, 8}}], $CellContext`page$$ == 2, 
+           Labeled[
+            Plot[{
+              $CellContext`equilb$[$CellContext`x], $CellContext`x}, \
+{$CellContext`x, 0, 1}, ImageSize -> {600, 400}, AxesStyle -> 17, 
+             PlotStyle -> {{Thick, Blue}, {Thick, Black}}], {
+             Subscript["y", "B"], 
+             Subscript["y", "B"]}, {Left, Bottom}, RotateLabel -> True, 
+            LabelStyle -> {Black, 17}, ImageMargins -> {{0, 0}, {0, 0}}]]]], 
+      "Specifications" :> {{{$CellContext`page$$, 2, ""}, {
+         1 -> "column", 2 -> "x / y diagram"}, ControlType -> RadioButtonBar, 
+         ControlPlacement -> 1}, {{$CellContext`reset$$, 3740410117}, 0, 
+         ControlType -> None, ControlPlacement -> 2}, 
+        Grid[{{
+           Spacer[{250, 10}], 
+           Manipulate`Place[1], 
+           Button[" new problem ", 
+            Increment[$CellContext`reset$$]], 
+           Manipulate`Place[2]}}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{669., {252., 258.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>({Attributes[Subscript] = {NHoldRest}}; 
+     Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.7402505861801095`*^9, 3.7402513000793724`*^9, 3.740251347976945*^9, {
+   3.7402513792800913`*^9, 3.74025141200762*^9}, {3.740251586544337*^9, 
+   3.7402516509427843`*^9}, {3.740251708348222*^9, 3.7402517271096334`*^9}, {
+   3.7402517656765547`*^9, 3.7402518057194815`*^9}, {3.740251847666689*^9, 
+   3.740251860440319*^9}, {3.7402519867641864`*^9, 3.740252009695052*^9}, {
+   3.740252042828289*^9, 3.740252060642598*^9}, {3.740252203537837*^9, 
+   3.740252350220621*^9}, 3.7404291872726*^9, 3.7404302700711727`*^9, 
+   3.7404303478829064`*^9, 3.7404303973871336`*^9, 3.7404304351036625`*^9, 
+   3.7404305622216406`*^9, 3.7404306757585816`*^9, 3.7404307094790707`*^9, 
+   3.7404308531163907`*^9, 3.7404309133852835`*^9, 3.740430951825936*^9, {
+   3.7404310562913456`*^9, 3.7404310769898663`*^9}, {3.740431168862965*^9, 
+   3.7404311839428015`*^9}, {3.7404314206800547`*^9, 3.74043149473417*^9}, {
+   3.7404315507444835`*^9, 3.740431561697528*^9}, {3.740431594029016*^9, 
+   3.7404316187793784`*^9}, {3.7404316707264457`*^9, 3.74043171737188*^9}},
+ CellLabel->"Out[2]=",
+ CellID->207922851,ExpressionUUID->"4c333b54-e1a1-4a99-a906-bab00261491e"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection",ExpressionUUID->"a95c224f-0d38-4ac4-aea3-e4d4d4d5db7e"],
+
+Cell["XXXX", "ManipulateCaption",ExpressionUUID->"88debb5d-7f9c-4407-bd4b-cebf58760bb7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection",ExpressionUUID->"ce69da76-6e70-4d4f-8c1d-94871c28ecd7"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Thumbnail Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->
+  False,ExpressionUUID->"d6d59d69-53b0-4abb-b546-e2d893586072"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection",ExpressionUUID->"51cf8e2c-29eb-4c07-aef3-fd064c71df20"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Snapshot Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->
+  False,ExpressionUUID->"d78b6ca4-7d18-490a-bc1e-f2bb11207ba2"]
+}, Open  ]],
+
+Cell["", "DetailsSection",ExpressionUUID->"2c5cd5f7-bb03-4beb-8565-42ad20ba8add"],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection",ExpressionUUID->"f5e83d7e-70d2-4fb4-a185-a4912a64dcd1"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Resize Images",ExpressionUUID->"671c2a9e-924c-463c-8918-99c58565b7d1"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "ResizeImages",ExpressionUUID->"ddc5da9c-a70a-4170-a28f-5280b838fc28"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Rotate and Zoom in 3D",ExpressionUUID->
+    "e4f83edf-95a9-4e46-8534-65a7487158b0"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "RotateAndZoomIn3D",ExpressionUUID->"5ae71e64-46e1-4664-8075-4b053c9c1f6d"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Drag Locators",ExpressionUUID->"8075e0a7-90dc-4b99-84b4-cc46e53aa1ba"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "DragLocators",ExpressionUUID->"88112823-7dd5-4e38-be92-90f9214ed086"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Create and Delete Locators",ExpressionUUID->
+    "15448ed4-9031-4e77-aca1-174ed717196a"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "CreateAndDeleteLocators",ExpressionUUID->"c1b5a5df-b51b-4904-8aa2-\
+f6d2105966de"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Slider Zoom",ExpressionUUID->"8f472baa-3517-400c-929c-a1fea7687c19"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "SliderZoom",ExpressionUUID->"c56996ee-a4c4-428b-a71b-924781b48db8"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Gamepad Controls",ExpressionUUID->
+    "ebd11c55-ca77-4a26-8417-cdb13a7af392"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9},
+ FontFamily->"Verdana",
+ CellTags->
+  "GamepadControls",ExpressionUUID->"bed35d68-400e-4349-9c2e-445f7405ddc5"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Automatic Animation",ExpressionUUID->
+    "ce4daff2-ce9c-40d3-ba6a-be6fc4ca54e8"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "AutomaticAnimation",ExpressionUUID->"2df57b89-96fe-4329-aaf8-f5bcaef066c3"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Bookmark Animation",ExpressionUUID->
+    "225fce9c-3c34-4de8-8f1a-ec2f7ef178c0"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "BookmarkAnimation",ExpressionUUID->"1c4538f2-2dc1-4c7a-a517-de54efc3366d"]
+}, Open  ]],
+
+Cell["", "SearchTermsSection",ExpressionUUID->"98c063f5-ae1c-417f-81be-81e99661a7cf"],
+
+Cell["", "RelatedLinksSection",ExpressionUUID->"65f1834b-da12-4ac1-b469-1eee8bcadde4"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection",ExpressionUUID->"7fa91974-94d2-45cd-9c91-f4fde82a16de"],
+
+Cell["Contributed by: XXXX", "Author",ExpressionUUID->"d56b09a1-849c-41fe-b578-83aa73941453"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1278, 1348},
+WindowMargins->{{-7, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[22981, 559, 429, 10, 70, "ControlSuggestions",ExpressionUUID->"ddc5da9c-a70a-4170-a28f-5280b838fc28",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[23413, 571, 800, 19, 70, "ControlSuggestions",ExpressionUUID->"5ae71e64-46e1-4664-8075-4b053c9c1f6d",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[24216, 592, 457, 13, 70, "ControlSuggestions",ExpressionUUID->"88112823-7dd5-4e38-be92-90f9214ed086",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[24676, 607, 761, 19, 70, "ControlSuggestions",ExpressionUUID->"c1b5a5df-b51b-4904-8aa2-f6d2105966de",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[25440, 628, 961, 23, 70, "ControlSuggestions",ExpressionUUID->"c56996ee-a4c4-428b-a71b-924781b48db8",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[26404, 653, 491, 12, 70, "ControlSuggestions",ExpressionUUID->"bed35d68-400e-4349-9c2e-445f7405ddc5",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[26898, 667, 1586, 34, 70, "ControlSuggestions",ExpressionUUID->"2df57b89-96fe-4329-aaf8-f5bcaef066c3",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[28487, 703, 1030, 24, 70, "ControlSuggestions",ExpressionUUID->"1c4538f2-2dc1-4c7a-a517-de54efc3366d",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 30303, 753},
+ {"RotateAndZoomIn3D", 30467, 756},
+ {"DragLocators", 30631, 759},
+ {"CreateAndDeleteLocators", 30801, 762},
+ {"SliderZoom", 30969, 765},
+ {"GamepadControls", 31129, 768},
+ {"AutomaticAnimation", 31297, 771},
+ {"BookmarkAnimation", 31468, 774}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 167, 3, 74, "DemoTitle",ExpressionUUID->"903a134f-bc63-4aa0-8f8e-925fd1103494"],
+Cell[750, 27, 88, 0, 275, "InitializationSection",ExpressionUUID->"4364f1ee-a3ca-4df2-941e-e53eb891274f"],
+Cell[CellGroupData[{
+Cell[863, 31, 84, 0, 189, "ManipulateSection",ExpressionUUID->"aab66179-a609-4253-ad54-b7f6d9280e54"],
+Cell[CellGroupData[{
+Cell[972, 35, 11786, 290, 1052, "Input",ExpressionUUID->"910b99dc-ce23-49b6-b41b-c6d62b6561f5"],
+Cell[12761, 327, 6928, 131, 522, "Output",ExpressionUUID->"4c333b54-e1a1-4a99-a906-bab00261491e",
+ CellID->207922851]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19738, 464, 91, 0, 169, "ManipulateCaptionSection",ExpressionUUID->"a95c224f-0d38-4ac4-aea3-e4d4d4d5db7e"],
+Cell[19832, 466, 88, 0, 22, "ManipulateCaption",ExpressionUUID->"88debb5d-7f9c-4407-bd4b-cebf58760bb7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19957, 471, 83, 0, 172, "ThumbnailSection",ExpressionUUID->"ce69da76-6e70-4d4f-8c1d-94871c28ecd7"],
+Cell[20043, 473, 1300, 35, 230, "Output",ExpressionUUID->"d6d59d69-53b0-4abb-b546-e2d893586072"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21380, 513, 83, 0, 142, "SnapshotsSection",ExpressionUUID->"51cf8e2c-29eb-4c07-aef3-fd064c71df20"],
+Cell[21466, 515, 1299, 35, 230, "Output",ExpressionUUID->"d78b6ca4-7d18-490a-bc1e-f2bb11207ba2"]
+}, Open  ]],
+Cell[22780, 553, 81, 0, 339, "DetailsSection",ExpressionUUID->"2c5cd5f7-bb03-4beb-8565-42ad20ba8add"],
+Cell[CellGroupData[{
+Cell[22886, 557, 92, 0, 114, "ControlSuggestionsSection",ExpressionUUID->"f5e83d7e-70d2-4fb4-a185-a4912a64dcd1"],
+Cell[22981, 559, 429, 10, 70, "ControlSuggestions",ExpressionUUID->"ddc5da9c-a70a-4170-a28f-5280b838fc28",
+ CellTags->"ResizeImages"],
+Cell[23413, 571, 800, 19, 70, "ControlSuggestions",ExpressionUUID->"5ae71e64-46e1-4664-8075-4b053c9c1f6d",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[24216, 592, 457, 13, 70, "ControlSuggestions",ExpressionUUID->"88112823-7dd5-4e38-be92-90f9214ed086",
+ CellTags->"DragLocators"],
+Cell[24676, 607, 761, 19, 70, "ControlSuggestions",ExpressionUUID->"c1b5a5df-b51b-4904-8aa2-f6d2105966de",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[25440, 628, 961, 23, 70, "ControlSuggestions",ExpressionUUID->"c56996ee-a4c4-428b-a71b-924781b48db8",
+ CellTags->"SliderZoom"],
+Cell[26404, 653, 491, 12, 70, "ControlSuggestions",ExpressionUUID->"bed35d68-400e-4349-9c2e-445f7405ddc5",
+ CellTags->"GamepadControls"],
+Cell[26898, 667, 1586, 34, 70, "ControlSuggestions",ExpressionUUID->"2df57b89-96fe-4329-aaf8-f5bcaef066c3",
+ CellTags->"AutomaticAnimation"],
+Cell[28487, 703, 1030, 24, 70, "ControlSuggestions",ExpressionUUID->"1c4538f2-2dc1-4c7a-a517-de54efc3366d",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[29532, 730, 85, 0, 70, "SearchTermsSection",ExpressionUUID->"98c063f5-ae1c-417f-81be-81e99661a7cf"],
+Cell[29620, 732, 86, 0, 70, "RelatedLinksSection",ExpressionUUID->"65f1834b-da12-4ac1-b469-1eee8bcadde4"],
+Cell[CellGroupData[{
+Cell[29731, 736, 80, 0, 70, "AuthorSection",ExpressionUUID->"7fa91974-94d2-45cd-9c91-f4fde82a16de"],
+Cell[29814, 738, 93, 0, 70, "Author",ExpressionUUID->"d56b09a1-849c-41fe-b578-83aa73941453"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

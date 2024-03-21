@@ -1,0 +1,1176 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     48990,       1167]
+NotebookOptionsPosition[     48463,       1146]
+NotebookOutlinePosition[     48809,       1161]
+CellTagsIndexPosition[     48766,       1158]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["\<\
+FOR NOW, I am treating the \[OpenCurlyDoubleQuote]pressure\
+\[CloseCurlyDoubleQuote] slider like \[OpenCurlyDoubleQuote]temperature\
+\[CloseCurlyDoubleQuote] in T-x-y to get the controls right then I\
+\[CloseCurlyQuote]ll replace that with piston height.\
+\>", "Text",
+ CellChangeTimes->{{3.634316639059227*^9, 3.6343167039179363`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "Psat1", ",", "Psat2", ",", "P", ",", "xp", ",", "Py1", ",", "Py2", ",",
+        "Pbp", ",", "R1", ",", "R2", ",", "R3", ",", "R4", ",", "y1", ",", 
+       "y2", ",", "P1", ",", "P2", ",", "phase", ",", "RA", ",", "RB", ",", 
+       "RC", ",", "twoPhase"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Psat1", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.72583", "-", 
+          RowBox[{"1660.652", "/", 
+           RowBox[{"(", 
+            RowBox[{"T", "+", "271.5"}], ")"}]}]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Psat2", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"5.0768", "-", 
+          RowBox[{"1659.793", "/", 
+           RowBox[{"(", 
+            RowBox[{"T", "+", "227.1"}], ")"}]}]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"P", "=", 
+       RowBox[{"p", "/.", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Psat1", "/", "p"}], "\[Equal]", 
+           RowBox[{"1", "-", 
+            RowBox[{"Psat2", "/", "p"}]}]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"p", ",", "0.01"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"xp", "=", 
+       RowBox[{"Psat1", "/", "P"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py1", "[", "y_", "]"}], "=", 
+       RowBox[{"Psat1", "/", "y"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py2", "[", "y_", "]"}], "=", 
+       RowBox[{"Psat2", "/", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", "y"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Pbp", "[", "y_", "]"}], "=", 
+       RowBox[{"Piecewise", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Py2", "[", "y", "]"}], ",", 
+            RowBox[{"0", "\[LessEqual]", "y", "\[LessEqual]", "xp"}]}], "}"}],
+           ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Py1", "[", "y", "]"}], ",", 
+            RowBox[{"xp", "<", "y", "\[LessEqual]", "1"}]}], "}"}]}], "}"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"P1", "=", 
+       RowBox[{"height", "+", "1"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"P2", "=", "height"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"phase", "[", "loc_", "]"}], "=", 
+       RowBox[{
+        RowBox[{"P2", "\[LessEqual]", "loc"}], "\[And]", 
+        RowBox[{"P1", ">", "loc"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"step", "\[Equal]", "0"}], "\[And]", 
+         RowBox[{"P1", "<", 
+          RowBox[{"Pbp", "[", "comp", "]"}]}]}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"location", "=", "P1"}], ",", 
+          RowBox[{"step", "=", "0"}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"step", "\[Equal]", "10"}], "\[Or]", 
+           RowBox[{"step", "\[Equal]", "1"}], "\[Or]", 
+           RowBox[{"step", "\[Equal]", "3"}]}], ")"}], "\[And]", 
+         RowBox[{"P2", ">", "P"}]}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"location", "=", "P2"}], ",", 
+          RowBox[{"step", "=", "4"}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"step", "\[Equal]", "4"}], ",", 
+        RowBox[{"location", "=", "P2"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"step", "\[Equal]", "2"}], "\[Or]", 
+           RowBox[{"step", "\[Equal]", "11"}], "\[Or]", 
+           RowBox[{"step", "\[Equal]", "13"}]}], ")"}], "\[And]", 
+         RowBox[{"P1", "<", 
+          RowBox[{"Pbp", "[", "comp", "]"}]}]}], ",", 
+        RowBox[{"step", "=", "0"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"0", "<", "comp", "<", "1"}], ",", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "0"}], "\[And]", 
+             RowBox[{
+              RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "P1", "<", 
+              "P"}]}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"location", "=", "P1"}], ",", 
+              RowBox[{"step", "=", "2"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"step", "\[Equal]", "2"}], ",", 
+            RowBox[{"location", "=", "P1"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "2"}], "\[And]", 
+             RowBox[{"phase", "[", "P", "]"}]}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"location", "=", "P"}], ",", 
+              RowBox[{"step", "=", "10"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"step", "\[Equal]", "10"}], ",", 
+            RowBox[{"location", "=", "P"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"(*", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "4"}], "\[And]", 
+             RowBox[{"phase", "[", "P", "]"}]}], ",", 
+            RowBox[{"step", "=", "10"}]}], "]"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "10"}], "\[And]", 
+             RowBox[{
+              RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "P1", "<", 
+              "P"}]}], ",", 
+            RowBox[{"step", "=", "2"}]}], "]"}]}], "\[IndentingNewLine]", 
+         "}"}]}], "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"comp", "\[Equal]", "0"}], "\[Or]", 
+         RowBox[{"comp", "\[Equal]", "1"}]}], ",", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "0"}], "\[And]", 
+             RowBox[{"phase", "[", 
+              RowBox[{"Pbp", "[", "comp", "]"}], "]"}]}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"location", "=", 
+               RowBox[{"Pbp", "[", "comp", "]"}]}], ",", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"comp", "\[Equal]", "0"}], ",", 
+                RowBox[{"step", "=", "11"}], ",", 
+                RowBox[{"step", "=", "13"}]}], "]"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"step", "\[Equal]", "11"}], "\[Or]", 
+              RowBox[{"step", "\[Equal]", "13"}]}], ")"}], ",", 
+            RowBox[{"location", "=", 
+             RowBox[{"Pbp", "[", "comp", "]"}]}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"step", "\[Equal]", "11"}], "\[Or]", 
+               RowBox[{"step", "\[Equal]", "13"}]}], ")"}], "\[And]", 
+             RowBox[{
+              RowBox[{"Pbp", "[", "comp", "]"}], "<", "P2", "\[LessEqual]", 
+              "P"}]}], ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"location", "=", "P2"}], ",", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"comp", "\[Equal]", "0"}], ",", 
+                RowBox[{"step", "=", "1"}], ",", 
+                RowBox[{"step", "=", "3"}]}], "]"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"step", "\[Equal]", "1"}], "\[Or]", 
+              RowBox[{"step", "\[Equal]", "3"}]}], ")"}], ",", 
+            RowBox[{"location", "=", "P2"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"(*", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"step", "\[Equal]", "4"}], "\[And]", 
+             RowBox[{
+              RowBox[{"Pbp", "[", "comp", "]"}], "<", "P2", "\[LessEqual]", 
+              "P"}]}], ",", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"comp", "\[Equal]", "0"}], ",", 
+              RowBox[{"step", "=", "1"}], ",", 
+              RowBox[{"step", "=", "3"}]}], "]"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"step", "\[Equal]", "1"}], "\[Or]", 
+               RowBox[{"step", "\[Equal]", "3"}]}], ")"}], "\[And]", 
+             RowBox[{"phase", "[", 
+              RowBox[{"Pbp", "[", "comp", "]"}], "]"}]}], ",", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"comp", "\[Equal]", "0"}], ",", 
+              RowBox[{"step", "=", "11"}], ",", 
+              RowBox[{"step", "=", "13"}]}], "]"}]}], "]"}]}], 
+         "\[IndentingNewLine]", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"R1", "=", 
+       RowBox[{"location", "<", 
+        RowBox[{"Pbp", "[", "comp", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R2", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"0", "<", "comp", "\[LessEqual]", "xp"}], ")"}], "\[And]", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "location", "<", 
+          "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R3", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"xp", "<", "comp", "<", "1"}], ")"}], "\[And]", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "location", "<", 
+          "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R4", "=", 
+       RowBox[{"P", "<", "location"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RA", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"comp", "\[Equal]", "0"}], ")"}], "\[And]", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "location", 
+          "\[LessEqual]", "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RB", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"comp", "\[Equal]", "1"}], ")"}], "\[And]", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Pbp", "[", "comp", "]"}], "\[LessEqual]", "location", 
+          "\[LessEqual]", "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RC", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"0", "<", "comp", "<", "1"}], ")"}], "\[And]", 
+        RowBox[{"(", 
+         RowBox[{"location", "\[Equal]", "P"}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"y1", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{"R2", ",", 
+         RowBox[{"y", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{"FindRoot", "[", 
+            RowBox[{
+             RowBox[{"location", "\[Equal]", 
+              RowBox[{"Py2", "[", "y", "]"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "1"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"y2", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{"R3", ",", 
+         RowBox[{"y", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{"FindRoot", "[", 
+            RowBox[{
+             RowBox[{"location", "\[Equal]", 
+              RowBox[{"Py1", "[", "y", "]"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "0"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"Plot", "[", 
+         RowBox[{
+          RowBox[{"Pbp", "[", "y", "]"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"y", ",", "0", ",", "1"}], "}"}], ",", 
+          RowBox[{"PlotStyle", "\[Rule]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"Thick", ",", "Black"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"Thick", ",", "Black"}], "}"}]}], "}"}]}]}], "]"}], ",",
+         "\[IndentingNewLine]", 
+        RowBox[{"Graphics", "[", 
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Framed", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"Grid", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<location =\>\"", ",", "location"}], "}"}], 
+                    ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<step =\>\"", ",", "step"}], "}"}]}], "}"}], 
+                   ",", 
+                   RowBox[{"Alignment", "\[Rule]", "\"\<=\>\""}]}], "]"}], 
+                 ",", "15"}], "]"}], ",", 
+               RowBox[{"Background", "\[Rule]", "LightYellow"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.8", ",", "6"}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"Thick", ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "P"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"1", ",", "P"}], "}"}]}], "}"}], "]"}], ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "6.8"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", 
+                  RowBox[{"Py2", "[", "0", "]"}]}], "}"}]}], "}"}], "]"}], 
+             ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"1", ",", "6.8"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"Py1", "[", "1", "]"}]}], "}"}]}], "}"}], "]"}]}], 
+            "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<vapor\>\"", ",", "17", ",", 
+               RowBox[{"GrayLevel", "[", "0.3", "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.9", ",", "0.5"}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<two immiscile liquids\>\"", ",", "17", ",", 
+               RowBox[{"GrayLevel", "[", "0.3", "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.23", ",", "6.3"}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"PointSize", "[", "0.02", "]"}], ",", 
+             RowBox[{"Point", "[", 
+              RowBox[{"{", 
+               RowBox[{"comp", ",", "location"}], "}"}], "]"}]}], "}"}]}], 
+          "\[IndentingNewLine]", "}"}], "]"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"Graphics", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<R1\>\"", ",", "15", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{"R1", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], 
+                "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.5", ",", "0.5"}], "}"}]}], "]"}], ",", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<R2\>\"", ",", "15", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{"R2", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], 
+                "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.05", ",", 
+               RowBox[{"0.5", "*", 
+                RowBox[{"(", 
+                 RowBox[{"P", "+", 
+                  RowBox[{"Py2", "[", "0", "]"}]}], ")"}]}]}], "}"}]}], "]"}],
+            ",", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<R3\>\"", ",", "15", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{"R3", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], 
+                "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.95", ",", 
+               RowBox[{"0.5", "*", 
+                RowBox[{"(", 
+                 RowBox[{"P", "+", 
+                  RowBox[{"Py1", "[", "1", "]"}]}], ")"}]}]}], "}"}]}], "]"}],
+            ",", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<R4\>\"", ",", "15", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{"R4", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], 
+                "]"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.5", ",", "6.25"}], "}"}]}], "]"}]}], "}"}], "]"}], 
+        ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+        RowBox[{"LabelStyle", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"Black", ",", "13"}], "}"}]}], ",", 
+        RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+        RowBox[{"ImageSize", "\[Rule]", 
+         RowBox[{"0.95", "*", 
+          RowBox[{"{", 
+           RowBox[{"430", ",", "350"}], "}"}]}]}], ",", 
+        RowBox[{"PlotLabel", "\[Rule]", 
+         RowBox[{"Style", "[", 
+          RowBox[{"\"\<benzene + water\>\"", ",", "17"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"PlotRange", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"0", ",", "1"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0.3", ",", "6.5"}], "}"}]}], "}"}]}], ",", 
+        RowBox[{"FrameLabel", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Style", "[", 
+            RowBox[{"\"\<benzene mole fraction\>\"", ",", "17"}], "]"}], ",", 
+           RowBox[{"Style", "[", 
+            RowBox[{"\"\<pressure (bar)\>\"", ",", "17"}], "]"}]}], "}"}]}]}],
+        "]"}]}]}], "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Column", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"T", ",", "120", ",", "\"\<temperature (\[Degree]C)\>\""}],
+            "}"}], ",", "100", ",", "125", ",", "1", ",", 
+          RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], 
+        "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Grid", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"Control", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                "comp", ",", "0.3", ",", "\"\<benzene composition\>\""}], 
+                "}"}], ",", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"step", "\[Equal]", "10"}], "\[Or]", 
+                  RowBox[{"step", "\[Equal]", "2"}]}], ",", "0.01", ",", 
+                 "0"}], "]"}], ",", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"step", "\[Equal]", "10"}], "\[Or]", 
+                  RowBox[{"step", "\[Equal]", "2"}]}], ",", "0.99", ",", 
+                 "1"}], "]"}], ",", "0.01", ",", 
+               RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+               RowBox[{"Enabled", "\[Rule]", 
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"step", "\[Equal]", "1"}], "\[Or]", 
+                   RowBox[{"step", "\[Equal]", "11"}], "\[Or]", 
+                   RowBox[{"step", "\[Equal]", "3"}], "\[Or]", 
+                   RowBox[{"step", "\[Equal]", "13"}]}], ",", "False", ",", 
+                  "True"}], "]"}]}]}], "}"}], "]"}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Control", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"height", ",", "0", ",", "\"\<pressure (bar)\>\""}], 
+                 "}"}], ",", "0", ",", "6", ",", "0.01", ",", 
+                RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}],
+               "]"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"Button", "[", 
+              RowBox[{"\"\<reset\>\"", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"comp", "=", "0.3"}], ",", 
+                 RowBox[{"height", "=", "0"}], ",", 
+                 RowBox[{"location", "=", "1"}], ",", 
+                 RowBox[{"step", "=", "0"}]}], "}"}]}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Control", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"location", ",", "1"}], "}"}], ",", "None"}], "}"}], 
+              "]"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"Control", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"step", ",", "0"}], "}"}], ",", "0", ",", "50", ",", 
+                "None"}], "}"}], "]"}]}], "}"}]}], "\[IndentingNewLine]", 
+          "}"}], ",", 
+         RowBox[{"Alignment", "\[Rule]", "Right"}]}], "]"}]}], 
+      "\[IndentingNewLine]", "}"}], ",", "Left"}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.629656456909856*^9, 3.629656505796652*^9}, {
+   3.6296565774877524`*^9, 3.629656607367461*^9}, {3.633801411432062*^9, 
+   3.633801512412838*^9}, {3.6338015576174235`*^9, 3.6338016946132593`*^9}, {
+   3.633801758056888*^9, 3.633801767123407*^9}, {3.6338018046955557`*^9, 
+   3.633802040205026*^9}, {3.6338020751420245`*^9, 3.633802087549734*^9}, {
+   3.6338021187925215`*^9, 3.633802160239892*^9}, {3.6338022073855886`*^9, 
+   3.633802217085143*^9}, 3.633802278293644*^9, {3.6338023167828455`*^9, 
+   3.6338023302536163`*^9}, {3.633802365618639*^9, 3.6338023892459903`*^9}, {
+   3.6338025464969845`*^9, 3.6338027055480814`*^9}, {3.6338038006647186`*^9, 
+   3.633803815088544*^9}, {3.6338039380675774`*^9, 3.633804102857003*^9}, {
+   3.633804175791175*^9, 3.633804746761832*^9}, {3.6338048315086794`*^9, 
+   3.633804852441877*^9}, {3.6338048944482794`*^9, 3.633804904663864*^9}, {
+   3.6338050360353775`*^9, 3.633805250805662*^9}, {3.6338053475951977`*^9, 
+   3.633805380948106*^9}, {3.633805419555314*^9, 3.633805612188332*^9}, {
+   3.6338848088216286`*^9, 3.633884810978752*^9}, {3.6338858457829394`*^9, 
+   3.633885948138794*^9}, {3.633886040397071*^9, 3.6338860449853334`*^9}, {
+   3.633886708829303*^9, 3.633886728217412*^9}, {3.63430785833677*^9, 
+   3.6343080821395707`*^9}, {3.634308216013228*^9, 3.634308272716471*^9}, {
+   3.634308306845423*^9, 3.6343083402923365`*^9}, {3.6343084950771894`*^9, 
+   3.634308505244771*^9}, {3.6343090028512325`*^9, 3.63430900700047*^9}, {
+   3.6343126009222584`*^9, 3.634312603647414*^9}, {3.6343134508538723`*^9, 
+   3.6343134626285453`*^9}, {3.6343136996050997`*^9, 3.634313702467263*^9}, {
+   3.634315021954734*^9, 3.634315042591914*^9}, {3.6343152161028385`*^9, 
+   3.6343152184029703`*^9}, {3.634315250237791*^9, 3.6343152644456034`*^9}, {
+   3.6343161163743305`*^9, 3.634316156454623*^9}, {3.6343161876954107`*^9, 
+   3.6343163268023667`*^9}, {3.634316384349658*^9, 3.6343165332971773`*^9}, {
+   3.634316589650401*^9, 3.6343166308217554`*^9}, {3.634316740242014*^9, 
+   3.634316742339134*^9}, {3.6343168914476624`*^9, 3.6343169026593037`*^9}, {
+   3.634316974935438*^9, 3.634317030556619*^9}, {3.634317103774807*^9, 
+   3.6343171193716993`*^9}, {3.634317249766157*^9, 3.634317336551121*^9}, {
+   3.634317382775765*^9, 3.6343174534708085`*^9}, {3.6343175230407877`*^9, 
+   3.6343175844212985`*^9}, {3.634317638146371*^9, 3.6343179049646325`*^9}, {
+   3.6343179492861676`*^9, 3.6343179947337666`*^9}, {3.6343180782115417`*^9, 
+   3.634318202538653*^9}, {3.6343182854163933`*^9, 3.6343183089737406`*^9}, {
+   3.634318341534603*^9, 3.6343184830386963`*^9}, {3.634318896150325*^9, 
+   3.6343189425289774`*^9}, {3.6343189745538096`*^9, 
+   3.6343191559711857`*^9}, {3.634319187898012*^9, 3.634319218932787*^9}, {
+   3.6343192626172857`*^9, 3.634319429534833*^9}, 3.634319488215189*^9, {
+   3.634319527344427*^9, 3.6343195575681562`*^9}, {3.6343196099951544`*^9, 
+   3.6343196186496496`*^9}, {3.6343197831520586`*^9, 
+   3.6343197956777754`*^9}, {3.634319846341673*^9, 3.634319865396763*^9}, {
+   3.634319908548231*^9, 3.63432027603825*^9}, {3.634320311916302*^9, 
+   3.634320408139806*^9}, {3.6343204709033957`*^9, 3.6343205029452286`*^9}, {
+   3.634320539966346*^9, 3.634320588486121*^9}, {3.634320631325571*^9, 
+   3.634320836702318*^9}, {3.6343210053699656`*^9, 3.634321006341021*^9}, 
+   3.6343211488161697`*^9, {3.6343223326388807`*^9, 3.634322355375181*^9}, {
+   3.6343224121244273`*^9, 3.634322425371185*^9}, {3.634322509185979*^9, 
+   3.634322570193468*^9}, {3.634322676850569*^9, 3.6343227047661657`*^9}, 
+   3.6343230381472335`*^9, {3.6343230961355505`*^9, 3.6343232137362766`*^9}, {
+   3.634323288739567*^9, 3.6343233255016694`*^9}, {3.6343235028638144`*^9, 
+   3.634323554216751*^9}, {3.6343237643347692`*^9, 3.6343238252572536`*^9}, {
+   3.634324071588343*^9, 3.6343242557848787`*^9}, {3.634324326150903*^9, 
+   3.634324356551642*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`comp$$ = 0.3, $CellContext`height$$ = 
+    0, $CellContext`location$$ = 1, $CellContext`step$$ = 
+    0, $CellContext`T$$ = 120, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`T$$], 120, "temperature (\[Degree]C)"}, 100, 125, 
+      1}, {{
+       Hold[$CellContext`comp$$], 0.3, "benzene composition"}, 
+      Dynamic[
+       If[
+        Or[$CellContext`step$$ == 10, $CellContext`step$$ == 2], 0.01, 0]], 
+      Dynamic[
+       If[
+        Or[$CellContext`step$$ == 10, $CellContext`step$$ == 2], 0.99, 1]], 
+      0.01}, {{
+       Hold[$CellContext`height$$], 0, "pressure (bar)"}, 0, 6, 0.01}, {{
+       Hold[$CellContext`location$$], 1}, 0}, {{
+       Hold[$CellContext`step$$], 0}, 0, 50}, {
+      Hold[
+       Column[{
+         Manipulate`Place[1], 
+         Grid[{{
+            Manipulate`Place[2]}, {
+            Manipulate`Place[3], 
+            Button[
+            "reset", {$CellContext`comp$$ = 0.3, $CellContext`height$$ = 
+              0, $CellContext`location$$ = 1, $CellContext`step$$ = 0}], 
+            Manipulate`Place[4], 
+            Manipulate`Place[5]}}, Alignment -> Right]}, Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    409., {164., 169.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`T$192338$$ = 
+    0, $CellContext`comp$192339$$ = 0, $CellContext`height$192340$$ = 
+    0, $CellContext`step$192341$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`comp$$ = 0.3, $CellContext`height$$ = 
+        0, $CellContext`location$$ = 1, $CellContext`step$$ = 
+        0, $CellContext`T$$ = 120}, "ControllerVariables" :> {
+        Hold[$CellContext`T$$, $CellContext`T$192338$$, 0], 
+        Hold[$CellContext`comp$$, $CellContext`comp$192339$$, 0], 
+        Hold[$CellContext`height$$, $CellContext`height$192340$$, 0], 
+        Hold[$CellContext`step$$, $CellContext`step$192341$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`Psat1$, $CellContext`Psat2$, $CellContext`P$, \
+$CellContext`xp$, $CellContext`Py1$, $CellContext`Py2$, $CellContext`Pbp$, \
+$CellContext`R1$, $CellContext`R2$, $CellContext`R3$, $CellContext`R4$, \
+$CellContext`y1$, $CellContext`y2$, $CellContext`P1$, $CellContext`P2$, \
+$CellContext`phase$, $CellContext`RA$, $CellContext`RB$, $CellContext`RC$, \
+$CellContext`twoPhase$}, $CellContext`Psat1$ = 
+         10^(4.72583 - 1660.652/($CellContext`T$$ + 
+           271.5)); $CellContext`Psat2$ = 
+         10^(5.0768 - 1659.793/($CellContext`T$$ + 227.1)); $CellContext`P$ = 
+         ReplaceAll[$CellContext`p, 
+           
+           FindRoot[$CellContext`Psat1$/$CellContext`p == 
+            1 - $CellContext`Psat2$/$CellContext`p, {$CellContext`p, 
+             0.01}]]; $CellContext`xp$ = $CellContext`Psat1$/$CellContext`P$; \
+$CellContext`Py1$[
+           Pattern[$CellContext`y$, 
+            Blank[]]] = $CellContext`Psat1$/$CellContext`y$; $CellContext`Py2$[
+           Pattern[$CellContext`y$, 
+            Blank[]]] = $CellContext`Psat2$/(
+          1 - $CellContext`y$); $CellContext`Pbp$[
+           Pattern[$CellContext`y$, 
+            Blank[]]] = Piecewise[{{
+             $CellContext`Py2$[$CellContext`y$], 
+             0 <= $CellContext`y$ <= $CellContext`xp$}, {
+             $CellContext`Py1$[$CellContext`y$], 
+             
+             Inequality[$CellContext`xp$, Less, $CellContext`y$, LessEqual, 
+              1]}}]; $CellContext`P1$ = $CellContext`height$$ + 
+          1; $CellContext`P2$ = $CellContext`height$$; $CellContext`phase$[
+           Pattern[$CellContext`loc$, 
+            Blank[]]] = 
+         And[$CellContext`P2$ <= $CellContext`loc$, $CellContext`P1$ > \
+$CellContext`loc$]; If[
+          
+          And[$CellContext`step$$ == 
+           0, $CellContext`P1$ < $CellContext`Pbp$[$CellContext`comp$$]], \
+{$CellContext`location$$ = $CellContext`P1$, $CellContext`step$$ = 0}]; If[
+          And[
+           
+           Or[$CellContext`step$$ == 10, $CellContext`step$$ == 
+            1, $CellContext`step$$ == 
+            3], $CellContext`P2$ > $CellContext`P$], {$CellContext`location$$ = \
+$CellContext`P2$, $CellContext`step$$ = 4}]; 
+        If[$CellContext`step$$ == 
+          4, $CellContext`location$$ = $CellContext`P2$]; If[
+          And[
+           
+           Or[$CellContext`step$$ == 2, $CellContext`step$$ == 
+            11, $CellContext`step$$ == 
+            13], $CellContext`P1$ < $CellContext`Pbp$[$CellContext`comp$$]], \
+$CellContext`step$$ = 0]; If[0 < $CellContext`comp$$ < 1, {
+           If[
+            And[$CellContext`step$$ == 0, 
+             Inequality[
+              $CellContext`Pbp$[$CellContext`comp$$], 
+              LessEqual, $CellContext`P1$, 
+              Less, $CellContext`P$]], {$CellContext`location$$ = \
+$CellContext`P1$, $CellContext`step$$ = 2}], 
+           
+           If[$CellContext`step$$ == 
+            2, $CellContext`location$$ = $CellContext`P1$], 
+           If[
+            And[$CellContext`step$$ == 2, 
+             $CellContext`phase$[$CellContext`P$]], {$CellContext`location$$ = \
+$CellContext`P$, $CellContext`step$$ = 10}], 
+           
+           If[$CellContext`step$$ == 
+            10, $CellContext`location$$ = $CellContext`P$], 
+           If[
+            And[$CellContext`step$$ == 4, 
+             $CellContext`phase$[$CellContext`P$]], $CellContext`step$$ = 10], 
+           If[
+            And[$CellContext`step$$ == 10, 
+             Inequality[
+              $CellContext`Pbp$[$CellContext`comp$$], 
+              LessEqual, $CellContext`P1$, 
+              Less, $CellContext`P$]], $CellContext`step$$ = 2]}]; If[
+          Or[$CellContext`comp$$ == 0, $CellContext`comp$$ == 1], {
+           If[
+            And[$CellContext`step$$ == 0, 
+             $CellContext`phase$[
+              $CellContext`Pbp$[$CellContext`comp$$]]], \
+{$CellContext`location$$ = $CellContext`Pbp$[$CellContext`comp$$], 
+             
+             If[$CellContext`comp$$ == 0, $CellContext`step$$ = 
+              11, $CellContext`step$$ = 13]}], 
+           If[
+            
+            Or[$CellContext`step$$ == 11, $CellContext`step$$ == 
+             13], $CellContext`location$$ = \
+$CellContext`Pbp$[$CellContext`comp$$]], 
+           If[
+            And[
+             Or[$CellContext`step$$ == 11, $CellContext`step$$ == 13], 
+             Inequality[
+              $CellContext`Pbp$[$CellContext`comp$$], Less, $CellContext`P2$, 
+              LessEqual, $CellContext`P$]], {$CellContext`location$$ = \
+$CellContext`P2$, 
+             
+             If[$CellContext`comp$$ == 0, $CellContext`step$$ = 
+              1, $CellContext`step$$ = 3]}], 
+           If[
+            
+            Or[$CellContext`step$$ == 1, $CellContext`step$$ == 
+             3], $CellContext`location$$ = $CellContext`P2$], 
+           If[
+            And[$CellContext`step$$ == 4, 
+             Inequality[
+              $CellContext`Pbp$[$CellContext`comp$$], Less, $CellContext`P2$, 
+              LessEqual, $CellContext`P$]], 
+            
+            If[$CellContext`comp$$ == 0, $CellContext`step$$ = 
+             1, $CellContext`step$$ = 3]], 
+           If[
+            And[
+             Or[$CellContext`step$$ == 1, $CellContext`step$$ == 3], 
+             $CellContext`phase$[
+              $CellContext`Pbp$[$CellContext`comp$$]]], 
+            
+            If[$CellContext`comp$$ == 0, $CellContext`step$$ = 
+             11, $CellContext`step$$ = 
+             13]]}]; $CellContext`R1$ = $CellContext`location$$ < \
+$CellContext`Pbp$[$CellContext`comp$$]; $CellContext`R2$ = And[
+           Inequality[
+           0, Less, $CellContext`comp$$, LessEqual, $CellContext`xp$], 
+           Inequality[
+            $CellContext`Pbp$[$CellContext`comp$$], 
+            LessEqual, $CellContext`location$$, 
+            Less, $CellContext`P$]]; $CellContext`R3$ = 
+         And[$CellContext`xp$ < $CellContext`comp$$ < 1, 
+           Inequality[
+            $CellContext`Pbp$[$CellContext`comp$$], 
+            LessEqual, $CellContext`location$$, 
+            Less, $CellContext`P$]]; $CellContext`R4$ = $CellContext`P$ < \
+$CellContext`location$$; $CellContext`RA$ = 
+         And[$CellContext`comp$$ == 
+           0, $CellContext`Pbp$[$CellContext`comp$$] <= \
+$CellContext`location$$ <= $CellContext`P$]; $CellContext`RB$ = 
+         And[$CellContext`comp$$ == 
+           1, $CellContext`Pbp$[$CellContext`comp$$] <= \
+$CellContext`location$$ <= $CellContext`P$]; $CellContext`RC$ = 
+         And[0 < $CellContext`comp$$ < 
+           1, $CellContext`location$$ == $CellContext`P$]; $CellContext`y1$ = 
+         If[$CellContext`R2$, 
+           ReplaceAll[$CellContext`y, 
+            Quiet[
+             
+             FindRoot[$CellContext`location$$ == \
+$CellContext`Py2$[$CellContext`y], {$CellContext`y, $CellContext`xp$}]]], 
+           1]; $CellContext`y2$ = If[$CellContext`R3$, 
+           ReplaceAll[$CellContext`y, 
+            Quiet[
+             
+             FindRoot[$CellContext`location$$ == \
+$CellContext`Py1$[$CellContext`y], {$CellContext`y, $CellContext`xp$}]]], 0]; 
+        Show[
+          Plot[
+           $CellContext`Pbp$[$CellContext`y], {$CellContext`y, 0, 1}, 
+           PlotStyle -> {{Thick, Black}, {Thick, Black}}], 
+          Graphics[{
+            Text[
+             Framed[
+              Style[
+               
+               Grid[{{"location =", $CellContext`location$$}, {
+                 "step =", $CellContext`step$$}}, Alignment -> "="], 15], 
+              Background -> LightYellow], {0.8, 6}], {Thick, 
+             Line[{{0, $CellContext`P$}, {1, $CellContext`P$}}], 
+             Line[{{0, 6.8}, {0, 
+                $CellContext`Py2$[0]}}], 
+             Line[{{1, 6.8}, {1, 
+                $CellContext`Py1$[1]}}]}, 
+            Text[
+             Style["vapor", 17, 
+              GrayLevel[0.3]], {0.9, 0.5}], 
+            Text[
+             Style["two immiscile liquids", 17, 
+              GrayLevel[0.3]], {0.23, 6.3}], {
+             PointSize[0.02], 
+             Point[{$CellContext`comp$$, $CellContext`location$$}]}}], 
+          Graphics[{
+            Text[
+             Style["R1", 15, 
+              If[$CellContext`R1$, {Bold, Blue}, Black]], {0.5, 0.5}], 
+            Text[
+             Style["R2", 15, 
+              If[$CellContext`R2$, {Bold, Blue}, Black]], {
+             0.05, 0.5 ($CellContext`P$ + $CellContext`Py2$[0])}], 
+            Text[
+             Style["R3", 15, 
+              If[$CellContext`R3$, {Bold, Blue}, Black]], {
+             0.95, 0.5 ($CellContext`P$ + $CellContext`Py1$[1])}], 
+            Text[
+             Style["R4", 15, 
+              If[$CellContext`R4$, {Bold, Blue}, Black]], {0.5, 6.25}]}], 
+          Frame -> True, LabelStyle -> {Black, 13}, Axes -> False, ImageSize -> 
+          0.95 {430, 350}, PlotLabel -> Style["benzene + water", 17], 
+          PlotRange -> {{0, 1}, {0.3, 6.5}}, FrameLabel -> {
+            Style["benzene mole fraction", 17], 
+            Style["pressure (bar)", 17]}]], 
+      "Specifications" :> {{{$CellContext`T$$, 120, 
+          "temperature (\[Degree]C)"}, 100, 125, 1, Appearance -> "Labeled", 
+         ControlPlacement -> 
+         1}, {{$CellContext`comp$$, 0.3, "benzene composition"}, 
+         Dynamic[
+          If[
+           Or[$CellContext`step$$ == 10, $CellContext`step$$ == 2], 0.01, 0]], 
+         Dynamic[
+          If[
+           Or[$CellContext`step$$ == 10, $CellContext`step$$ == 2], 0.99, 1]],
+          0.01, Appearance -> "Labeled", Enabled -> Dynamic[
+           If[
+            
+            Or[$CellContext`step$$ == 1, $CellContext`step$$ == 
+             11, $CellContext`step$$ == 3, $CellContext`step$$ == 13], False, 
+            True]], ControlPlacement -> 
+         2}, {{$CellContext`height$$, 0, "pressure (bar)"}, 0, 6, 0.01, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         3}, {{$CellContext`location$$, 1}, 0, ControlType -> None, 
+         ControlPlacement -> 4}, {{$CellContext`step$$, 0}, 0, 50, 
+         ControlType -> None, ControlPlacement -> 5}, 
+        Column[{
+          Manipulate`Place[1], 
+          Grid[{{
+             Manipulate`Place[2]}, {
+             Manipulate`Place[3], 
+             Button[
+             "reset", {$CellContext`comp$$ = 0.3, $CellContext`height$$ = 
+               0, $CellContext`location$$ = 1, $CellContext`step$$ = 0}], 
+             Manipulate`Place[4], 
+             Manipulate`Place[5]}}, Alignment -> Right]}, Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{476., {239., 246.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.63430801253259*^9, 3.634308043295349*^9, 3.634308082834611*^9, 
+   3.6343082391855536`*^9, 3.6343082735165167`*^9, 3.6343083076194677`*^9, 
+   3.63430834158141*^9, 3.6343085068578634`*^9, 3.6343090079385233`*^9, 
+   3.634310330888192*^9, {3.6343134517989264`*^9, 3.6343134634745936`*^9}, 
+   3.634313704205363*^9, 3.6343150439629927`*^9, 3.6343152660786967`*^9, 
+   3.634316278795621*^9, 3.634316336881943*^9, {3.6343163919050903`*^9, 
+   3.6343164026377044`*^9}, 3.6343165357973204`*^9, {3.6343165943326683`*^9, 
+   3.634316611104628*^9}, 3.63431674453826*^9, 3.6343179400716405`*^9, 
+   3.6343179970478992`*^9, {3.6343183133799925`*^9, 3.6343183430306883`*^9}, {
+   3.6343184542130475`*^9, 3.6343185143864894`*^9}, {3.6343190146631036`*^9, 
+   3.6343190405235825`*^9}, {3.634319078532757*^9, 3.634319089834403*^9}, {
+   3.634319120532159*^9, 3.634319156648225*^9}, 3.6343192205158777`*^9, 
+   3.63431943174996*^9, 3.6343194906193266`*^9, 3.634319577503296*^9, 
+   3.634319619597704*^9, 3.634320029851169*^9, 3.6343202801754866`*^9, 
+   3.634320410027914*^9, 3.6343204892594457`*^9, 3.6343208409745626`*^9, 
+   3.634321015905568*^9, 3.6343211633029985`*^9, 3.6343223582553463`*^9, 
+   3.6343224275303087`*^9, 3.634323355338376*^9, 3.634323431163713*^9, 
+   3.634323562341216*^9, 3.634323828918463*^9, 3.634324429537817*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"height", ",", "1", ",", "\"\<pressure (bar)\>\""}], "}"}], 
+      ",", "1", ",", "6", ",", "0.01", ",", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+      RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}], ","}], 
+  "*)"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{
+   RowBox[{"R1", "=", 
+    RowBox[{"location", "<", 
+     RowBox[{"Pbp", "[", "z", "]"}]}]}], ";", "\[IndentingNewLine]", 
+   RowBox[{"R2", "=", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"0", "\[LessEqual]", "z", "\[LessEqual]", "xp"}], ")"}], 
+     "\[And]", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"Py2", "[", "z", "]"}], "\[LessEqual]", "location", 
+       "\[LessEqual]", "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+   RowBox[{"R3", "=", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"xp", "<", "z", "\[LessEqual]", "1"}], ")"}], "\[And]", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"Py1", "[", "z", "]"}], "\[LessEqual]", "location", 
+       "\[LessEqual]", "P"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+   RowBox[{"R4", "=", 
+    RowBox[{"P", "<", "location"}]}], ";", "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"y1", "=", 
+    RowBox[{"If", "[", 
+     RowBox[{"R2", ",", 
+      RowBox[{"y", "/.", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{"location", "\[Equal]", 
+           RowBox[{"Py2", "[", "y", "]"}]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "1"}], "]"}]}], 
+   ";", "\[IndentingNewLine]", 
+   RowBox[{"y2", "=", 
+    RowBox[{"If", "[", 
+     RowBox[{"R3", ",", 
+      RowBox[{"y", "/.", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{"location", "\[Equal]", 
+           RowBox[{"Py1", "[", "y", "]"}]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "0"}], "]"}]}], 
+   ";"}], "*)"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{
+   RowBox[{"Graphics", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Text", "[", 
+       RowBox[{
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<R1\>\"", ",", "15", ",", 
+          RowBox[{"If", "[", 
+           RowBox[{"R1", ",", 
+            RowBox[{"{", 
+             RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], "]"}]}], 
+         "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"0.5", ",", "0.5"}], "}"}]}], "]"}], ",", 
+      RowBox[{"Text", "[", 
+       RowBox[{
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<R2\>\"", ",", "15", ",", 
+          RowBox[{"If", "[", 
+           RowBox[{"R2", ",", 
+            RowBox[{"{", 
+             RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], "]"}]}], 
+         "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"0.05", ",", 
+          RowBox[{"0.5", "*", 
+           RowBox[{"(", 
+            RowBox[{"P", "+", 
+             RowBox[{"Py2", "[", "0", "]"}]}], ")"}]}]}], "}"}]}], "]"}], ",", 
+      RowBox[{"Text", "[", 
+       RowBox[{
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<R3\>\"", ",", "15", ",", 
+          RowBox[{"If", "[", 
+           RowBox[{"R3", ",", 
+            RowBox[{"{", 
+             RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], "]"}]}], 
+         "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"0.95", ",", 
+          RowBox[{"0.5", "*", 
+           RowBox[{"(", 
+            RowBox[{"P", "+", 
+             RowBox[{"Py1", "[", "1", "]"}]}], ")"}]}]}], "}"}]}], "]"}], ",", 
+      RowBox[{"Text", "[", 
+       RowBox[{
+        RowBox[{"Style", "[", 
+         RowBox[{"\"\<R4\>\"", ",", "15", ",", 
+          RowBox[{"If", "[", 
+           RowBox[{"R4", ",", 
+            RowBox[{"{", 
+             RowBox[{"Bold", ",", "Blue"}], "}"}], ",", "Black"}], "]"}]}], 
+         "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"0.5", ",", "6.25"}], "}"}]}], "]"}]}], "}"}], "]"}], ","}], 
+  "*)"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{"Control", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"comp", ",", "0.3", ",", "\"\<benzene composition\>\""}], "}"}],
+      ",", "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"step", "\[Equal]", "10"}], "\[Or]", 
+        RowBox[{"step", "\[Equal]", "2"}]}], ",", "0.01", ",", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"step", "\[Equal]", "13"}], "\[Or]", 
+          RowBox[{"step", "\[Equal]", "3"}]}], ",", "1", ",", "0"}], "]"}], 
+       ",", "0"}], "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"step", "\[Equal]", "10"}], "\[Or]", 
+        RowBox[{"step", "\[Equal]", "2"}]}], ",", "0.99", ",", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"step", "\[Equal]", "11"}], "\[Or]", 
+          RowBox[{"step", "\[Equal]", "1"}]}], ",", "0", ",", "1"}], "]"}], 
+       ",", "1"}], "]"}], ",", "0.01", ",", 
+     RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}], 
+  "*)"}]], "Input",
+ CellChangeTimes->{{3.63432349003508*^9, 3.634323492323211*^9}}]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.0 for Microsoft Windows (64-bit) (December 4, 2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 346, 6, 30, "Text"],
+Cell[CellGroupData[{
+Cell[929, 30, 27394, 640, 1732, "Input"],
+Cell[28326, 672, 14804, 313, 502, "Output"]
+}, Open  ]],
+Cell[43145, 988, 400, 11, 31, "Input"],
+Cell[43548, 1001, 1707, 49, 152, "Input"],
+Cell[45258, 1052, 1980, 58, 52, "Input"],
+Cell[47241, 1112, 1218, 32, 72, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

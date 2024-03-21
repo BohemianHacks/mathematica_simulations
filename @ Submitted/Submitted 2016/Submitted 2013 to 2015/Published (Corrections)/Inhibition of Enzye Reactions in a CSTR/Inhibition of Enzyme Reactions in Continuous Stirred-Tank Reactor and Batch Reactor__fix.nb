@@ -1,0 +1,1705 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.4' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     65725,       1697]
+NotebookOptionsPosition[     60852,       1547]
+NotebookOutlinePosition[     62452,       1597]
+CellTagsIndexPosition[     62124,       1585]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Inhibition of Enzyme Reactions in Continuous Stirred-Tank Reactor and Batch \
+Reactor\
+\>", "DemoTitle",
+ CellChangeTimes->{3.668961836630413*^9}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "Vmax", ",", "Ki", ",", "Km", ",", "\[Tau]", ",", "Csi", ",", "rs", ",",
+        "sol", ",", "p1", ",", "p2"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Vmax", "=", "1.33"}], ";", 
+      RowBox[{"Ki", "=", "0.36"}], ";", 
+      RowBox[{"Km", "=", "0.4"}], ";", 
+      RowBox[{"\[Tau]", "=", "2.65"}], ";", 
+      RowBox[{"Csi", "=", "0.9"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rs", "[", "1", "]"}], "=", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"Vmax", "*", 
+          RowBox[{"Cs", "[", "t", "]"}]}], 
+         RowBox[{
+          RowBox[{"Cs", "[", "t", "]"}], "+", 
+          RowBox[{"Km", "*", 
+           RowBox[{"(", 
+            RowBox[{"1", "+", 
+             RowBox[{"Ci", "/", "Ki"}]}], ")"}]}]}]]}]}], ";", 
+      RowBox[{"(*", "competitive", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rs", "[", "2", "]"}], "=", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"Vmax", "*", 
+          RowBox[{"Cs", "[", "t", "]"}]}], 
+         RowBox[{"Km", "+", 
+          RowBox[{
+           RowBox[{"Cs", "[", "t", "]"}], "*", 
+           RowBox[{"(", 
+            RowBox[{"1", "+", 
+             RowBox[{"Ci", "/", "Ki"}]}], ")"}]}]}]]}]}], ";", 
+      RowBox[{"(*", "uncompetitive", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rs", "[", "3", "]"}], "=", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"Vmax", "*", 
+          RowBox[{"Cs", "[", "t", "]"}]}], 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"Cs", "[", "t", "]"}], "+", "Km"}], ")"}], "*", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"Ci", "/", "Ki"}]}], ")"}]}]]}]}], ";", 
+      RowBox[{"(*", "noncompetitive", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rs", "[", "4", "]"}], "=", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"Vmax", "*", 
+          RowBox[{"Cs", "[", "t", "]"}]}], 
+         RowBox[{"Km", "+", 
+          RowBox[{"Cs", "[", "t", "]"}]}]]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"no", " ", "competitor"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"sol", "[", "i_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"NDSolve", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"Cs", "'"}], "[", "t", "]"}], "\[Equal]", 
+             RowBox[{
+              RowBox[{"rs", "[", "i", "]"}], "+", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"reactor", "\[Equal]", "1"}], ",", 
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{"Csi", "-", 
+                   RowBox[{"Cs", "[", "t", "]"}]}], ")"}], "/", "\[Tau]"}], 
+                ",", "0"}], "]"}]}]}], ",", 
+            RowBox[{
+             RowBox[{"Cs", "[", "0", "]"}], "\[Equal]", "Cs0"}]}], "}"}], ",",
+           "Cs", ",", 
+          RowBox[{"{", 
+           RowBox[{"t", ",", "0", ",", "10"}], "}"}]}], "]"}], "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"p1", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"Evaluate", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"Cs", "[", "t", "]"}], "/.", 
+             RowBox[{"sol", "[", "#", "]"}]}], "&"}], "/@", 
+           RowBox[{"Range", "@", "4"}]}], "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", "0", ",", "10"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"Thick", ",", "#"}], "}"}], "&"}], "/@", 
+            RowBox[{"{", 
+             RowBox[{"Blue", ",", "Green", ",", "Orange", ",", 
+              RowBox[{"Hue", "@", "0.82"}]}], "}"}]}], ")"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "0.01"}], "/", "Cs0"}], ",", "Cs0"}], "}"}]}], 
+           "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<time (min)\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{"\"\<substrate concentration (kmol/\>\"", ",", 
+                 RowBox[{"Superscript", "[", 
+                  RowBox[{"\"\<m\>\"", ",", "3"}], "]"}], ",", "\"\<)\>\""}], 
+                "}"}]}], ",", "17"}], "]"}]}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"14", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"50", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"50", ",", "5"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"PlotRangePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"None", ",", 
+            RowBox[{"Scaled", "@", "0.03"}]}], "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "400"}], "}"}]}], ",", 
+         RowBox[{"PlotLabel", "\[Rule]", 
+          RowBox[{"Style", "[", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Row", "@", 
+             RowBox[{"Delete", "[", 
+              RowBox[{
+               RowBox[{"Flatten", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<-\>\"", ",", "25", ",", "Bold", ",", "#2"}], 
+                    "]"}], ",", "\"\< \>\"", ",", "#1", ",", 
+                    RowBox[{"Spacer", "@", "15"}]}], "}"}], "&"}], "@@@", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"\"\<competitive\>\"", ",", "Blue"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<uncompetitive\>\"", ",", "Green"}], "}"}], 
+                   ",", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<noncompetitive\>\"", ",", "Orange"}], "}"}], 
+                   ",", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<no competitor\>\"", ",", 
+                    RowBox[{"Hue", "@", "0.82"}]}], "}"}]}], "}"}]}], "]"}], 
+               ",", 
+               RowBox[{"-", "1"}]}], "]"}]}], ",", "17"}], "]"}]}]}], "]"}]}],
+       ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p2", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{"Text", "@", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+             RowBox[{"Column", "[", 
+              RowBox[{
+               RowBox[{"Flatten", "@", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"Plot", "[", 
+                    RowBox[{
+                    RowBox[{"Evaluate", "[", 
+                    RowBox[{
+                    RowBox[{"Cs", "[", "t", "]"}], "/.", 
+                    RowBox[{"sol", "[", "path", "]"}]}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"t", ",", "0", ",", "10"}], "}"}], ",", 
+                    RowBox[{"PlotStyle", "\[Rule]", 
+                    RowBox[{"{", 
+                    RowBox[{"Thick", ",", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Blue", ",", "Green", ",", "Orange", ",", 
+                    RowBox[{"Hue", "@", "0.82"}]}], "}"}], "[", 
+                    RowBox[{"[", "path", "]"}], "]"}]}], "}"}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"PlotRange", "\[Rule]", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0", ",", "10"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"-", "0.01"}], "/", "Cs0"}], ",", "Cs0"}], 
+                    "}"}]}], "}"}]}], ",", 
+                    RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+                    RowBox[{"FrameTicks", "\[Rule]", "None"}], ",", 
+                    RowBox[{"FrameLabel", "\[Rule]", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<time (min)\>\"", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<C\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<S\>\""}], "]"}], ",", "\"\< (kmol/\>\"", ",", 
+                    RowBox[{"Superscript", "[", 
+                    RowBox[{"\"\<m\>\"", ",", "3"}], "]"}], ",", 
+                    "\"\<)\>\""}], "}"}]}]}], "}"}]}], ",", 
+                    RowBox[{"LabelStyle", "\[Rule]", 
+                    RowBox[{"{", 
+                    RowBox[{"14", ",", "Black"}], "}"}]}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"#", ",", "#"}], "}"}], "&"}], "@", "150"}], 
+                    ")"}]}], ",", 
+                    RowBox[{"AspectRatio", "\[Rule]", "1"}], ",", 
+                    RowBox[{"PlotRangePadding", "\[Rule]", 
+                    RowBox[{"{", 
+                    RowBox[{"None", ",", 
+                    RowBox[{"Scaled", "@", "0.03"}]}], "}"}]}]}], "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Spacer", "[", "40", "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Column", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<reaction path\>\"", ",", "Bold"}], "]"}], 
+                    ",", 
+                    RowBox[{"Spacer", "[", "0", "]"}], ",", 
+                    RowBox[{"Switch", "[", 
+                    RowBox[{"path", ",", "\[IndentingNewLine]", "1", ",", 
+                    RowBox[{"Grid", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{
+                    "{", "\"\<E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P\>\
+\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<+\>\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<I\>\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<\[UpEquilibrium]\>\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<E\[CenterDot]I\>\"", "}"}]}], "}"}], 
+                    ",", 
+                    RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], ",", 
+                    "\[IndentingNewLine]", "2", ",", 
+                    RowBox[{"Grid", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{
+                    "{", "\"\<E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P\>\
+\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<+\>\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<I\>\"", "}"}], ",", 
+                    RowBox[{"{", "\"\<\[UpEquilibrium]\>\"", "}"}], ",", 
+                    RowBox[{
+                    "{", "\"\<E\[CenterDot]S\[CenterDot]I\>\"", "}"}]}], 
+                    "}"}], "]"}], ",", "\[IndentingNewLine]", "3", ",", 
+                    RowBox[{"Grid", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<E+S \[Equilibrium]\>\"", ",", 
+                    "\"\<E\[CenterDot]S \[Rule] E+P\>\""}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<+\>\"", ",", "\"\<+\>\""}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<I\>\"", ",", "\"\<I\>\""}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<\[UpEquilibrium]\>\"", ",", 
+                    "\"\<\[UpEquilibrium]\>\""}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<E\[CenterDot]I+S \[Equilibrium]\>\"", ",", 
+                    "\"\<E\[CenterDot]S\[CenterDot]I\>\""}], "}"}]}], "}"}], 
+                    ",", 
+                    RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}], ",", 
+                    "\[IndentingNewLine]", "4", ",", 
+                    RowBox[{"Grid", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{
+                    "{", "\"\<E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P\>\
+\"", "}"}], ",", 
+                    RowBox[{"{", "}"}], ",", 
+                    RowBox[{"{", "}"}], ",", 
+                    RowBox[{"{", "}"}], ",", 
+                    RowBox[{"{", "}"}]}], "}"}], "]"}]}], "]"}]}], 
+                    "\[IndentingNewLine]", "}"}], ",", "Center"}], "]"}], ",",
+                     "\[IndentingNewLine]", 
+                    RowBox[{"Spacer", "[", "40", "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Column", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<reaction steps\>\"", ",", "Bold"}], "]"}], 
+                    ",", 
+                    RowBox[{"Spacer", "[", "0", "]"}], ",", 
+                    RowBox[{"Switch", "[", 
+                    RowBox[{"path", ",", "\[IndentingNewLine]", "1", ",", 
+                    RowBox[{"Column", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<(1)  E+S \[Rule] E\[CenterDot]S\>\"", ",", 
+                    "\"\<(2)  E\[CenterDot]S \[Rule] E+S\>\"", ",", 
+                    "\"\<(3)  E\[CenterDot]S \[Rule] P+E\>\"", ",", 
+                    "\"\<(4)  I+E \[Rule] E\[CenterDot]I  (inactive)\>\"", 
+                    ",", "\"\<(5)  E\[CenterDot]I \[Rule] E+I\>\""}], "}"}]}],
+                     ",", "\[IndentingNewLine]", "2", ",", 
+                    RowBox[{"Column", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<(1)  E+S \[Rule] E\[CenterDot]S\>\"", ",", 
+                    "\"\<(2)  E\[CenterDot]S \[Rule] E+S\>\"", ",", 
+                    "\"\<(3)  E\[CenterDot]S \[Rule] P+E\>\"", ",", 
+                    "\"\<(4)  I+E\[CenterDot]S \[Rule] I\[CenterDot]E\
+\[CenterDot]S (inactive)\>\"", ",", 
+                    "\"\<(5)  I\[CenterDot]E\[CenterDot]S \[Rule] I+E\
+\[CenterDot]S\>\""}], "}"}]}], ",", "\[IndentingNewLine]", "3", ",", 
+                    RowBox[{"Column", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<(1)  E+S \[Equilibrium] E\[CenterDot]S\>\"", ",", 
+                    "\"\<(2)  E+I \[Equilibrium] I\[CenterDot]E \
+(inactive)\>\"", ",", 
+                    "\"\<(3)  I+E\[CenterDot]S \[Equilibrium] I\[CenterDot]E\
+\[CenterDot]S (inactive)\>\"", ",", 
+                    "\"\<(4)  S+I\[CenterDot]E \[Equilibrium] I\[CenterDot]E\
+\[CenterDot]S (inactive)\>\"", ",", 
+                    "\"\<(5)  E\[CenterDot]S \[Rule] P+E\>\""}], "}"}]}], ",",
+                     "\[IndentingNewLine]", "4", ",", 
+                    RowBox[{"Column", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    "\"\<(1)  E+S \[Rule] E\[CenterDot]S\>\"", ",", 
+                    "\"\<(2)  E\[CenterDot]S \[Rule] E+S\>\"", ",", 
+                    "\"\<(3)  E\[CenterDot]S \[Rule] E+P\>\"", ",", 
+                    "\"\<(4)  E+P \[Rule] E\[CenterDot]S\>\"", ",", 
+                    "\"\< \>\""}], "}"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+                    "}"}], "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"ConstantArray", "[", 
+                   RowBox[{
+                    RowBox[{"Spacer", "[", "0", "]"}], ",", "2"}], "]"}], ",",
+                   "\[IndentingNewLine]", 
+                  RowBox[{"InsertLinebreaks", "[", 
+                   RowBox[{
+                    RowBox[{"Switch", "[", 
+                    RowBox[{
+                    "path", ",", "\[IndentingNewLine]", "1", ",", 
+                    "\"\<In competitive inhibition, the substrate molecule \
+(S) and an inhibitor molecule (I) compete for the enzyme molecule (E) to form \
+either an enzyme-substrate (E\[CenterDot]S) or an enzyme-inhibitor (E\
+\[CenterDot]I) complex.\>\"", ",", "\[IndentingNewLine]", "2", ",", 
+                    "\"\<In uncompetitive inhibition, the inhibitor (I) does \
+not compete with the substrate (S) for the enzyme (E). Instead, the inhibitor \
+(I) reacts with the enzyme-substrate complex (E\[CenterDot]S) to form the \
+inactive enzyme-inhibitor-substrate complex \
+(E\[CenterDot]I\[CenterDot]S).\>\"", ",", "\[IndentingNewLine]", "3", ",", 
+                    
+                    "\"\<In noncompetitive, or mixed inhibition, the \
+inhibitor (I) can attack either the enzyme (E) or the enzyme-substrate \
+complex (E\[CenterDot]S). The deactivating complex \
+(E\[CenterDot]I\[CenterDot]S) can form two ways: (1) the inhibitor (I) \
+attaches to the enzyme-substrate complex (E\[CenterDot]S), or (2) the \
+substrate (S) attaches to the enzyme-inhibitor complex (I\[CenterDot]E).\>\"",
+                     ",", "\[IndentingNewLine]", "4", ",", 
+                    "\"\<No inhibitor is present in this case. The substrate \
+molecule (S) attaches to the active site of the enzyme molecule (E) to form \
+the enzyme-substrate complex (E\[CenterDot]S).\>\""}], "\[IndentingNewLine]", 
+                    "]"}], ",", "85"}], "]"}]}], "}"}]}], ",", "Center"}], 
+              "]"}], ",", "17"}], "]"}]}], "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "400"}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", 
+       RowBox[{
+        RowBox[{"Switch", "[", 
+         RowBox[{"view", ",", "1", ",", "p1", ",", "2", ",", "p2"}], "]"}], 
+        ",", 
+        RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{"{", 
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"view", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\< plot \>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\< reaction pathway \>\""}]}], "}"}], 
+          ",", "Setter"}], "}"}], "]"}], ",", 
+       RowBox[{"Spacer", "[", "10", "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"PaneSelector", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"1", "\[Rule]", 
+           RowBox[{"Control", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"reactor", ",", "1", ",", "\"\<reactor type\>\""}], 
+               "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"1", "\[Rule]", "\"\<CSTR\>\""}], ",", 
+                RowBox[{"2", "\[Rule]", "\"\<batch\>\""}]}], "}"}], ",", 
+              "RadioButton"}], "}"}], "]"}]}], "}"}], ",", 
+         RowBox[{"Dynamic", "@", "view"}]}], "]"}]}], "\[IndentingNewLine]", 
+      "}"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"PaneSelector", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"1", "\[Rule]", 
+        RowBox[{"Grid", "[", 
+         RowBox[{"{", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{"\"\<concentration (kmol/\>\"", ",", 
+                 RowBox[{"Superscript", "[", 
+                  RowBox[{"\"\<m\>\"", ",", "3"}], "]"}], ",", "\"\<)\>\""}], 
+                "}"}]}], ",", "Bold"}], "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"Control", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"Cs0", ",", "1.3", ",", "\"\<initial substrate\>\""}],
+                 "}"}], ",", "0.9", ",", "20", ",", "0.1", ",", 
+               RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+               RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}], ",",
+             "\[IndentingNewLine]", 
+            RowBox[{"Control", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"Ci", ",", "1.5", ",", "\"\<inhibitor\>\""}], "}"}], 
+               ",", "1", ",", "10", ",", "0.1", ",", 
+               RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+               RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}], "}"}], "]"}]}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"2", "\[Rule]", 
+        RowBox[{"Control", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"path", ",", "1", ",", "\"\<reaction pathway\>\""}], 
+            "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", "\"\<competitive\>\""}], ",", 
+             RowBox[{"2", "\[Rule]", "\"\<uncompetitive\>\""}], ",", 
+             RowBox[{"3", "\[Rule]", "\"\<noncompetitive (mixed)\>\""}], ",", 
+             RowBox[{"4", "\[Rule]", "\"\<no competitor\>\""}]}], "}"}], ",", 
+           "RadioButton"}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}], 
+     ",", 
+     RowBox[{"Dynamic", "@", "view"}]}], "]"}]}], "\[IndentingNewLine]", 
+  "]"}]], "Input",
+ CellChangeTimes->{
+  3.6689618482084465`*^9, {3.6695944942478294`*^9, 3.669594528931579*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`Ci$$ = 1.5, $CellContext`Cs0$$ = 
+    1.3, $CellContext`path$$ = 1, $CellContext`reactor$$ = 
+    1, $CellContext`view$$ = 1, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`view$$], 1, ""}, {
+      1 -> " plot ", 2 -> " reaction pathway "}}, {{
+       Hold[$CellContext`reactor$$], 1, "reactor type"}, {
+      1 -> "CSTR", 2 -> "batch"}}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Spacer[10], 
+          PaneSelector[{1 -> Manipulate`Place[2]}, 
+           Dynamic[$CellContext`view$$]]}}]], 
+      Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Cs0$$], 1.3, "initial substrate"}, 0.9, 20, 0.1}, {{
+       Hold[$CellContext`Ci$$], 1.5, "inhibitor"}, 1, 10, 0.1}, {{
+       Hold[$CellContext`path$$], 1, "reaction pathway"}, {
+      1 -> "competitive", 2 -> "uncompetitive", 3 -> "noncompetitive (mixed)",
+        4 -> "no competitor"}}, {
+      Hold[
+       PaneSelector[{1 -> Grid[{{
+             Style[
+              Row[{"concentration (kmol/", 
+                Superscript["m", 3], ")"}], Bold], 
+             Manipulate`Place[3], 
+             Manipulate`Place[4]}}], 2 -> Manipulate`Place[5]}, 
+        Dynamic[$CellContext`view$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = Automatic, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`view$3551$$ = 
+    False, $CellContext`reactor$3552$$ = False, $CellContext`Cs0$3553$$ = 
+    0, $CellContext`Ci$3554$$ = 0, $CellContext`path$3555$$ = False}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`Ci$$ = 1.5, $CellContext`Cs0$$ = 
+        1.3, $CellContext`path$$ = 1, $CellContext`reactor$$ = 
+        1, $CellContext`view$$ = 1}, "ControllerVariables" :> {
+        Hold[$CellContext`view$$, $CellContext`view$3551$$, False], 
+        Hold[$CellContext`reactor$$, $CellContext`reactor$3552$$, False], 
+        Hold[$CellContext`Cs0$$, $CellContext`Cs0$3553$$, 0], 
+        Hold[$CellContext`Ci$$, $CellContext`Ci$3554$$, 0], 
+        Hold[$CellContext`path$$, $CellContext`path$3555$$, False]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`Vmax$, $CellContext`Ki$, $CellContext`Km$, \
+$CellContext`\[Tau]$, $CellContext`Csi$, $CellContext`rs$, $CellContext`sol$, \
+$CellContext`p1$, $CellContext`p2$}, $CellContext`Vmax$ = 
+         1.33; $CellContext`Ki$ = 0.36; $CellContext`Km$ = 
+         0.4; $CellContext`\[Tau]$ = 2.65; $CellContext`Csi$ = 
+         0.9; $CellContext`rs$[
+          1] = -($CellContext`Vmax$ \
+$CellContext`Cs[$CellContext`t]/($CellContext`Cs[$CellContext`t] + \
+$CellContext`Km$ (1 + $CellContext`Ci$$/$CellContext`Ki$))); $CellContext`rs$[
+          2] = -($CellContext`Vmax$ \
+$CellContext`Cs[$CellContext`t]/($CellContext`Km$ + \
+$CellContext`Cs[$CellContext`t] (
+             1 + $CellContext`Ci$$/$CellContext`Ki$))); $CellContext`rs$[
+          3] = -($CellContext`Vmax$ \
+$CellContext`Cs[$CellContext`t]/(($CellContext`Cs[$CellContext`t] + \
+$CellContext`Km$) (
+            1 + $CellContext`Ci$$/$CellContext`Ki$))); $CellContext`rs$[
+          4] = -($CellContext`Vmax$ \
+$CellContext`Cs[$CellContext`t]/($CellContext`Km$ + \
+$CellContext`Cs[$CellContext`t])); $CellContext`sol$[
+           Pattern[$CellContext`i$, 
+            Blank[]]] := Part[
+           
+           NDSolve[{
+            Derivative[
+              1][$CellContext`Cs][$CellContext`t] == \
+$CellContext`rs$[$CellContext`i$] + 
+              If[$CellContext`reactor$$ == 
+                1, ($CellContext`Csi$ - \
+$CellContext`Cs[$CellContext`t])/$CellContext`\[Tau]$, 0], $CellContext`Cs[
+              0] == $CellContext`Cs0$$}, $CellContext`Cs, {$CellContext`t, 0, 
+             10}], 1]; $CellContext`p1$ = Plot[
+           Evaluate[
+            Map[ReplaceAll[
+              $CellContext`Cs[$CellContext`t], 
+              $CellContext`sol$[#]]& , 
+             Range[4]]], {$CellContext`t, 0, 10}, PlotStyle -> 
+           Map[{Thick, #}& , {Blue, Green, Orange, 
+              Hue[0.82]}], 
+           PlotRange -> {{0, 
+             10}, {(-0.01)/$CellContext`Cs0$$, $CellContext`Cs0$$}}, Frame -> 
+           True, FrameLabel -> {
+             Style["time (min)", 17], 
+             Style[
+              Row[{"substrate concentration (kmol/", 
+                Superscript["m", 3], ")"}], 17]}, LabelStyle -> {14, Black}, 
+           ImagePadding -> {{50, 10}, {50, 5}}, PlotRangePadding -> {None, 
+             Scaled[0.03]}, ImageSize -> {600, 400}, PlotLabel -> Style[
+             Row[
+              Delete[
+               Flatten[
+                Apply[{
+                  Style["-", 25, Bold, #2], " ", #, 
+                  Spacer[15]}& , {{"competitive", Blue}, {
+                  "uncompetitive", Green}, {"noncompetitive", Orange}, {
+                  "no competitor", 
+                   Hue[0.82]}}, {1}]], -1]], 17]]; $CellContext`p2$ = 
+         Graphics[{
+            Text[
+             Style[
+              Column[
+               Flatten[{
+                 Row[{
+                   Plot[
+                    Evaluate[
+                    ReplaceAll[
+                    $CellContext`Cs[$CellContext`t], 
+                    $CellContext`sol$[$CellContext`path$$]]], {$CellContext`t,
+                     0, 10}, PlotStyle -> {Thick, 
+                    Part[{Blue, Green, Orange, 
+                    Hue[0.82]}, $CellContext`path$$]}, 
+                    PlotRange -> {{0, 
+                    10}, {(-0.01)/$CellContext`Cs0$$, $CellContext`Cs0$$}}, 
+                    Frame -> True, FrameTicks -> None, 
+                    FrameLabel -> {"time (min)", 
+                    Row[{
+                    Subscript[
+                    Style["C", Italic], "S"], " (kmol/", 
+                    Superscript["m", 3], ")"}]}, LabelStyle -> {14, Black}, 
+                    ImageSize -> ({#, #}& )[150], AspectRatio -> 1, 
+                    PlotRangePadding -> {None, 
+                    Scaled[0.03]}], 
+                   Spacer[40], 
+                   Column[{
+                    Style["reaction path", Bold], 
+                    Spacer[0], 
+                    Switch[$CellContext`path$$, 1, 
+                    
+                    Grid[{{"E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P"}, {
+                    "+"}, {"I"}, {"\[UpEquilibrium]"}, {"E\[CenterDot]I"}}, 
+                    Alignment -> Left], 2, 
+                    
+                    Grid[{{"E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P"}, {
+                    "+"}, {"I"}, {"\[UpEquilibrium]"}, {
+                    "E\[CenterDot]S\[CenterDot]I"}}], 3, 
+                    
+                    Grid[{{"E+S \[Equilibrium]", 
+                    "E\[CenterDot]S \[Rule] E+P"}, {"+", "+"}, {"I", "I"}, {
+                    "\[UpEquilibrium]", "\[UpEquilibrium]"}, {
+                    "E\[CenterDot]I+S \[Equilibrium]", 
+                    "E\[CenterDot]S\[CenterDot]I"}}, Alignment -> Left], 4, 
+                    
+                    Grid[{{"E+S \[Equilibrium] E\[CenterDot]S \[Rule] E+P"}, \
+{}, {}, {}, {}}]]}, Center], 
+                   Spacer[40], 
+                   Column[{
+                    Style["reaction steps", Bold], 
+                    Spacer[0], 
+                    Switch[$CellContext`path$$, 1, 
+                    
+                    Column[{
+                    "(1)  E+S \[Rule] E\[CenterDot]S", 
+                    "(2)  E\[CenterDot]S \[Rule] E+S", 
+                    "(3)  E\[CenterDot]S \[Rule] P+E", 
+                    "(4)  I+E \[Rule] E\[CenterDot]I  (inactive)", 
+                    "(5)  E\[CenterDot]I \[Rule] E+I"}], 2, 
+                    
+                    Column[{
+                    "(1)  E+S \[Rule] E\[CenterDot]S", 
+                    "(2)  E\[CenterDot]S \[Rule] E+S", 
+                    "(3)  E\[CenterDot]S \[Rule] P+E", 
+                    "(4)  I+E\[CenterDot]S \[Rule] \
+I\[CenterDot]E\[CenterDot]S (inactive)", 
+                    "(5)  I\[CenterDot]E\[CenterDot]S \[Rule] \
+I+E\[CenterDot]S"}], 3, 
+                    
+                    Column[{
+                    "(1)  E+S \[Equilibrium] E\[CenterDot]S", 
+                    "(2)  E+I \[Equilibrium] I\[CenterDot]E (inactive)", 
+                    "(3)  I+E\[CenterDot]S \[Equilibrium] I\[CenterDot]E\
+\[CenterDot]S (inactive)", 
+                    "(4)  S+I\[CenterDot]E \[Equilibrium] I\[CenterDot]E\
+\[CenterDot]S (inactive)", "(5)  E\[CenterDot]S \[Rule] P+E"}], 4, 
+                    
+                    Column[{
+                    "(1)  E+S \[Rule] E\[CenterDot]S", 
+                    "(2)  E\[CenterDot]S \[Rule] E+S", 
+                    "(3)  E\[CenterDot]S \[Rule] E+P", 
+                    "(4)  E+P \[Rule] E\[CenterDot]S", " "}]]}]}], 
+                 ConstantArray[
+                  Spacer[0], 2], 
+                 InsertLinebreaks[
+                  
+                  Switch[$CellContext`path$$, 1, 
+                   "In competitive inhibition, the substrate molecule (S) and \
+an inhibitor molecule (I) compete for the enzyme molecule (E) to form either \
+an enzyme-substrate (E\[CenterDot]S) or an enzyme-inhibitor (E\[CenterDot]I) \
+complex.", 2, 
+                   "In uncompetitive inhibition, the inhibitor (I) does not \
+compete with the substrate (S) for the enzyme (E). Instead, the inhibitor (I) \
+reacts with the enzyme-substrate complex (E\[CenterDot]S) to form the \
+inactive enzyme-inhibitor-substrate complex (E\[CenterDot]I\[CenterDot]S).", 
+                   3, "In noncompetitive, or mixed inhibition, the inhibitor \
+(I) can attack either the enzyme (E) or the enzyme-substrate complex (E\
+\[CenterDot]S). The deactivating complex (E\[CenterDot]I\[CenterDot]S) can \
+form two ways: (1) the inhibitor (I) attaches to the enzyme-substrate complex \
+(E\[CenterDot]S), or (2) the substrate (S) attaches to the enzyme-inhibitor \
+complex (I\[CenterDot]E).", 4, 
+                   "No inhibitor is present in this case. The substrate \
+molecule (S) attaches to the active site of the enzyme molecule (E) to form \
+the enzyme-substrate complex (E\[CenterDot]S)."], 85]}], Center], 17]]}, 
+           ImageSize -> {600, 400}]; Show[
+          
+          Switch[$CellContext`view$$, 1, $CellContext`p1$, 
+           2, $CellContext`p2$], AspectRatio -> Full]], 
+      "Specifications" :> {{{$CellContext`view$$, 1, ""}, {
+         1 -> " plot ", 2 -> " reaction pathway "}, ControlType -> Setter, 
+         ControlPlacement -> 
+         1}, {{$CellContext`reactor$$, 1, "reactor type"}, {
+         1 -> "CSTR", 2 -> "batch"}, ControlType -> RadioButton, 
+         ControlPlacement -> 2}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Spacer[10], 
+           PaneSelector[{1 -> Manipulate`Place[2]}, 
+            Dynamic[$CellContext`view$$]]}}], {{$CellContext`Cs0$$, 1.3, 
+          "initial substrate"}, 0.9, 20, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 
+         3}, {{$CellContext`Ci$$, 1.5, "inhibitor"}, 1, 10, 0.1, Appearance -> 
+         "Labeled", ImageSize -> Small, ControlPlacement -> 
+         4}, {{$CellContext`path$$, 1, "reaction pathway"}, {
+         1 -> "competitive", 2 -> "uncompetitive", 3 -> 
+          "noncompetitive (mixed)", 4 -> "no competitor"}, ControlType -> 
+         RadioButton, ControlPlacement -> 5}, 
+        PaneSelector[{1 -> Grid[{{
+              Style[
+               Row[{"concentration (kmol/", 
+                 Superscript["m", 3], ")"}], Bold], 
+              Manipulate`Place[3], 
+              Manipulate`Place[4]}}], 2 -> Manipulate`Place[5]}, 
+         Dynamic[$CellContext`view$$]]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->6819830]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell["\<\
+Inhibitors decrease the rates of enzymatic reactions. Three types of \
+inhibition (competitive, uncompetitive, and noncompetitive/mixed) and a \
+reaction without inhibition are compared for an enzymatic reaction that obeys \
+Michaelis\[Dash]Menten kinetics. Substrate concentration is calculated as a \
+function of time for a continuous stirred-tank reactor (CSTR) and for a batch \
+reactor. Vary the inhibitor concentration, which remains constant during \
+reaction, with a slider. Select \"reaction pathway\" to see the reaction \
+steps, reaction pathways, and a brief description of the type of inhibition. \
+For nearly all reactor types and conditions, competitive inhibition results \
+in the least inhibition. In competitive inhibition, the inhibitor attacks the \
+enzyme in the first step to form an enzyme-inhibitor complex \
+(E\[CenterDot]I); to overcome inhibition, more substrate can be added. The \
+rate of substrate consumption for uncompetitive inhibition is greater than \
+the rate for noncompetitive inhibition. In uncompetitive inhibition, the \
+inhibitor reacts with the enzyme-substrate complex (E\[CenterDot]S), so \
+adding more substrate does not overcome this type of inhibition since the \
+inhibitor does not compete with the substrate for the enzyme active sites. In \
+noncompetitive inhibition, the inhibitor attacks the enzyme to form an \
+enzyme-inhibitor complex (E\[CenterDot]I) or it attacks the enzyme-substrate \
+complex (E\[CenterDot]S) to form an enzyme-substrate-inhibitor complex (E\
+\[CenterDot]S\[CenterDot]I).\
+\>", "ManipulateCaption",
+ CellChangeTimes->{3.66896185631347*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Thumbnail Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Snapshot Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell["\<\
+For a continuous-stirred tank reactor (CSTR) the material balance is written \
+in the form of a differential equation:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.668957212970442*^9}},
+ CellID->736388856],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{
+     RowBox[{
+      FractionBox["1", "\[Tau]"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["C", 
+         RowBox[{
+          StyleBox["S",
+           FontSlant->"Plain"], ",", 
+          StyleBox["i",
+           FontSlant->"Plain"]}]], "-", 
+        SubscriptBox["C", 
+         StyleBox["S",
+          FontSlant->"Plain"]]}], ")"}]}], "-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.6689573451587763`*^9}},
+ CellID->99642938],
+
+Cell["for a batch reactor the material balance is:", "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.6689573571935015`*^9}},
+ CellID->261448880],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{"-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.668957394548661*^9}},
+ CellID->379902371],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "j"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is concentration (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"kmol", "/", 
+    SuperscriptBox["m", "3"]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "), the subscript ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["S",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " refers to the substrate, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    RowBox[{
+     StyleBox["S",
+      FontSlant->"Plain"], ",", 
+     StyleBox["i",
+      FontSlant->"Plain"]}]], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is the inlet substrate concentration (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"kmol", "/", 
+    SuperscriptBox["m", "3"]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "), ",
+ Cell[BoxData[
+  FormBox["\[Tau]", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is residence time (min), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["r", 
+    StyleBox["S",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is the rate of substrate consumption for various types of inhibition (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"kmol", "/", 
+     SuperscriptBox["m", "3"]}], "/", "min"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "), and ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is time (min)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+   3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+   3.6689576389535904`*^9}, {3.668958602473255*^9, 3.6689586271357827`*^9}, 
+   3.668958670400592*^9},
+ CellID->438551960],
+
+Cell["The rate laws are different for each type of inhibition:", "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.6689577058311644`*^9}},
+ CellID->15705723],
+
+Cell[TextData[{
+ "competitive ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["V", "max"], " ", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]], "+", 
+      RowBox[{
+       SubscriptBox["K", 
+        StyleBox["M",
+         FontSlant->"Plain"]], " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         FractionBox[
+          SubscriptBox["C", 
+           StyleBox["I",
+            FontSlant->"Plain"]], 
+          SubscriptBox["K", 
+           StyleBox["I",
+            FontSlant->"Plain"]]]}], ")"}]}]}]]}], TraditionalForm]], 
+  "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.6689577624639535`*^9}},
+ CellID->4171365],
+
+Cell[TextData[{
+ "uncompetitive ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["V", "max"], " ", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{
+      SubscriptBox["K", 
+       StyleBox["M",
+        FontSlant->"Plain"]], "+", 
+      RowBox[{
+       SubscriptBox["C", 
+        StyleBox["S",
+         FontSlant->"Plain"]], " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         FractionBox[
+          SubscriptBox["C", 
+           StyleBox["I",
+            FontSlant->"Plain"]], 
+          SubscriptBox["K", 
+           StyleBox["I",
+            FontSlant->"Plain"]]]}], ")"}]}]}]]}], TraditionalForm]], 
+  "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.668957807232673*^9}},
+ CellID->412591573],
+
+Cell[TextData[{
+ "noncompetitive (mixed) ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["V", "max"], " ", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["C", 
+         StyleBox["S",
+          FontSlant->"Plain"]], "+", 
+        SubscriptBox["K", 
+         StyleBox["M",
+          FontSlant->"Plain"]]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        FractionBox[
+         SubscriptBox["C", 
+          StyleBox["I",
+           FontSlant->"Plain"]], 
+         SubscriptBox["K", 
+          StyleBox["I",
+           FontSlant->"Plain"]]]}], ")"}]}]]}], TraditionalForm]], 
+  "InlineMath",
+  FormatType->"TraditionalForm"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.6689578576553917`*^9}},
+ CellID->81578598],
+
+Cell[TextData[{
+ "no competitor",
+ " ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", 
+     SubscriptBox["r", 
+      StyleBox["S",
+       FontSlant->"Plain"]]}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["V", "max"], " ", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}], 
+     RowBox[{
+      SubscriptBox["K", 
+       StyleBox["M",
+        FontSlant->"Plain"]], "+", 
+      SubscriptBox["C", 
+       StyleBox["S",
+        FontSlant->"Plain"]]}]]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+   3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+   3.668958000282035*^9}, {3.668958492540354*^9, 3.668958492540354*^9}, {
+   3.6689586457837715`*^9, 3.6689586462347736`*^9}, 3.6695945237895164`*^9},
+ CellID->476006332],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["V", "max"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is the maximum rate of reaction (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"kmol", "/", 
+     SuperscriptBox["m", "3"]}], "/", "min"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["K", "j"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is the reaction constant (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"kmol", "/", 
+    SuperscriptBox["m", "3"]}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "), the subscript ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["M",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " refers to Michaelis constant, and the subscript ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["I",
+    FontSlant->"Plain"], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " refers to the inhibitor."
+}], "DetailNotes",
+ CellChangeTimes->{{3.668957122075712*^9, 3.6689571350993433`*^9}, {
+  3.668957177518493*^9, 3.66895724569798*^9}, {3.6689573094399524`*^9, 
+  3.668958000282035*^9}, {3.668958492540354*^9, 3.6689585967006693`*^9}},
+ CellID->185010928],
+
+Cell["Reference", "DetailNotes",
+ CellChangeTimes->{{3.600025259601015*^9, 3.6000255485585423`*^9}, {
+  3.6000256221087494`*^9, 3.600025653480544*^9}, {3.600025709684758*^9, 
+  3.600025714699045*^9}, {3.600025750461091*^9, 3.6000258655856757`*^9}, {
+  3.6000259016617393`*^9, 3.600025910443241*^9}, {3.600025946718316*^9, 
+  3.6000260235127087`*^9}, {3.6000260612478666`*^9, 3.60002616620487*^9}, {
+  3.6000270691315145`*^9, 3.6000271210054817`*^9}, {3.60018017291451*^9, 
+  3.6001801744886*^9}, {3.604662396173994*^9, 3.604662400700994*^9}},
+ CellID->446934744],
+
+Cell[TextData[{
+ "[1] H. S. Fogler, ",
+ StyleBox["Essentials of Chemical Reaction Engineering",
+  FontSlant->"Italic"],
+ ", Boston: Pearson Education, 2011 pp. 349\[Dash]370."
+}], "DetailNotes",
+ CellChangeTimes->{{3.600025259601015*^9, 3.6000255485585423`*^9}, {
+  3.6000256221087494`*^9, 3.600025653480544*^9}, {3.600025709684758*^9, 
+  3.600025714699045*^9}, {3.600025750461091*^9, 3.6000258655856757`*^9}, {
+  3.6000259016617393`*^9, 3.600025910443241*^9}, {3.600025946718316*^9, 
+  3.6000260235127087`*^9}, {3.6000260612478666`*^9, 3.60002616620487*^9}, {
+  3.6000270691315145`*^9, 3.6000271210054817`*^9}, {3.60018017291451*^9, 
+  3.6001801748856225`*^9}, {3.600180212036747*^9, 3.6001802619626026`*^9}, {
+  3.6046624021769943`*^9, 3.604662402748994*^9}, {3.60545905116475*^9, 
+  3.605459081594739*^9}, {3.605466673498238*^9, 3.6054666741836557`*^9}, {
+  3.605894521812263*^9, 3.6058945494930696`*^9}},
+ CellID->921429]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6689618699625053`*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.668961870785508*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.668961871191511*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.668961871599512*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.6001796928530517`*^9}},
+ CellID->200661117],
+
+Cell["reactor engineering", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.60017970226659*^9}},
+ CellID->305199504],
+
+Cell["inhibition", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.600179709887026*^9}, {
+  3.6010620899163265`*^9, 3.6010620899233274`*^9}},
+ CellID->144069816],
+
+Cell["enzyme kinetics", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.60017971258618*^9}, {
+  3.601062106306264*^9, 3.601062109295435*^9}},
+ CellID->73319332],
+
+Cell["Michaelis-Menten", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.6001797224887466`*^9}, {
+  3.601062119034992*^9, 3.6010621190409927`*^9}},
+ CellID->11177288],
+
+Cell["batch reactor", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.6001797224887466`*^9}, 
+   3.601062119034992*^9, {3.601064988359108*^9, 3.6010649941194377`*^9}, {
+   3.604083587173114*^9, 3.604083592141215*^9}},
+ CellID->621791679],
+
+Cell["CSTR", "SearchTerms",
+ CellChangeTimes->{{3.6001796864676867`*^9, 3.6001797224887466`*^9}, 
+   3.601062119034992*^9, {3.601064988359108*^9, 3.6010649941194377`*^9}, {
+   3.604083587173114*^9, 3.604083593645217*^9}},
+ CellID->132900738]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "RelatedLinksSection"],
+
+Cell[TextData[ButtonBox["Enzyme Inhibition Kinetics",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/EnzymeInhibitionKinetics/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/EnzymeInhibitionKinetics/"]], \
+"RelatedLinks",
+ CellChangeTimes->{{3.6054643612162046`*^9, 3.605464383763494*^9}},
+ CellID->212556006]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"]
+}], "Author",
+ CellChangeTimes->{{3.600179554862159*^9, 3.6001795719101343`*^9}, {
+  3.600179654559861*^9, 3.6001796589901147`*^9}, {3.66895827039494*^9, 
+  3.6689582711044483`*^9}},
+ CellID->297402353],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"]
+}], "Author",
+ CellID->79948379],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.600179554862159*^9, 3.6001795719101343`*^9}, {
+   3.600179654559861*^9, 3.600179679222272*^9}, {3.6006110221078844`*^9, 
+   3.600611042760066*^9}, 3.601062080514789*^9},
+ CellID->284360880]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.4 for Microsoft Windows (64-bit) (February 25, 2016)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[52075, 1297, 355, 9, 22, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[52433, 1308, 678, 16, 22, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[53114, 1326, 340, 11, 22, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[53457, 1339, 637, 15, 22, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[54097, 1356, 885, 22, 22, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[54985, 1380, 393, 10, 22, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[55381, 1392, 1505, 32, 22, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[56889, 1426, 908, 21, 22, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 61224, 1558},
+ {"RotateAndZoomIn3D", 61333, 1561},
+ {"DragLocators", 61443, 1564},
+ {"CreateAndDeleteLocators", 61559, 1567},
+ {"SliderZoom", 61673, 1570},
+ {"GamepadControls", 61779, 1573},
+ {"AutomaticAnimation", 61893, 1576},
+ {"BookmarkAnimation", 62010, 1579}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 156, 4, 74, "DemoTitle"],
+Cell[739, 28, 33, 0, 287, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[797, 32, 29, 0, 192, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[851, 36, 22979, 513, 1511, "Input"],
+Cell[23833, 551, 12582, 254, 37, "Output",
+ CellID->6819830]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36464, 811, 36, 0, 169, "ManipulateCaptionSection"],
+Cell[36503, 813, 1625, 23, 127, "ManipulateCaption"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38165, 841, 28, 0, 173, "ThumbnailSection"],
+Cell[38196, 843, 1242, 34, 230, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[39475, 882, 28, 0, 143, "SnapshotsSection"],
+Cell[39506, 884, 1241, 34, 230, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[40784, 923, 26, 0, 336, "DetailsSection"],
+Cell[40813, 925, 286, 6, 22, "DetailNotes",
+ CellID->736388856],
+Cell[41102, 933, 960, 33, 34, "DetailNotes",
+ CellID->99642938],
+Cell[42065, 968, 256, 4, 22, "DetailNotes",
+ CellID->261448880],
+Cell[42324, 974, 603, 20, 34, "DetailNotes",
+ CellID->379902371],
+Cell[42930, 996, 1898, 62, 45, "DetailNotes",
+ CellID->438551960],
+Cell[44831, 1060, 267, 4, 22, "DetailNotes",
+ CellID->15705723],
+Cell[45101, 1066, 1058, 39, 47, "DetailNotes",
+ CellID->4171365],
+Cell[46162, 1107, 1060, 39, 47, "DetailNotes",
+ CellID->412591573],
+Cell[47225, 1148, 1098, 40, 47, "DetailNotes",
+ CellID->81578598],
+Cell[48326, 1190, 872, 29, 37, "DetailNotes",
+ CellID->476006332],
+Cell[49201, 1221, 1304, 41, 26, "DetailNotes",
+ CellID->185010928],
+Cell[50508, 1264, 562, 8, 22, "DetailNotes",
+ CellID->446934744],
+Cell[51073, 1274, 925, 16, 22, "DetailNotes",
+ CellID->921429]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[52035, 1295, 37, 0, 126, "ControlSuggestionsSection"],
+Cell[52075, 1297, 355, 9, 22, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[52433, 1308, 678, 16, 22, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[53114, 1326, 340, 11, 22, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[53457, 1339, 637, 15, 22, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[54097, 1356, 885, 22, 22, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[54985, 1380, 393, 10, 22, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[55381, 1392, 1505, 32, 22, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[56889, 1426, 908, 21, 22, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[57834, 1452, 30, 0, 155, "SearchTermsSection"],
+Cell[57867, 1454, 133, 2, 22, "SearchTerms",
+ CellID->200661117],
+Cell[58003, 1458, 129, 2, 22, "SearchTerms",
+ CellID->305199504],
+Cell[58135, 1462, 174, 3, 22, "SearchTerms",
+ CellID->144069816],
+Cell[58312, 1467, 173, 3, 22, "SearchTerms",
+ CellID->73319332],
+Cell[58488, 1472, 179, 3, 22, "SearchTerms",
+ CellID->11177288],
+Cell[58670, 1477, 250, 4, 22, "SearchTerms",
+ CellID->621791679],
+Cell[58923, 1483, 241, 4, 22, "SearchTerms",
+ CellID->132900738]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[59201, 1492, 31, 0, 141, "RelatedLinksSection"],
+Cell[59235, 1494, 358, 8, 22, "RelatedLinks",
+ CellID->212556006]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[59630, 1507, 25, 0, 141, "AuthorSection"],
+Cell[59658, 1509, 500, 13, 22, "Author",
+ CellID->297402353],
+Cell[60161, 1524, 337, 10, 22, "Author",
+ CellID->79948379],
+Cell[60501, 1536, 323, 7, 22, "Author",
+ CellID->284360880]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

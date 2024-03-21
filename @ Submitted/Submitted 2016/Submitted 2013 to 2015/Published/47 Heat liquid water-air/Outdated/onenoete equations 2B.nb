@@ -1,0 +1,594 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     25355,        585]
+NotebookOptionsPosition[     25038,        569]
+NotebookOutlinePosition[     25377,        584]
+CellTagsIndexPosition[     25334,        581]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "P0", ",", "T0", ",", "R", ",", "vol2", ",", "Psat", ",", "P", ",", 
+       "nV", ",", "n0", ",", "kHO", ",", "kHN", ",", "sol", ",", "Oliq", ",", 
+       "Nliq", ",", "Ovap", ",", "Nvap"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"P0", "=", "1"}], ";", 
+      RowBox[{"(*", "bar", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"T0", "=", "25"}], ";", 
+      RowBox[{"(*", "\[Degree]C", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"R", "=", "0.08314"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"L", " ", 
+        RowBox[{
+         RowBox[{"bar", "/", "mol"}], "/", "K"}]}], "*)"}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"vol2", ":=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "1*^-11"}], "*", 
+           SuperscriptBox["T", "3"]}], "+", 
+          RowBox[{"6*^-9", "*", 
+           SuperscriptBox["T", "2"]}], "-", 
+          RowBox[{"2*^-8", "*", "T"}], "+", "0.001"}], ")"}], "*", "996.95", 
+        "*", "vol1"}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"L", ",", " ", "final"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Psat", ":=", 
+       RowBox[{"10", "^", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"T", "\[LessEqual]", "100"}], ",", 
+          RowBox[{"4.6543", "-", 
+           RowBox[{"1435.264", "/", 
+            RowBox[{"(", 
+             RowBox[{"T", "+", "208.2"}], ")"}]}]}], ",", 
+          RowBox[{"3.55959", "-", 
+           RowBox[{"643.748", "/", 
+            RowBox[{"(", 
+             RowBox[{"T", "+", "74.96"}], ")"}]}]}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"P", "[", "n_", "]"}], ":=", 
+       RowBox[{
+        FractionBox[
+         RowBox[{"n", "*", "R", "*", 
+          RowBox[{"(", 
+           RowBox[{"T", "+", "273"}], ")"}]}], 
+         RowBox[{"1", "-", "vol2"}]], "+", "Psat"}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"total", " ", "pressure"}], ",", " ", 
+        RowBox[{"water", "+", "air"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"nV", "[", "n_", "]"}], ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"P", "[", "n", "]"}], "-", "Psat"}], ")"}], "*", 
+         RowBox[{"(", 
+          RowBox[{"1", "-", "vol2"}], ")"}]}], 
+        RowBox[{"R", "*", 
+         RowBox[{"(", 
+          RowBox[{"T", "+", "273"}], ")"}]}]]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"mols", " ", "of", " ", "vapor"}], ",", " ", "air"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"n0", ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"P0", "-", "Psat"}], ")"}], "*", 
+         RowBox[{"(", 
+          RowBox[{"1", "-", "vol1"}], ")"}]}], 
+        RowBox[{"R", "*", 
+         RowBox[{"(", 
+          RowBox[{"T0", "+", "273"}], ")"}]}]]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"kHO", ":=", 
+       RowBox[{"0.001304", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"1700", "*", 
+          RowBox[{"(", 
+           RowBox[{
+            FractionBox["1", 
+             RowBox[{"T", "+", "273"}]], "-", 
+            FractionBox["1", "298"]}], ")"}]}], "]"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"mol", "/", "L"}], "/", "bar"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"kHN", ":=", 
+       RowBox[{"0.0006168", "*", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"1300", "*", 
+          RowBox[{"(", 
+           RowBox[{
+            FractionBox["1", 
+             RowBox[{"T", "+", "273"}]], "-", 
+            FractionBox["1", "298"]}], ")"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"sol", ":=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"ptv", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{
+             RowBox[{"Solve", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"o2", "\[Equal]", 
+                 RowBox[{"0.21", "*", "n0"}]}], "\[And]", 
+                RowBox[{"n2", "\[Equal]", 
+                 RowBox[{"0.79", "*", "n0"}]}], "\[And]", 
+                RowBox[{
+                 FractionBox["o1", "vol2"], "\[Equal]", 
+                 RowBox[{"kHO", "*", "0.21", "*", 
+                  RowBox[{"P", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}], "\[And]", 
+                RowBox[{
+                 FractionBox["n1", "vol2"], "\[Equal]", 
+                 RowBox[{"kHN", "*", "0.79", "*", 
+                  RowBox[{"P", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}]}], ",", 
+               RowBox[{"{", 
+                RowBox[{"o1", ",", "o2", ",", "n1", ",", "n2"}], "}"}]}], 
+              "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{
+             RowBox[{"Solve", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"o2", "\[Equal]", 
+                 RowBox[{"0.21", "*", 
+                  RowBox[{"nV", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}], "\[And]", 
+                RowBox[{"n2", "\[Equal]", 
+                 RowBox[{"0.79", "*", 
+                  RowBox[{"nV", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}], "\[And]", 
+                RowBox[{
+                 FractionBox["o1", "vol2"], "\[Equal]", 
+                 RowBox[{"kHO", "*", "0.21", "*", 
+                  RowBox[{"P", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}], "\[And]", 
+                RowBox[{
+                 FractionBox["n1", "vol2"], "\[Equal]", 
+                 RowBox[{"kHN", "*", "0.79", "*", 
+                  RowBox[{"P", "[", 
+                   RowBox[{"o2", "+", "n2"}], "]"}]}]}]}], ",", 
+               RowBox[{"{", 
+                RowBox[{"o1", ",", "o2", ",", "n1", ",", "n2"}], "}"}]}], 
+              "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}]}], "]"}]}], ";"}], "*)"}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"sol", ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"ptv", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Quiet", "@", 
+          RowBox[{
+           RowBox[{"Solve", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"o2", "\[Equal]", 
+               RowBox[{"0.21", "*", "n0"}]}], "\[And]", 
+              RowBox[{"n2", "\[Equal]", 
+               RowBox[{"0.79", "*", "n0"}]}], "\[And]", 
+              RowBox[{
+               FractionBox["o1", "vol2"], "\[Equal]", 
+               RowBox[{"kHO", "*", "0.21", "*", 
+                RowBox[{"P", "[", 
+                 RowBox[{"o2", "+", "n2"}], "]"}]}]}], "\[And]", 
+              RowBox[{
+               FractionBox["n1", "vol2"], "\[Equal]", 
+               RowBox[{"kHN", "*", "0.79", "*", 
+                RowBox[{"P", "[", 
+                 RowBox[{"o2", "+", "n2"}], "]"}]}]}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"o1", ",", "o2", ",", "n1", ",", "n2"}], "}"}]}], "]"}],
+            "[", 
+           RowBox[{"[", "1", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Quiet", "@", 
+          RowBox[{
+           RowBox[{"Solve", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"o2", "\[Equal]", 
+               RowBox[{"0.21", "*", "n0"}]}], "\[And]", 
+              RowBox[{"n2", "\[Equal]", 
+               RowBox[{"0.79", "*", "n0"}]}], "\[And]", 
+              RowBox[{
+               FractionBox["o1", "vol2"], "\[Equal]", 
+               RowBox[{"kHO", "*", "0.21", "*", 
+                RowBox[{"(", "P0", ")"}]}]}], "\[And]", 
+              RowBox[{
+               FractionBox["n1", "vol2"], "\[Equal]", 
+               RowBox[{"kHN", "*", "0.79", "*", 
+                RowBox[{"(", "P0", ")"}]}]}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"o1", ",", "o2", ",", "n1", ",", "n2"}], "}"}]}], "]"}],
+            "[", 
+           RowBox[{"[", "1", "]"}], "]"}]}]}], "\[IndentingNewLine]", "]"}]}],
+       ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"vol2", "\[LessEqual]", "1"}], ",", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Oliq", ":=", 
+           RowBox[{
+            RowBox[{
+             SuperscriptBox["10", "3"], "*", "o1"}], "/.", "sol"}]}], ";", 
+          RowBox[{"Nliq", ":=", 
+           RowBox[{
+            RowBox[{
+             SuperscriptBox["10", "3"], "*", "n1"}], "/.", "sol"}]}], ";", 
+          RowBox[{"Ovap", ":=", 
+           RowBox[{
+            RowBox[{
+             SuperscriptBox["10", "3"], "*", "o2"}], "/.", "sol"}]}], ";", 
+          RowBox[{"Nvap", ":=", 
+           RowBox[{
+            RowBox[{
+             SuperscriptBox["10", "3"], "*", "n2"}], "/.", "sol"}]}], ";"}], 
+         "}"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Oliq", "=", "0"}], ";", 
+          RowBox[{"Nliq", "=", "0"}], ";", 
+          RowBox[{"Ovap", "=", "0"}], ";", 
+          RowBox[{"Nvap", "=", "0"}], ";"}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Row", "[", 
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Text", "@", 
+          RowBox[{"Style", "[", 
+           RowBox[{
+            RowBox[{"Column", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"Row", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"\"\<pressure = \>\"", ",", 
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"P", "[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"Ovap", "+", "Nvap"}], ")"}], "/", 
+                    SuperscriptBox["10", "3"]}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"4", ",", "1"}], "}"}]}], "]"}], ",", 
+                   "\"\< bar\>\""}], "}"}], "]"}], ",", 
+                RowBox[{"Row", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"\"\<final volume = \>\"", ",", 
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"vol2", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "2"}], "}"}]}], "]"}], ",", 
+                   "\"\< L\>\""}], "}"}], "]"}], ",", 
+                RowBox[{"Spacer", "[", "5", "]"}], ",", "\[IndentingNewLine]", 
+                RowBox[{"Grid", "[", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    "\"\<(mmol)\>\"", ",", "\"\<dissolved\>\"", ",", 
+                    "\"\<gas-phase\>\""}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{"\"\<O\>\"", ",", "2"}], "]"}], ",", "Oliq", ",", 
+                    "Ovap"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{"\"\<N\>\"", ",", "2"}], "]"}], ",", "Nliq", ",", 
+                    "Nvap"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<total\>\"", ",", 
+                    RowBox[{"Oliq", "+", "Nliq"}], ",", 
+                    RowBox[{"Ovap", "+", "Nvap"}]}], "}"}]}], "}"}], "]"}]}], 
+               "\[IndentingNewLine]", "}"}], ",", "Center"}], "]"}], ",", 
+            "17"}], "]"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Spacer", "[", "50", "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"BarChart", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Oliq", "+", "Nliq"}], ",", 
+             RowBox[{"Ovap", "+", "Nvap"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"ChartStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"Blue", ",", "Green"}], "}"}]}], ",", 
+           RowBox[{"ChartLabels", "\[Rule]", 
+            RowBox[{"Placed", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{"\"\<dissolved\>\"", ",", "16"}], "]"}], ",", 
+                RowBox[{"Style", "[", 
+                 RowBox[{"\"\<gas-phase\>\"", ",", "16"}], "]"}]}], "}"}], 
+              ",", "Below"}], "]"}]}], ",", 
+           RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+           RowBox[{"FrameLabel", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"None", ",", 
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\<air (mmol) \>\"", ",", "16"}], "]"}]}], "}"}]}], 
+           ",", 
+           RowBox[{"LabelStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"Black", ",", "14"}], "}"}]}], ",", 
+           RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+           RowBox[{"ImageSize", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"200", ",", "300"}], "}"}]}]}], "]"}]}], 
+        "\[IndentingNewLine]", "}"}], "]"}]}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"ptv", ",", "1", ",", "\"\<calculate:\>\""}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"1", "\[Rule]", "\"\< vapor at STP \>\""}], ",", 
+        RowBox[{"2", "\[Rule]", "\"\< vapor at T \>\""}]}], "}"}], ",", 
+      "Setter"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "vol1", ",", "0.8", ",", 
+        "\"\<initial water volume (L) at 25 \[Degree]C\>\""}], "}"}], ",", 
+      "0.8", ",", "0.95", ",", "0.01", ",", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"T", ",", "25", ",", "\"\<temperature (\[Degree]C)\>\""}], 
+       "}"}], ",", "25", ",", "250", ",", "1", ",", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.648224577331217*^9, 3.6482246798640814`*^9}, {
+   3.648224728854883*^9, 3.6482247715813274`*^9}, {3.6482248125196686`*^9, 
+   3.64822482163019*^9}, {3.6482248590253286`*^9, 3.6482249192557735`*^9}, {
+   3.648224957400955*^9, 3.648224973409871*^9}, {3.648225116166036*^9, 
+   3.6482251629777136`*^9}, {3.6482256222989855`*^9, 
+   3.6482258036823597`*^9}, {3.648225838577356*^9, 3.6482261575946026`*^9}, {
+   3.6482262091235495`*^9, 3.6482262395302887`*^9}, {3.648226280444629*^9, 
+   3.64822633011447*^9}, {3.6482264011045303`*^9, 3.6482264647451706`*^9}, {
+   3.6482265061625395`*^9, 3.6482265142700033`*^9}, {3.648226576647571*^9, 
+   3.6482266643525877`*^9}, {3.6482267236189775`*^9, 3.648226836505434*^9}, 
+   3.6482268981579604`*^9, {3.6482273259484286`*^9, 3.648227538000557*^9}, {
+   3.6483062462410736`*^9, 3.6483062687753625`*^9}, {3.648306331621957*^9, 
+   3.648306333358056*^9}, {3.648306770788076*^9, 3.648306781048663*^9}, {
+   3.648306901551555*^9, 3.648306926447979*^9}, {3.648306963812116*^9, 
+   3.6483069893065743`*^9}, {3.6483070260846777`*^9, 3.648307027929784*^9}, {
+   3.6483071252253485`*^9, 3.648307132091741*^9}, 3.648307176455279*^9, {
+   3.648307207392048*^9, 3.648307614935358*^9}, {3.648307661239007*^9, 
+   3.6483078350299473`*^9}, {3.6483079007027035`*^9, 3.648307901821767*^9}, {
+   3.6483079344666348`*^9, 3.648308003387576*^9}, 3.648308049848234*^9, {
+   3.6483080820520763`*^9, 3.648308227897418*^9}, {3.648388637069639*^9, 
+   3.648388741496612*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ptv$$ = 1, $CellContext`T$$ = 
+    25, $CellContext`vol1$$ = 0.8700000000000001, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`ptv$$], 1, "calculate:"}, {
+      1 -> " vapor at STP ", 2 -> " vapor at T "}}, {{
+       Hold[$CellContext`vol1$$], 0.8, 
+       "initial water volume (L) at 25 \[Degree]C"}, 0.8, 0.95, 0.01}, {{
+       Hold[$CellContext`T$$], 25, "temperature (\[Degree]C)"}, 25, 250, 1}}, 
+    Typeset`size$$ = {461., {148., 152.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`ptv$4594$$ = False, $CellContext`vol1$4595$$ = 
+    0, $CellContext`T$4596$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`ptv$$ = 1, $CellContext`T$$ = 
+        25, $CellContext`vol1$$ = 0.8}, "ControllerVariables" :> {
+        Hold[$CellContext`ptv$$, $CellContext`ptv$4594$$, False], 
+        Hold[$CellContext`vol1$$, $CellContext`vol1$4595$$, 0], 
+        Hold[$CellContext`T$$, $CellContext`T$4596$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`P0$, $CellContext`T0$, $CellContext`R$, \
+$CellContext`vol2$, $CellContext`Psat$, $CellContext`P$, $CellContext`nV$, \
+$CellContext`n0$, $CellContext`kHO$, $CellContext`kHN$, $CellContext`sol$, \
+$CellContext`Oliq$, $CellContext`Nliq$, $CellContext`Ovap$, \
+$CellContext`Nvap$}, $CellContext`P0$ = 1; $CellContext`T0$ = 
+         25; $CellContext`R$ = 
+         0.08314; $CellContext`vol2$ := ((-
+             Rational[1, 100000000000]) $CellContext`T$$^3 + 
+           Rational[3, 500000000] $CellContext`T$$^2 - 
+           Rational[1, 50000000] $CellContext`T$$ + 0.001) 
+          996.95 $CellContext`vol1$$; $CellContext`Psat$ := 
+         10^If[$CellContext`T$$ <= 100, 4.6543 - 1435.264/($CellContext`T$$ + 
+            208.2), 3.55959 - 643.748/($CellContext`T$$ + 
+            74.96)]; $CellContext`P$[
+           Pattern[$CellContext`n$, 
+            Blank[]]] := $CellContext`n$ $CellContext`R$ ($CellContext`T$$ + 
+            273)/(1 - $CellContext`vol2$) + $CellContext`Psat$; \
+$CellContext`nV$[
+           Pattern[$CellContext`n$, 
+            
+            Blank[]]] := ($CellContext`P$[$CellContext`n$] - \
+$CellContext`Psat$) (
+           1 - $CellContext`vol2$)/($CellContext`R$ ($CellContext`T$$ + 
+           273)); $CellContext`n0$ := ($CellContext`P0$ - $CellContext`Psat$) \
+(1 - $CellContext`vol1$$)/($CellContext`R$ ($CellContext`T0$ + 
+           273)); $CellContext`kHO$ := 
+         0.001304 
+          Exp[1700 (1/($CellContext`T$$ + 273) - 1/298)]; $CellContext`kHN$ := 
+         0.0006168 
+          Exp[1300 (1/($CellContext`T$$ + 273) - 1/298)]; $CellContext`sol$ := 
+         If[$CellContext`ptv$$ == 1, 
+           Quiet[
+            Part[
+             Solve[
+              
+              And[$CellContext`o2 == 0.21 $CellContext`n0$, $CellContext`n2 == 
+               0.79 $CellContext`n0$, $CellContext`o1/$CellContext`vol2$ == \
+$CellContext`kHO$ 
+                0.21 $CellContext`P$[$CellContext`o2 + $CellContext`n2], \
+$CellContext`n1/$CellContext`vol2$ == $CellContext`kHN$ 
+                0.79 $CellContext`P$[$CellContext`o2 + $CellContext`n2]], \
+{$CellContext`o1, $CellContext`o2, $CellContext`n1, $CellContext`n2}], 1]], 
+           Quiet[
+            Part[
+             Solve[
+              
+              And[$CellContext`o2 == 0.21 $CellContext`n0$, $CellContext`n2 == 
+               0.79 $CellContext`n0$, $CellContext`o1/$CellContext`vol2$ == \
+$CellContext`kHO$ 
+                0.21 $CellContext`P0$, $CellContext`n1/$CellContext`vol2$ == \
+$CellContext`kHN$ 
+                0.79 $CellContext`P0$], {$CellContext`o1, $CellContext`o2, \
+$CellContext`n1, $CellContext`n2}], 1]]]; 
+        If[$CellContext`vol2$ <= 
+          1, {$CellContext`Oliq$ := 
+            ReplaceAll[
+             10^3 $CellContext`o1, $CellContext`sol$]; $CellContext`Nliq$ := 
+            ReplaceAll[
+             10^3 $CellContext`n1, $CellContext`sol$]; $CellContext`Ovap$ := 
+            ReplaceAll[
+             10^3 $CellContext`o2, $CellContext`sol$]; $CellContext`Nvap$ := 
+            ReplaceAll[10^3 $CellContext`n2, $CellContext`sol$]; 
+           Null}, {$CellContext`Oliq$ = 0; $CellContext`Nliq$ = 
+            0; $CellContext`Ovap$ = 0; $CellContext`Nvap$ = 0; Null}]; Row[{
+           Text[
+            Style[
+             Column[{
+               Row[{"pressure = ", 
+                 NumberForm[
+                  $CellContext`P$[($CellContext`Ovap$ + $CellContext`Nvap$)/
+                   10^3], {4, 1}], " bar"}], 
+               Row[{"final volume = ", 
+                 NumberForm[$CellContext`vol2$, {3, 2}], " L"}], 
+               Spacer[5], 
+               Grid[{{"(mmol)", "dissolved", "gas-phase"}, {
+                  Subscript["O", 2], $CellContext`Oliq$, $CellContext`Ovap$}, {
+                  Subscript[
+                  "N", 2], $CellContext`Nliq$, $CellContext`Nvap$}, {
+                 "total", $CellContext`Oliq$ + $CellContext`Nliq$, \
+$CellContext`Ovap$ + $CellContext`Nvap$}}]}, Center], 17]], 
+           Spacer[50], 
+           
+           BarChart[{$CellContext`Oliq$ + $CellContext`Nliq$, \
+$CellContext`Ovap$ + $CellContext`Nvap$}, ChartStyle -> {Blue, Green}, 
+            ChartLabels -> Placed[{
+               Style["dissolved", 16], 
+               Style["gas-phase", 16]}, Below], Frame -> True, 
+            FrameLabel -> {None, 
+              Style["air (mmol) ", 16]}, LabelStyle -> {Black, 14}, 
+            AspectRatio -> Full, ImageSize -> {200, 300}]}]], 
+      "Specifications" :> {{{$CellContext`ptv$$, 1, "calculate:"}, {
+         1 -> " vapor at STP ", 2 -> " vapor at T "}, ControlType -> 
+         Setter}, {{$CellContext`vol1$$, 0.8, 
+          "initial water volume (L) at 25 \[Degree]C"}, 0.8, 0.95, 0.01, 
+         Appearance -> 
+         "Labeled"}, {{$CellContext`T$$, 25, "temperature (\[Degree]C)"}, 25, 
+         250, 1, Appearance -> "Labeled"}}, "Options" :> {}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{512., {218., 225.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.6482249197037992`*^9, 3.6482251653608503`*^9, 3.648225687524716*^9, {
+   3.648225735021433*^9, 3.6482257647601337`*^9}, {3.6482258298498564`*^9, 
+   3.648225844528696*^9}, 3.6482260348355813`*^9, {3.6482260981702037`*^9, 
+   3.6482261136010866`*^9}, 3.648226158961681*^9, {3.648226209682582*^9, 
+   3.648226241800419*^9}, 3.6482263309315166`*^9, 3.648226409244996*^9, 
+   3.6482264684323816`*^9, 3.648226848431116*^9, 3.648226899433033*^9, 
+   3.648226947737796*^9, {3.6482274494854946`*^9, 3.6482274781531343`*^9}, {
+   3.648227530050102*^9, 3.648227538677596*^9}, 3.648306271982546*^9, 
+   3.648306791632268*^9, 3.648306927327029*^9, 3.648306991695711*^9, 
+   3.6483070470738783`*^9, 3.64830713294279*^9, 3.6483071785403976`*^9, 
+   3.6483072663914227`*^9, {3.6483072978242207`*^9, 3.6483073817010183`*^9}, 
+   3.648307415090928*^9, {3.6483074731032457`*^9, 3.648307489851204*^9}, 
+   3.648307616167429*^9, {3.648307727243782*^9, 3.648307739579488*^9}, {
+   3.648307800061947*^9, 3.6483078367110434`*^9}, 3.6483079030128355`*^9, {
+   3.64830794067299*^9, 3.6483079639123187`*^9}, 3.6483080042096233`*^9, 
+   3.6483082310365973`*^9, 3.6483082861557503`*^9, 3.648388648429289*^9, {
+   3.6483887159501505`*^9, 3.6483887421986523`*^9}}]
+}, Open  ]]
+},
+WindowSize->{667, 670},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 7, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 16267, 387, 1884, "Input"],
+Cell[16850, 411, 8172, 155, 460, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

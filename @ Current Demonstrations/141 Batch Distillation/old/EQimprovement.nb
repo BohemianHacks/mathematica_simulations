@@ -1,0 +1,536 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     20668,        528]
+NotebookOptionsPosition[     20221,        512]
+NotebookOutlinePosition[     20614,        529]
+CellTagsIndexPosition[     20571,        526]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "Psat1", ",", "Psat2", ",", "Px", ",", "Py", ",", "P", ",", "raoult", 
+       ",", "vaporMolFrac", ",", "ti", ",", "tf", ",", "molb", ",", "molt", 
+       ",", "compb", ",", "compt", ",", "eqplot", ",", "Txy", ",", 
+       "bubbleDewPlot", ",", "EthWaterEq"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Psat1", "[", "T_", "]"}], ":=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.72583", "-", 
+          FractionBox["1660.652", 
+           RowBox[{"T", "-", "1.461"}]]}], ")"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"benzene", " ", 
+        RowBox[{"(", 
+         RowBox[{"or", " ", "ethanol"}], ")"}]}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Psat2", "[", "T_", "]"}], ":=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.08245", "-", 
+          FractionBox["1346.382", 
+           RowBox[{"T", "-", "53.508"}]]}], ")"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"toluene", " ", 
+        RowBox[{"(", 
+         RowBox[{"or", " ", "water"}], ")"}]}], "*)"}], "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Px", "[", 
+        RowBox[{"x_", ",", "T_"}], "]"}], ":=", 
+       RowBox[{
+        RowBox[{"x", "*", 
+         RowBox[{"Psat1", "[", "T", "]"}]}], "+", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"1", "-", "x"}], ")"}], "*", 
+         RowBox[{"Psat2", "[", "T", "]"}]}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py", "[", 
+        RowBox[{"x_", ",", "T_"}], "]"}], ":=", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         RowBox[{
+          FractionBox["x", 
+           RowBox[{"Psat1", "[", "T", "]"}]], "+", 
+          FractionBox[
+           RowBox[{"1", "-", "x"}], 
+           RowBox[{"Psat2", "[", "T", "]"}]]}], ")"}], 
+        RowBox[{"-", "1"}]]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"P", "=", "1"}], ";", 
+      RowBox[{"(*", "bar", "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "solves", " ", "for", " ", "mol", " ", "fraction", " ", "of", " ", 
+        "benzene", " ", "in", " ", "saturated", " ", "liquid", " ", "at", " ",
+         "a", " ", "given", " ", "temperature", " ", "and", " ", "total", " ",
+         "pressure", " ", "of", " ", "P"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"raoult", "[", "temp_", "]"}], ":=", 
+       RowBox[{"x", "/.", 
+        RowBox[{
+         RowBox[{"Solve", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"x", "*", 
+              RowBox[{"Psat1", "[", "temp", "]"}]}], "+", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"1", "-", "x"}], ")"}], "*", 
+              RowBox[{"Psat2", "[", "temp", "]"}]}]}], "\[Equal]", "P"}], ",",
+            "x", ",", 
+           RowBox[{"WorkingPrecision", "\[Rule]", "10"}]}], "]"}], "[", 
+         RowBox[{"[", "1", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "solves", " ", "for", " ", "mol", " ", "fraction", " ", "of", " ", 
+        "benzene", " ", "in", " ", "saturated", " ", "vapor", " ", "at", " ", 
+        "given", " ", "temperature", " ", "and", " ", "total", " ", 
+        "pressure", " ", "P"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"vaporMolFrac", "[", "temp_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"raoult", "[", "temp", "]"}], "*", 
+        RowBox[{
+         RowBox[{"Psat1", "[", "temp", "]"}], "/", "P"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", " ", 
+       RowBox[{
+        RowBox[{
+        "ti", " ", "is", " ", "the", " ", "bubble", " ", "point", " ", 
+         "temperature", " ", "of", " ", "a", " ", "mixture", " ", "with", " ",
+          "overall", " ", "mol", " ", "fraction", " ", "\"\<z\>\""}], ",", 
+        " ", 
+        RowBox[{"and", " ", "tf", " ", "the", " ", "dew", " ", "point"}]}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"ti", "=", 
+       RowBox[{"temp", "/.", 
+        RowBox[{
+         RowBox[{"FindRoot", "[", 
+          RowBox[{
+           RowBox[{"z", "\[Equal]", 
+            RowBox[{"raoult", "[", "temp", "]"}]}], ",", 
+           RowBox[{"{", 
+            RowBox[{"temp", ",", 
+             RowBox[{"If", "[", 
+              RowBox[{"azeotrope", ",", "270", ",", "353"}], "]"}], ",", 
+             "384"}], "}"}], ",", 
+           RowBox[{"WorkingPrecision", "\[Rule]", "10"}]}], "]"}], "[", 
+         RowBox[{"[", "1", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"tf", "=", 
+       RowBox[{"temp", "/.", 
+        RowBox[{
+         RowBox[{"FindRoot", "[", 
+          RowBox[{
+           RowBox[{"z", "\[Equal]", 
+            RowBox[{"vaporMolFrac", "[", "temp", "]"}]}], ",", 
+           RowBox[{"{", 
+            RowBox[{"temp", ",", 
+             RowBox[{"If", "[", 
+              RowBox[{"azeotrope", ",", "270", ",", "353"}], "]"}], ",", 
+             "384"}], "}"}], ",", 
+           RowBox[{"WorkingPrecision", "\[Rule]", "10"}]}], "]"}], "[", 
+         RowBox[{"[", "1", "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"plots", " ", "for", " ", "personal", " ", "use"}], "*)"}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       StyleBox[
+        RowBox[{"EthWaterEq", "[", "x_", "]"}],
+        ShowStringCharacters->True,
+        NumberMarks->True], 
+       StyleBox[":=",
+        ShowStringCharacters->True,
+        NumberMarks->True], 
+       RowBox[{
+        RowBox[{"2.38", "x"}], "-", 
+        RowBox[{"3.03", 
+         SuperscriptBox["x", "2"]}], "+", 
+        RowBox[{"3.50", 
+         SuperscriptBox["x", "3"]}], "-", 
+        RowBox[{"3.82", 
+         SuperscriptBox["x", "4"]}], "+", 
+        RowBox[{"3.91", 
+         SuperscriptBox["x", "5"]}], "-", 
+        RowBox[{"2.94", 
+         SuperscriptBox["x", "6"]}], " ", "+", 
+        SuperscriptBox["x", "7"]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"eqplot", "=", 
+       RowBox[{"ParametricPlot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", "t", ",", 
+             RowBox[{"raoult", "[", "t", "]"}]}], "]"}], ",", 
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", 
+             RowBox[{"EthWaterEq", "[", "t", "]"}], ",", 
+             RowBox[{"vaporMolFrac", "[", "t", "]"}]}], "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", 
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", "0", ",", "353"}], "]"}], ",", 
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", "1", ",", "384"}], "]"}]}], "}"}]}], 
+        RowBox[{"(*", 
+         RowBox[{",", 
+          RowBox[{"Epilog", "\[Rule]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"PointSize", "@", "0.015"}], ",", 
+             RowBox[{"Point", "@", 
+              RowBox[{"{", 
+               RowBox[{"compb", ",", "compt"}], "}"}]}]}], "}"}]}]}], "*)"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Txy", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"raoult", "[", "t", "]"}], ",", 
+           RowBox[{"vaporMolFrac", "[", "t", "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", 
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", "270", ",", "353"}], "]"}], ",", 
+           "384"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Plots", " ", "bubble", " ", "point", " ", "and", " ", "dew", " ", 
+        "point", " ", "at", " ", "pressure", " ", "P", " ", "as", " ", "a", 
+        " ", "function", " ", "of", " ", "mol", " ", "fraction", " ", 
+        "benzene"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"bubbleDewPlot", "=", 
+       RowBox[{"ParametricPlot", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"raoult", "[", "t", "]"}], ",", "t"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"vaporMolFrac", "[", "t", "]"}], ",", "t"}], "}"}]}], 
+          "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", 
+           RowBox[{"If", "[", 
+            RowBox[{"azeotrope", ",", "270", ",", "353"}], "]"}], ",", 
+           "384"}], "}"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"AspectRatio", "\[Rule]", "0.7"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"16", ",", "Black", ",", 
+            RowBox[{"FontFamily", "\[Rule]", "\"\<Arial\>\""}]}], "}"}]}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"If", "[", 
+               RowBox[{"azeotrope", ",", "270", ",", "353"}], "]"}], ",", 
+              "384"}], "}"}]}], "}"}]}]}], 
+        RowBox[{"(*", 
+         RowBox[{",", "\[IndentingNewLine]", 
+          RowBox[{"Epilog", "\[Rule]", 
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"PointSize", "@", "0.015"}], ",", "\[IndentingNewLine]", 
+             
+             RowBox[{"Point", "@", 
+              RowBox[{"{", 
+               RowBox[{"compb", ",", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"1", "-", "z"}], ")"}], "*", "ti"}], "+", 
+                 RowBox[{"z", "*", "tf"}]}]}], "}"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Point", "@", 
+              RowBox[{"{", 
+               RowBox[{"compt", ",", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"1", "-", "z"}], ")"}], "*", "ti"}], "+", 
+                 RowBox[{"z", "*", "tf"}]}]}], "}"}]}]}], "}"}]}]}], "*)"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"GraphicsGrid", "[", 
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Show", "[", 
+            RowBox[{"eqplot", ",", "\[IndentingNewLine]", 
+             RowBox[{"ImageSize", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"350", ",", "350"}], "}"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"PlotRange", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "1"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Show", "[", 
+            RowBox[{"Txy", ",", "\[IndentingNewLine]", 
+             RowBox[{"ImageSize", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"350", ",", "350"}], "}"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"AxesOrigin", "\[Rule]", 
+              RowBox[{"Dynamic", "@", 
+               RowBox[{"If", "[", 
+                RowBox[{"azeotrope", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"351", ",", "0"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"353", ",", "0"}], "}"}]}], "]"}]}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"PlotRange", "\[Rule]", 
+              RowBox[{"Dynamic", "@", 
+               RowBox[{"If", "[", 
+                RowBox[{"azeotrope", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"351", ",", "373"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"353", ",", "384"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], "]"}]}]}]}], 
+            "]"}]}], "\[IndentingNewLine]", "}"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Show", "[", 
+            RowBox[{"bubbleDewPlot", ",", 
+             RowBox[{"ImageSize", "\[Rule]", 
+              RowBox[{"{", 
+               RowBox[{"700", ",", "350"}], "}"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"AxesOrigin", "\[Rule]", 
+              RowBox[{"Dynamic", "@", 
+               RowBox[{"If", "[", 
+                RowBox[{"azeotrope", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "351"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "353"}], "}"}]}], "]"}]}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"PlotRange", "\[Rule]", 
+              RowBox[{"Dynamic", "@", 
+               RowBox[{"If", "[", 
+                RowBox[{"azeotrope", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"351", ",", "373"}], "}"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"0", ",", "1"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"353", ",", "384"}], "}"}]}], "}"}]}], 
+                "]"}]}]}]}], "]"}], ",", "\[IndentingNewLine]", 
+           "SpanFromLeft"}], "\[IndentingNewLine]", "}"}]}], 
+        "\[IndentingNewLine]", "}"}], "]"}]}]}], "\[IndentingNewLine]", "]"}],
+    ",", "\[IndentingNewLine]", 
+   RowBox[{"Row", "@", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"azeotrope", ",", "True", ",", "\"\<azeotrope\>\""}], "}"}],
+          ",", "Checkbox"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"z", ",", "0"}], "}"}], ",", "0", ",", "1", ",", "0.01"}], 
+        "}"}], "]"}]}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.759674202259427*^9, 3.75967437483531*^9}, {
+   3.759674411069231*^9, 3.759674435672966*^9}, {3.759674478240695*^9, 
+   3.759674481488018*^9}, {3.75967451596876*^9, 3.75967453722552*^9}, {
+   3.759674604528089*^9, 3.759674726571945*^9}, {3.759674761622857*^9, 
+   3.759674847542029*^9}, {3.759674888815406*^9, 3.759674908441968*^9}, {
+   3.759674949355571*^9, 3.759674978009275*^9}, {3.759675026795549*^9, 
+   3.759675094278199*^9}, {3.759675125548635*^9, 3.7596752005622797`*^9}, {
+   3.7596752453767653`*^9, 3.759675343082837*^9}, {3.7596753875130568`*^9, 
+   3.7596755814553757`*^9}, {3.759675643462468*^9, 3.7596758237842817`*^9}, {
+   3.759675983205407*^9, 3.759675992784987*^9}, {3.759676119496235*^9, 
+   3.759676180370831*^9}, {3.7596762133980837`*^9, 3.759676259032213*^9}, 
+   3.759676395534152*^9, {3.759679129773924*^9, 
+   3.759679179653975*^9}},ExpressionUUID->"b3ff057f-b5c0-46df-a3b2-\
+0b3b7ea2d507"],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"(*", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"amount", " ", "of", " ", "liquid", " ", 
+     RowBox[{"(", "moles", ")"}], " ", "in", " ", "the", " ", "kettle", " ", 
+     RowBox[{"(", "molb", ")"}], " ", "and", " ", "collection", " ", 
+     RowBox[{"(", "molt", ")"}], " ", "flask"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"molb", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Round", "[", 
+        RowBox[{"#", ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"0", "<", "#", "<", "0.01"}], ",", "0.0001", ",", "0.01"}],
+           "]"}]}], "]"}], "&"}], "@", 
+      RowBox[{"(", 
+       RowBox[{"Clip", "[", 
+        RowBox[{
+         RowBox[{"1", "-", 
+          RowBox[{"Sum", "[", 
+           RowBox[{
+            RowBox[{"flasksMol", "[", 
+             RowBox[{"[", "k", "]"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"k", ",", "1", ",", "stage"}], "}"}]}], "]"}], "-", 
+          RowBox[{"evapProg", "*", "molesToEvap"}]}], ",", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "1"}], "}"}]}], "]"}], ")"}]}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"molt", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Round", "[", 
+        RowBox[{"#", ",", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"0", "<", "#", "<", "0.01"}], ",", "0.0001", ",", "0.01"}],
+           "]"}]}], "]"}], "&"}], "@", 
+      RowBox[{"(", 
+       RowBox[{"Clip", "[", 
+        RowBox[{
+         RowBox[{"evapProg", "*", "molesToEvap"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", 
+           RowBox[{"1", "-", 
+            RowBox[{"Sum", "[", 
+             RowBox[{
+              RowBox[{"flasksMol", "[", 
+               RowBox[{"[", "k", "]"}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"k", ",", "1", ",", "stage"}], "}"}]}], "]"}]}]}], 
+          "}"}]}], "]"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", 
+    RowBox[{"(*", 
+     RowBox[{"dynamic", " ", "composition", " ", "of", " ", "kettle", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"compb", "/", "bottom"}], " ", "composition"}], ")"}], " ", 
+      "and", " ", "collection", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"compt", "/", "top"}], " ", "composition"}], ")"}], " ", 
+      RowBox[{"liquid", ".", " ", "this"}], " ", "is", " ", "an", " ", 
+      "approximation", " ", "but", " ", "is", " ", "close", " ", "enough"}], 
+     "*)"}], "\[IndentingNewLine]", 
+    RowBox[{"compb", "=", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"molb", "+", "molt"}], "\[Equal]", "0"}], ",", "0.5", ",", 
+       RowBox[{"raoult", "[", 
+        RowBox[{
+         RowBox[{
+          FractionBox["molb", 
+           RowBox[{"molb", "+", "molt"}]], "*", "ti"}], "+", 
+         RowBox[{
+          FractionBox["molt", 
+           RowBox[{"molb", "+", "molt"}]], "*", "tf"}]}], "]"}]}], "]"}]}], 
+    ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    RowBox[{"(*", 
+     RowBox[{
+      RowBox[{"mass", " ", "balance"}], ",", " ", 
+      RowBox[{
+      "solves", " ", "for", " ", "composition", " ", "in", " ", "top", " ", 
+       "flask"}]}], "*)"}], "\[IndentingNewLine]", 
+    RowBox[{"compt", "=", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"molb", "+", "molt"}], "\[Equal]", "0"}], ",", "0.5", ",", 
+       RowBox[{"vaporMolFrac", "[", 
+        RowBox[{
+         RowBox[{
+          FractionBox["molb", 
+           RowBox[{"molb", "+", "molt"}]], "*", "ti"}], "+", 
+         RowBox[{
+          FractionBox["molt", 
+           RowBox[{"molb", "+", "molt"}]], "*", "tf"}]}], "]"}]}], "]"}]}], 
+    ";"}], "*)"}]}]], "Input",ExpressionUUID->"2b9c451b-5889-4d0b-8ee4-\
+8f6ff3284af0"]
+},
+WindowSize->{1155, 715},
+WindowMargins->{{20, Automatic}, {-203, Automatic}},
+Magnification:>0.75 Inherited,
+FrontEndVersion->"11.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 15821, 385, 1038, "Input",ExpressionUUID->"b3ff057f-b5c0-46df-a3b2-0b3b7ea2d507"],
+Cell[16382, 407, 3835, 103, 193, "Input",ExpressionUUID->"2b9c451b-5889-4d0b-8ee4-8f6ff3284af0"]
+}
+]
+*)
+

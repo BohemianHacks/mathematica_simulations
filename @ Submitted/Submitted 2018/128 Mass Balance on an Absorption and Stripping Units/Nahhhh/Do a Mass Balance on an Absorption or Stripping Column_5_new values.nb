@@ -1,0 +1,3069 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    132447,       3061]
+NotebookOptionsPosition[    125280,       2925]
+NotebookOutlinePosition[    127332,       2975]
+CellTagsIndexPosition[    126996,       2963]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Do a Mass Balance on an Absorption or Stripping Column", "DemoTitle",
+ CellChangeTimes->{
+  3.739802205886243*^9},ExpressionUUID->"18e5a461-1831-4eda-bac0-\
+b72ea3d301e1"],
+
+Cell["", "InitializationSection",ExpressionUUID->"83ba7a6f-088e-44c3-b78d-8ba7345bdcfb"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection",ExpressionUUID->"18a4d686-bdaf-4fe2-8987-176c19da15d5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "m", ",", "stripSol", ",", "absorpSol", ",", "x0", ",", "xN", ",", "y1",
+        ",", "L", ",", "V", ",", "yN1", ",", "unknowns1A", ",", "unknowns2A", 
+       ",", "unknownsA", ",", "listA", ",", "unknowns1B", ",", "unknowns2B", 
+       ",", "unknownsB", ",", "listB", ",", "w", ",", "h", ",", "ry", ",", 
+       "\[Delta]", ",", "colS", ",", "colU", ",", "column", ",", "stripping", 
+       ",", "absorption"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"SeedRandom", "[", "reset", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Henry", "'"}], "s", " ", "law", " ", "constant"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"m", "=", 
+       RowBox[{"RandomReal", "[", 
+        RowBox[{"{", 
+         RowBox[{"3", ",", "5"}], "}"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Stripping", " ", "only"}], " ", "-", " ", 
+         RowBox[{
+         "first", " ", "value", " ", "is", " ", "the", " ", "vapor", " ", 
+          "flowrate"}]}], ",", " ", 
+        RowBox[{
+        "second", " ", "is", " ", "the", " ", "y", " ", "value", " ", "in", 
+         " ", "exiting", " ", "vapor", " ", "stream"}]}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"stripSol", "[", 
+        RowBox[{"yN1_", ",", "xN_", ",", "x0_", ",", "L_"}], "]"}], ":=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Solve", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"vflow", "*", "yN1"}], "+", 
+              RowBox[{"L", "*", "x0"}]}], "\[Equal]", 
+             RowBox[{
+              RowBox[{"L", "*", "xN"}], "+", 
+              RowBox[{"vflow", "*", "ytop"}]}]}], ",", 
+            RowBox[{"ytop", "\[Equal]", 
+             RowBox[{"m", "*", "xN"}]}], ",", 
+            RowBox[{"ytop", ">", "0"}], ",", 
+            RowBox[{"vflow", ">", "0"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"vflow", ",", "ytop"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Absorption", " ", "only"}], " ", "-", " ", 
+         RowBox[{
+         "first", " ", "value", " ", "is", " ", "liquid", " ", "flowrate"}]}],
+         ",", " ", 
+        RowBox[{
+        "second", " ", "is", " ", "the", " ", "x", " ", "value", " ", "in", 
+         " ", "exiting", " ", "liquid", " ", "stream"}]}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"absorpSol", "[", 
+        RowBox[{"yN1_", ",", "y1_", ",", "x0_", ",", "V_"}], "]"}], ":=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Solve", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"V", "*", "yN1"}], "+", 
+              RowBox[{"lflow", "*", "x0"}]}], "\[Equal]", 
+             RowBox[{
+              RowBox[{"V", "*", "y1"}], "+", 
+              RowBox[{"xbot", "*", "lflow"}]}]}], ",", 
+            RowBox[{"y1", "\[Equal]", 
+             RowBox[{"m", "*", "xbot"}]}], ",", 
+            RowBox[{"xbot", ">", "0"}], ",", 
+            RowBox[{"lflow", ">", "0"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"lflow", ",", "xbot"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"x0", "=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"OINB", "\[Equal]", "1"}], ",", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"150", ",", "400"}], "}"}], "]"}]}], ",", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", "5"}], "}"}], "]"}]}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"yN1", "=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"OINB", "\[Equal]", "1"}], ",", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", "5"}], "}"}], "]"}]}], ",", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"150", ",", "400"}], "}"}], "]"}]}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"OINB", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"xN", "=", 
+             RowBox[{"N", "@", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"RandomInteger", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"70", ",", "80"}], "}"}], "]"}], "*", 
+                RowBox[{"x0", "/", "100"}]}], ")"}]}]}], ",", 
+            RowBox[{"L", "=", 
+             RowBox[{"N", "@", 
+              RowBox[{"RandomInteger", "[", 
+               RowBox[{"{", 
+                RowBox[{"50", ",", "200"}], "}"}], "]"}]}]}], ",", 
+            RowBox[{"y1", "=", 
+             RowBox[{"ytop", "/.", 
+              RowBox[{
+               RowBox[{"stripSol", "[", 
+                RowBox[{"yN1", ",", "xN", ",", "x0", ",", "L"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}]}]}], ",", 
+            RowBox[{"V", "=", 
+             RowBox[{"vflow", "/.", 
+              RowBox[{
+               RowBox[{"stripSol", "[", 
+                RowBox[{"yN1", ",", "xN", ",", "x0", ",", "L"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}]}]}]}], "}"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"y1", "=", 
+             RowBox[{"N", "@", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"RandomInteger", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"70", ",", "80"}], "}"}], "]"}], "*", 
+                RowBox[{"yN1", "/", "100"}]}], ")"}]}]}], ",", 
+            RowBox[{"V", "=", 
+             RowBox[{"N", "@", 
+              RowBox[{"RandomInteger", "[", 
+               RowBox[{"{", 
+                RowBox[{"50", ",", "200"}], "}"}], "]"}]}]}], ",", 
+            RowBox[{"xN", "=", 
+             RowBox[{"xbot", "/.", 
+              RowBox[{
+               RowBox[{"absorpSol", "[", 
+                RowBox[{"yN1", ",", "y1", ",", "x0", ",", "V"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}]}]}], ",", 
+            RowBox[{"L", "=", 
+             RowBox[{"lflow", "/.", 
+              RowBox[{
+               RowBox[{"absorpSol", "[", 
+                RowBox[{"yN1", ",", "y1", ",", "x0", ",", "V"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}]}]}]}], "}"}]}], "]"}], ";"}], 
+       "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"x0", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"OINB", "\[Equal]", "1"}], ",", 
+         RowBox[{
+          RowBox[{"N", "@", "2"}], 
+          RowBox[{
+           RowBox[{"RandomInteger", "[", 
+            RowBox[{"{", 
+             RowBox[{"30", ",", "40"}], "}"}], "]"}], "/", "100"}]}], ",", 
+         RowBox[{"N", "@", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "5"}], "}"}], "]"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"yN1", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"OINB", "\[Equal]", "1"}], ",", 
+         RowBox[{"RandomInteger", "[", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", "5"}], "}"}], "]"}], ",", 
+         RowBox[{"N", "@", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"150", ",", "400"}], "}"}], "]"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"OINB", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"xN", "=", 
+           RowBox[{"N", "@", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"RandomInteger", "[", 
+               RowBox[{"{", 
+                RowBox[{"70", ",", "80"}], "}"}], "]"}], "*", 
+              RowBox[{"x0", "/", "100"}]}], ")"}]}]}], ",", 
+          RowBox[{"L", "=", 
+           RowBox[{"N", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"50", ",", "200"}], "}"}], "]"}]}]}], ",", 
+          RowBox[{"y1", "=", 
+           RowBox[{"ytop", "/.", 
+            RowBox[{
+             RowBox[{"stripSol", "[", 
+              RowBox[{"yN1", ",", "xN", ",", "x0", ",", "L"}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}]}], ",", 
+          RowBox[{"V", "=", 
+           RowBox[{"vflow", "/.", 
+            RowBox[{
+             RowBox[{"stripSol", "[", 
+              RowBox[{"yN1", ",", "xN", ",", "x0", ",", "L"}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}]}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"y1", "=", 
+           RowBox[{"N", "@", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"RandomInteger", "[", 
+               RowBox[{"{", 
+                RowBox[{"70", ",", "80"}], "}"}], "]"}], "*", 
+              RowBox[{"yN1", "/", "100"}]}], ")"}]}]}], ",", 
+          RowBox[{"V", "=", 
+           RowBox[{"N", "@", 
+            RowBox[{"RandomInteger", "[", 
+             RowBox[{"{", 
+              RowBox[{"50", ",", "200"}], "}"}], "]"}]}]}], ",", 
+          RowBox[{"xN", "=", 
+           RowBox[{"xbot", "/.", 
+            RowBox[{
+             RowBox[{"absorpSol", "[", 
+              RowBox[{"yN1", ",", "y1", ",", "x0", ",", "V"}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}]}], ",", 
+          RowBox[{"L", "=", 
+           RowBox[{"lflow", "/.", 
+            RowBox[{
+             RowBox[{"absorpSol", "[", 
+              RowBox[{"yN1", ",", "y1", ",", "x0", ",", "V"}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}]}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"unknowns1A", "=", 
+       RowBox[{"RandomChoice", "[", 
+        RowBox[{"{", 
+         RowBox[{"L0A", ",", "V0A"}], "}"}], "]"}]}], ";", 
+      RowBox[{"unknowns2A", "=", 
+       RowBox[{"RandomChoice", "[", 
+        RowBox[{"{", 
+         RowBox[{"X0A", ",", "XNA", ",", "Y1A", ",", "YN1A"}], "}"}], "]"}]}],
+       ";", "\[IndentingNewLine]", 
+      RowBox[{"unknownsA", "=", 
+       RowBox[{"{", 
+        RowBox[{"unknowns1A", ",", "unknowns2A"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"listA", "[", "var_", "]"}], ":=", 
+       RowBox[{"MemberQ", "[", 
+        RowBox[{"unknownsA", ",", "var"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"part1A", "=", 
+       RowBox[{
+        RowBox[{"Position", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"L0A", ",", "V0A"}], "}"}], ",", "unknowns1A"}], "]"}], 
+        "[", 
+        RowBox[{"[", 
+         RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"part2A", "=", 
+       RowBox[{
+        RowBox[{"Position", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"X0A", ",", "XNA", ",", "Y1A", ",", "YN1A"}], "}"}], ",", 
+          "unknowns2A"}], "]"}], "[", 
+        RowBox[{"[", 
+         RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"unknowns1B", "=", 
+       RowBox[{"RandomChoice", "[", 
+        RowBox[{"{", 
+         RowBox[{"L0B", ",", "V0B"}], "}"}], "]"}]}], ";", 
+      RowBox[{"unknowns2B", "=", 
+       RowBox[{"RandomChoice", "[", 
+        RowBox[{"{", 
+         RowBox[{"X0B", ",", "XNB", ",", "Y1B", ",", "YN1B"}], "}"}], "]"}]}],
+       ";", "\[IndentingNewLine]", 
+      RowBox[{"unknownsB", "=", 
+       RowBox[{"{", 
+        RowBox[{"unknowns1B", ",", "unknowns2B"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"listB", "[", "var_", "]"}], ":=", 
+       RowBox[{"MemberQ", "[", 
+        RowBox[{"unknownsB", ",", "var"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"part1B", "=", 
+       RowBox[{
+        RowBox[{"Position", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"L0B", ",", "V0B"}], "}"}], ",", "unknowns1B"}], "]"}], 
+        "[", 
+        RowBox[{"[", 
+         RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"part2B", "=", 
+       RowBox[{
+        RowBox[{"Position", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"X0B", ",", "XNB", ",", "Y1B", ",", "YN1B"}], "}"}], ",", 
+          "unknowns2B"}], "]"}], "[", 
+        RowBox[{"[", 
+         RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"w", "=", "1.5"}], ";", 
+      RowBox[{"h", "=", "1"}], ";", 
+      RowBox[{"ry", "=", "0.15"}], ";", 
+      RowBox[{"\[Delta]", "=", "2"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"colS", "=", "Blue"}], ";", 
+      RowBox[{"colU", "=", 
+       RowBox[{"RGBColor", "[", 
+        RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"column", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Thick", ",", 
+           RowBox[{"Arrowheads", "@", "0.045"}], ",", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"#", "*", "0.5", "*", "w"}], ",", "0"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"#", "*", "0.5", "*", "w"}], ",", "h"}], "}"}]}], 
+               "}"}], "]"}], "&"}], "/@", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1"}], ",", "1"}], "}"}]}], ",", 
+           RowBox[{"Circle", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", "h"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"0.5", "*", "w"}], ",", "ry"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", "\[Pi]"}], "}"}]}], "]"}], ",", 
+           RowBox[{"Circle", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", "0"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"0.5", "*", "w"}], ",", "ry"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"\[Pi]", ",", 
+               RowBox[{"2", "*", "\[Pi]"}]}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Arrow", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"0.12", "*", "w"}], "+", "\[Delta]"}], ",", 
+                RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.13", "*", "w"}], ",", 
+                RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.13", "*", "w"}], ",", "1.12"}], "}"}]}], "}"}], 
+            "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Arrow", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.13", "*", "w"}], ",", 
+                RowBox[{"-", "0.13"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.13", "*", "w"}], ",", 
+                RowBox[{
+                 RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"0.13", "*", "w"}], "+", "\[Delta]"}], ",", 
+                RowBox[{
+                 RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}]}], "}"}], "]"}], 
+           ",", "\[IndentingNewLine]", 
+           RowBox[{"Arrow", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "0.13"}], "*", "w"}], ",", "1.12"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "0.13"}], "*", "w"}], ",", 
+                RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"-", "0.13"}], "*", "w"}], "-", "\[Delta]"}], ",", 
+                RowBox[{"1.5", "*", "h"}]}], "}"}]}], "}"}], "]"}], ",", 
+           RowBox[{"Arrow", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"-", "0.13"}], "*", "w"}], "-", "\[Delta]"}], ",", 
+                RowBox[{
+                 RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "0.13"}], "*", "w"}], ",", 
+                RowBox[{
+                 RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "0.13"}], "*", "w"}], ",", 
+                RowBox[{"-", "0.13"}]}], "}"}]}], "}"}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "400"}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"stripping", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"\"\<one stage stripping\>\"", ",", 
+                  RowBox[{"Spacer", "@", "0"}], ",", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"m", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\< x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "Center"}], "]"}], ",", 
+              "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"0.5", "*", "h"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"(*", "LIQUID", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<liquid feed\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "L0A", "]"}], ",", "Lsol1", ",", 
+                    "L"}], "]"}], ",", "\"\< Mmol/h\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "L0A", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "L0A", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", "L", ",", "\"\< Mmol/h\>\""}], 
+                    "}"}]}], ",", "colS"}], "]"}]}], "]"}]}], "}"}]}], ",", 
+                  "\[IndentingNewLine]", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "X0A", "]"}], ",", "x0sol1", ",", 
+                    "x0"}], "]"}], ",", "\"\< ppm\>\""}], "}"}]}], ",", "17", 
+                    ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "X0A", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "X0A", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", "x0", ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+                "Center"}], "]"}], ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.2"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "XNA", "]"}], ",", "xNsol1", ",", 
+                    "xN"}], "]"}], ",", "\"\< ppm\>\""}], "}"}]}], ",", 
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "XNA", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                 RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "XNA", "]"}]}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", "xN", ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                  "]"}]}], "\[IndentingNewLine]", "}"}]}], ",", "17"}], "]"}],
+             ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"(*", "VAPOR", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<gas feed\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.2"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "V0A", "]"}], ",", "Vsol1", ",", 
+                    "V"}], "]"}], ",", "\"\< Mmol/h\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "V0A", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "V0A", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", "V", ",", "\"\< Mmol/h\>\""}], 
+                    "}"}]}], ",", "colS"}], "]"}]}], "]"}]}], "}"}]}], ",", 
+                  "\[IndentingNewLine]", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "YN1A", "]"}], ",", "yN1sol1", ",", 
+                    "yN1"}], "]"}], ",", "\"\< ppm\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "YN1A", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "YN1A", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", "yN1", ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+                "Center"}], "]"}], ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "Y1A", "]"}], ",", "y1sol1", ",", 
+                    "y1"}], "]"}], ",", "\"\< ppm\>\""}], "}"}]}], ",", 
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listA", "[", "Y1A", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                 RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"solution", "\[And]", 
+                    RowBox[{"listA", "[", "Y1A", "]"}]}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", "y1", ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                  "]"}]}], "\[IndentingNewLine]", "}"}]}], ",", "17"}], "]"}],
+             ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.5"}]}], "}"}]}], "]"}]}], "\[IndentingNewLine]",
+          "}"}], "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"absorption", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"\"\<one stage absorption\>\"", ",", 
+                  RowBox[{"Spacer", "@", "0"}], ",", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"m", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\< x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "Center"}], "]"}], ",", 
+              "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"0.5", "*", "h"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"(*", "LIQUID", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<liquid feed\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "L0B", "]"}], ",", "Lsol2", ",", 
+                    "L"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< Mmol/h\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "L0B", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "L0B", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"L", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< Mmol/h\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "X0B", "]"}], ",", "x0sol2", ",", 
+                    "x0"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "X0B", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "X0B", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"x0", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+                "Center"}], "]"}], ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.2"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "XNB", "]"}], ",", "xNsol2", ",", 
+                    "xN"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"4", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", 
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "XNB", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                 RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "XNB", "]"}]}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"xN", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"4", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                  "]"}]}], "\[IndentingNewLine]", "}"}]}], ",", "17"}], "]"}],
+             ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"0.13", "*", "w"}], "+", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"(*", "VAPOR", "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<gas feed\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.2"}]}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Column", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "V0B", "]"}], ",", "Vsol2", ",", 
+                    "V"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< Mmol/h\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "V0B", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "V0B", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"V", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< Mmolh\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "YN1B", "]"}], ",", "yN1sol2", ",", 
+                    "yN1"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "YN1B", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                    RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "YN1B", "]"}]}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"yN1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                    "]"}]}], "}"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+                "Center"}], "]"}], ",", "17"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{
+               RowBox[{"-", "0.5"}], "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.5"}], "}"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "@", 
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                   RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "Y1B", "]"}], ",", "y1sol2", ",", 
+                    "y1"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", 
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"listB", "[", "Y1B", "]"}], ",", "colU", ",", 
+                    "Black"}], "]"}]}], "]"}], ",", 
+                 RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"solution", "\[And]", 
+                    RowBox[{"listB", "[", "Y1B", "]"}]}], ",", 
+                   RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<correct \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{"y1", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "0"}], "}"}]}], "]"}], ",", 
+                    "\"\< ppm\>\""}], "}"}]}], ",", "colS"}], "]"}]}], 
+                  "]"}]}], "\[IndentingNewLine]", "}"}]}], ",", "17"}], "]"}],
+             ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "0.13"}], "*", "w"}], "-", 
+               RowBox[{"0.5", "*", "\[Delta]"}]}], ",", 
+              RowBox[{"1.5", "*", "h"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"-", "1.2"}]}], "}"}]}], "]"}]}], "\[IndentingNewLine]",
+          "}"}], "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Show", "[", 
+       RowBox[{"column", ",", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"OINB", "\[Equal]", "1"}], ",", "stripping", ",", 
+          "absorption"}], "]"}], ",", 
+        RowBox[{"PlotRange", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"-", "2.5"}], ",", "2.4"}], "}"}], ",", "All"}], 
+          "}"}]}]}], "]"}]}]}], "\[IndentingNewLine]", "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Button", "[", 
+          RowBox[{"\"\< new problem \>\"", ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"reset", "++"}], ",", 
+             RowBox[{"solution", "=", "False"}], ",", 
+             RowBox[{"Lsol1", "=", "0"}], ",", 
+             RowBox[{"Vsol1", "=", "0"}], ",", 
+             RowBox[{"Lsol2", "=", "0"}], ",", 
+             RowBox[{"Vsol2", "=", "0"}], ",", 
+             RowBox[{"x0sol1", "=", "0"}], ",", 
+             RowBox[{"xNsol1", "=", "0"}], ",", 
+             RowBox[{"y1sol1", "=", "0"}], ",", 
+             RowBox[{"yN1sol1", "=", "0"}], ",", 
+             RowBox[{"x0sol2", "=", "0"}], ",", 
+             RowBox[{"xNsol2", "=", "0"}], ",", 
+             RowBox[{"y1sol2", "=", "0"}], ",", 
+             RowBox[{"yN1sol2", "=", "0"}]}], "}"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{"reset", ",", "None"}], "}"}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"solution", ",", "False", ",", "\"\<solution\>\""}], 
+             "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"True", ",", "False"}], "}"}], ",", 
+            RowBox[{"Enabled", "\[Rule]", 
+             RowBox[{"If", "[", 
+              RowBox[{"solution", ",", "False", ",", "True"}], "]"}]}]}], 
+           "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"OINB", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< stripping \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< absorption \>\""}]}], "}"}], ",", 
+            "Setter", ",", 
+            RowBox[{"TrackingFunction", "\[Rule]", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"OINB", "=", "#"}], ";", 
+                RowBox[{"solution", "=", "False"}], ";"}], "&"}], ")"}]}]}], 
+           "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Control", "[", 
+                  RowBox[{"{", 
+                   RowBox[{"part1A", ",", "1", ",", "None"}], "}"}], "]"}], 
+                 ",", 
+                 RowBox[{"Control", "[", 
+                  RowBox[{"{", 
+                   RowBox[{"part2A", ",", "1", ",", "None"}], "}"}], "]"}]}], 
+                "}"}]}]}], ",", "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"Row", "@", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Control", "[", 
+                  RowBox[{"{", 
+                   RowBox[{"part1B", ",", "1", ",", "None"}], "}"}], "]"}], 
+                 ",", 
+                 RowBox[{"Control", "[", 
+                  RowBox[{"{", 
+                   RowBox[{"part2B", ",", "1", ",", "None"}], "}"}], "]"}]}], 
+                "}"}]}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "OINB"}]}], "]"}]}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"PaneSelector", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"1", "\[Rule]", " ", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Lsol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<liquid flow rate \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}]}], "}"}]}]}], 
+                    "}"}], ",", "0", ",", "200", ",", "1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"2", "\[Rule]", " ", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Vsol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<vapor flow rate \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}]}], "}"}]}]}], 
+                    "}"}], ",", "0", ",", "50", ",", "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}],
+                 ",", 
+                RowBox[{"Dynamic", "@", "part1A"}]}], "]"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"PaneSelector", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"1", "\[Rule]", " ", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Lsol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<liquid flow rate \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<L\>\"", ",", "Italic"}], "]"}]}], "}"}]}]}], 
+                    "}"}], ",", "0", ",", "350", ",", "1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"2", "\[Rule]", " ", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Vsol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<vapor flow rate \>\"", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<V\>\"", ",", "Italic"}], "]"}]}], "}"}]}]}], 
+                    "}"}], ",", "0", ",", "200", ",", "1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}],
+                 ",", 
+                RowBox[{"Dynamic", "@", "part1B"}]}], "]"}]}]}], 
+            "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "OINB"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"PaneSelector", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"1", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x0sol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<inlet liquid mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "500", ",", "1",
+                     ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"2", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"xNsol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<outlet liquid mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "350", ",", "1",
+                     ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"3", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1sol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<outlet vapor mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "1500", ",", 
+                    "1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"4", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"yN1sol1", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<inlet vapor mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "10", ",", 
+                    "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}],
+                 ",", 
+                RowBox[{"Dynamic", "@", "part2A"}]}], "]"}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"PaneSelector", "[", 
+               RowBox[{
+                RowBox[{"{", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"1", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"x0sol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<inlet liquid mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "0"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "10", ",", 
+                    "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"2", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"xNsol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<outlet liquid mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<x\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "100", ",", 
+                    "0.1", ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"3", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"y1sol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<outlet vapor mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "1"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "350", ",", "1",
+                     ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+                  RowBox[{"4", "\[Rule]", 
+                   RowBox[{"Control", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"yN1sol2", ",", "0", ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<inlet vapor mole ratio \>\"", ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<y\>\"", ",", "Italic"}], "]"}], ",", "2"}], 
+                    "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "400", ",", "1",
+                     ",", 
+                    RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+                    RowBox[{"ImageSize", "\[Rule]", "Small"}], ",", 
+                    RowBox[{"Enabled", "\[Rule]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{"solution", ",", "False", ",", "True"}], 
+                    "]"}]}]}], "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}],
+                 ",", 
+                RowBox[{"Dynamic", "@", "part2B"}]}], "]"}]}]}], 
+            "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "OINB"}]}], "]"}], ",", "SpanFromLeft"}], 
+        "}"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.739800644614231*^9, 3.7398006599759645`*^9}, {
+   3.739800791316774*^9, 3.7398009691631775`*^9}, {3.7398010446004324`*^9, 
+   3.739801131461142*^9}, 3.7398012039148693`*^9, {3.739801246822421*^9, 
+   3.739801527861972*^9}, {3.7398015685510755`*^9, 3.739801704280384*^9}, {
+   3.739801754430106*^9, 3.7398018466761475`*^9}, {3.739801915932062*^9, 
+   3.739801940924404*^9}, {3.7398019711039357`*^9, 3.7398020275415297`*^9}, {
+   3.7398032414746833`*^9, 3.739803248066137*^9}, {3.739803318744153*^9, 
+   3.7398033399110527`*^9}, {3.7398033714730687`*^9, 3.739803380316918*^9}, {
+   3.7398034590627794`*^9, 3.7398034894348135`*^9}, {3.7401356889816084`*^9, 
+   3.7401356943318434`*^9}, 
+   3.7401359315879793`*^9},ExpressionUUID->"644499f1-f9d4-453a-ac96-\
+198944600eca"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`Lsol1$$ = 0, $CellContext`Lsol2$$ = 
+    0, $CellContext`OINB$$ = 2, $CellContext`part1A$$ = 
+    1, $CellContext`part1B$$ = 1, $CellContext`part2A$$ = 
+    1, $CellContext`part2B$$ = 4, $CellContext`reset$$ = 
+    0, $CellContext`solution$$ = False, $CellContext`Vsol1$$ = 
+    0, $CellContext`Vsol2$$ = 0, $CellContext`x0sol1$$ = 
+    0, $CellContext`x0sol2$$ = 0, $CellContext`xNsol1$$ = 
+    0, $CellContext`xNsol2$$ = 0, $CellContext`y1sol1$$ = 
+    0, $CellContext`y1sol2$$ = 0, $CellContext`yN1sol1$$ = 
+    0, $CellContext`yN1sol2$$ = 0, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`reset$$], 0}, {{
+       Hold[$CellContext`solution$$], False, "solution"}, {True, False}}, {{
+       Hold[$CellContext`OINB$$], 1, ""}, {
+      1 -> " stripping ", 2 -> " absorption "}}, {
+      Hold[$CellContext`part1A$$], 1}, {
+      Hold[$CellContext`part2A$$], 1}, {
+      Hold[$CellContext`part1B$$], 1}, {
+      Hold[$CellContext`part2B$$], 1}, {{
+       Hold[$CellContext`Lsol1$$], 0, 
+       Row[{"liquid flow rate ", 
+         Style["L", Italic]}]}, 0, 200, 1}, {{
+       Hold[$CellContext`Vsol1$$], 0, 
+       Row[{"vapor flow rate ", 
+         Style["V", Italic]}]}, 0, 50, 0.1}, {{
+       Hold[$CellContext`Lsol2$$], 0, 
+       Row[{"liquid flow rate ", 
+         Style["L", Italic]}]}, 0, 350, 1}, {{
+       Hold[$CellContext`Vsol2$$], 0, 
+       Row[{"vapor flow rate ", 
+         Style["V", Italic]}]}, 0, 200, 1}, {{
+       Hold[$CellContext`x0sol1$$], 0, 
+       Row[{"inlet liquid mole ratio ", 
+         Subscript[
+          Style["x", Italic], 0]}]}, 0, 500, 1}, {{
+       Hold[$CellContext`xNsol1$$], 0, 
+       Row[{"outlet liquid mole ratio ", 
+         Subscript[
+          Style["x", Italic], 1]}]}, 0, 350, 1}, {{
+       Hold[$CellContext`y1sol1$$], 0, 
+       Row[{"outlet vapor mole ratio ", 
+         Subscript[
+          Style["y", Italic], 1]}]}, 0, 1500, 1}, {{
+       Hold[$CellContext`yN1sol1$$], 0, 
+       Row[{"inlet vapor mole ratio ", 
+         Subscript[
+          Style["y", Italic], 2]}]}, 0, 10, 0.1}, {{
+       Hold[$CellContext`x0sol2$$], 0, 
+       Row[{"inlet liquid mole ratio ", 
+         Subscript[
+          Style["x", Italic], 0]}]}, 0, 10, 0.1}, {{
+       Hold[$CellContext`xNsol2$$], 0, 
+       Row[{"outlet liquid mole ratio ", 
+         Subscript[
+          Style["x", Italic], 1]}]}, 0, 100, 0.1}, {{
+       Hold[$CellContext`y1sol2$$], 0, 
+       Row[{"outlet vapor mole ratio ", 
+         Subscript[
+          Style["y", Italic], 1]}]}, 0, 350, 1}, {{
+       Hold[$CellContext`yN1sol2$$], 0, 
+       Row[{"inlet vapor mole ratio ", 
+         Subscript[
+          Style["y", Italic], 2]}]}, 0, 400, 1}, {
+      Hold[
+       Grid[{{
+          Button[" new problem ", {
+            Increment[$CellContext`reset$$], $CellContext`solution$$ = 
+            False, $CellContext`Lsol1$$ = 0, $CellContext`Vsol1$$ = 
+            0, $CellContext`Lsol2$$ = 0, $CellContext`Vsol2$$ = 
+            0, $CellContext`x0sol1$$ = 0, $CellContext`xNsol1$$ = 
+            0, $CellContext`y1sol1$$ = 0, $CellContext`yN1sol1$$ = 
+            0, $CellContext`x0sol2$$ = 0, $CellContext`xNsol2$$ = 
+            0, $CellContext`y1sol2$$ = 0, $CellContext`yN1sol2$$ = 0}], 
+          Manipulate`Place[1], 
+          Manipulate`Place[2], 
+          Manipulate`Place[3], 
+          PaneSelector[{1 -> Row[{
+               Manipulate`Place[4], 
+               Manipulate`Place[5]}], 2 -> Row[{
+               Manipulate`Place[6], 
+               Manipulate`Place[7]}]}, 
+           Dynamic[$CellContext`OINB$$]]}, {
+          
+          PaneSelector[{
+           1 -> PaneSelector[{
+              1 -> Manipulate`Place[8], 2 -> Manipulate`Place[9]}, 
+              Dynamic[$CellContext`part1A$$]], 2 -> 
+            PaneSelector[{
+              1 -> Manipulate`Place[10], 2 -> Manipulate`Place[11]}, 
+              Dynamic[$CellContext`part1B$$]]}, 
+           Dynamic[$CellContext`OINB$$]], 
+          
+          PaneSelector[{
+           1 -> PaneSelector[{
+              1 -> Manipulate`Place[12], 2 -> Manipulate`Place[13], 3 -> 
+               Manipulate`Place[14], 4 -> Manipulate`Place[15]}, 
+              Dynamic[$CellContext`part2A$$]], 2 -> 
+            PaneSelector[{
+              1 -> Manipulate`Place[16], 2 -> Manipulate`Place[17], 3 -> 
+               Manipulate`Place[18], 4 -> Manipulate`Place[19]}, 
+              Dynamic[$CellContext`part2B$$]]}, 
+           Dynamic[$CellContext`OINB$$]], SpanFromLeft}}, Alignment -> Left]],
+       Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    600., {197., 203.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`solution$30225$$ = 
+    False, $CellContext`OINB$30226$$ = False, $CellContext`Lsol1$30227$$ = 
+    0, $CellContext`Vsol1$30228$$ = 0, $CellContext`Lsol2$30229$$ = 
+    0, $CellContext`Vsol2$30230$$ = 0, $CellContext`x0sol1$30231$$ = 
+    0, $CellContext`xNsol1$30232$$ = 0, $CellContext`y1sol1$30233$$ = 
+    0, $CellContext`yN1sol1$30234$$ = 0, $CellContext`x0sol2$30235$$ = 
+    0, $CellContext`xNsol2$30236$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`Lsol1$$ = 0, $CellContext`Lsol2$$ = 
+        0, $CellContext`OINB$$ = 1, $CellContext`part1A$$ = 
+        1, $CellContext`part1B$$ = 1, $CellContext`part2A$$ = 
+        1, $CellContext`part2B$$ = 1, $CellContext`reset$$ = 
+        0, $CellContext`solution$$ = False, $CellContext`Vsol1$$ = 
+        0, $CellContext`Vsol2$$ = 0, $CellContext`x0sol1$$ = 
+        0, $CellContext`x0sol2$$ = 0, $CellContext`xNsol1$$ = 
+        0, $CellContext`xNsol2$$ = 0, $CellContext`y1sol1$$ = 
+        0, $CellContext`y1sol2$$ = 0, $CellContext`yN1sol1$$ = 
+        0, $CellContext`yN1sol2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`solution$$, $CellContext`solution$30225$$, False], 
+        Hold[$CellContext`OINB$$, $CellContext`OINB$30226$$, False], 
+        Hold[$CellContext`Lsol1$$, $CellContext`Lsol1$30227$$, 0], 
+        Hold[$CellContext`Vsol1$$, $CellContext`Vsol1$30228$$, 0], 
+        Hold[$CellContext`Lsol2$$, $CellContext`Lsol2$30229$$, 0], 
+        Hold[$CellContext`Vsol2$$, $CellContext`Vsol2$30230$$, 0], 
+        Hold[$CellContext`x0sol1$$, $CellContext`x0sol1$30231$$, 0], 
+        Hold[$CellContext`xNsol1$$, $CellContext`xNsol1$30232$$, 0], 
+        Hold[$CellContext`y1sol1$$, $CellContext`y1sol1$30233$$, 0], 
+        Hold[$CellContext`yN1sol1$$, $CellContext`yN1sol1$30234$$, 0], 
+        Hold[$CellContext`x0sol2$$, $CellContext`x0sol2$30235$$, 0], 
+        Hold[$CellContext`xNsol2$$, $CellContext`xNsol2$30236$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`m$, $CellContext`stripSol$, \
+$CellContext`absorpSol$, $CellContext`x0$, $CellContext`xN$, \
+$CellContext`y1$, $CellContext`L$, $CellContext`V$, $CellContext`yN1$, \
+$CellContext`unknowns1A$, $CellContext`unknowns2A$, $CellContext`unknownsA$, \
+$CellContext`listA$, $CellContext`unknowns1B$, $CellContext`unknowns2B$, \
+$CellContext`unknownsB$, $CellContext`listB$, $CellContext`w$, \
+$CellContext`h$, $CellContext`ry$, $CellContext`\[Delta]$, \
+$CellContext`colS$, $CellContext`colU$, $CellContext`column$, \
+$CellContext`stripping$, $CellContext`absorption$}, 
+        SeedRandom[$CellContext`reset$$]; $CellContext`m$ = 
+         RandomReal[{3, 5}]; $CellContext`stripSol$[
+           Pattern[$CellContext`yN1$, 
+            Blank[]], 
+           Pattern[$CellContext`xN$, 
+            Blank[]], 
+           Pattern[$CellContext`x0$, 
+            Blank[]], 
+           Pattern[$CellContext`L$, 
+            Blank[]]] := Quiet[
+           
+           Solve[{$CellContext`vflow $CellContext`yN1$ + $CellContext`L$ \
+$CellContext`x0$ == $CellContext`L$ $CellContext`xN$ + $CellContext`vflow \
+$CellContext`ytop, $CellContext`ytop == $CellContext`m$ $CellContext`xN$, \
+$CellContext`ytop > 0, $CellContext`vflow > 
+             0}, {$CellContext`vflow, $CellContext`ytop}]]; \
+$CellContext`absorpSol$[
+           Pattern[$CellContext`yN1$, 
+            Blank[]], 
+           Pattern[$CellContext`y1$, 
+            Blank[]], 
+           Pattern[$CellContext`x0$, 
+            Blank[]], 
+           Pattern[$CellContext`V$, 
+            Blank[]]] := Quiet[
+           
+           Solve[{$CellContext`V$ $CellContext`yN1$ + $CellContext`lflow \
+$CellContext`x0$ == $CellContext`V$ $CellContext`y1$ + $CellContext`xbot \
+$CellContext`lflow, $CellContext`y1$ == $CellContext`m$ $CellContext`xbot, \
+$CellContext`xbot > 0, $CellContext`lflow > 
+             0}, {$CellContext`lflow, $CellContext`xbot}]]; $CellContext`x0$ = 
+         If[$CellContext`OINB$$ == 1, N[
+             RandomInteger[{30, 40}]]/100, 
+           N[
+            RandomInteger[{0, 5}]]]; $CellContext`yN1$ = 
+         If[$CellContext`OINB$$ == 1, 
+           RandomInteger[{0, 5}], 
+           N[
+            RandomInteger[{150, 400}]]]; 
+        If[$CellContext`OINB$$ == 
+          1, {$CellContext`xN$ = 
+           N[RandomInteger[{70, 80}] ($CellContext`x0$/100)], $CellContext`L$ = 
+           N[
+             RandomInteger[{50, 200}]], $CellContext`y1$ = 
+           ReplaceAll[$CellContext`ytop, 
+             Part[
+              $CellContext`stripSol$[$CellContext`yN1$, $CellContext`xN$, \
+$CellContext`x0$, $CellContext`L$], 1]], $CellContext`V$ = 
+           ReplaceAll[$CellContext`vflow, 
+             Part[
+              $CellContext`stripSol$[$CellContext`yN1$, $CellContext`xN$, \
+$CellContext`x0$, $CellContext`L$], 1]]}, {$CellContext`y1$ = 
+           N[RandomInteger[{70, 80}] ($CellContext`yN1$/
+              100)], $CellContext`V$ = N[
+             RandomInteger[{50, 200}]], $CellContext`xN$ = 
+           ReplaceAll[$CellContext`xbot, 
+             Part[
+              $CellContext`absorpSol$[$CellContext`yN1$, $CellContext`y1$, \
+$CellContext`x0$, $CellContext`V$], 1]], $CellContext`L$ = 
+           ReplaceAll[$CellContext`lflow, 
+             Part[
+              $CellContext`absorpSol$[$CellContext`yN1$, $CellContext`y1$, \
+$CellContext`x0$, $CellContext`V$], 1]]}]; $CellContext`unknowns1A$ = 
+         RandomChoice[{$CellContext`L0A, $CellContext`V0A}]; \
+$CellContext`unknowns2A$ = 
+         RandomChoice[{$CellContext`X0A, $CellContext`XNA, $CellContext`Y1A, \
+$CellContext`YN1A}]; $CellContext`unknownsA$ = {$CellContext`unknowns1A$, \
+$CellContext`unknowns2A$}; $CellContext`listA$[
+           Pattern[$CellContext`var$, 
+            Blank[]]] := 
+         MemberQ[$CellContext`unknownsA$, $CellContext`var$]; \
+$CellContext`part1A$$ = Part[
+           
+           Position[{$CellContext`L0A, $CellContext`V0A}, \
+$CellContext`unknowns1A$], 1, 1]; $CellContext`part2A$$ = Part[
+           
+           Position[{$CellContext`X0A, $CellContext`XNA, $CellContext`Y1A, \
+$CellContext`YN1A}, $CellContext`unknowns2A$], 1, 
+           1]; $CellContext`unknowns1B$ = 
+         RandomChoice[{$CellContext`L0B, $CellContext`V0B}]; \
+$CellContext`unknowns2B$ = 
+         RandomChoice[{$CellContext`X0B, $CellContext`XNB, $CellContext`Y1B, \
+$CellContext`YN1B}]; $CellContext`unknownsB$ = {$CellContext`unknowns1B$, \
+$CellContext`unknowns2B$}; $CellContext`listB$[
+           Pattern[$CellContext`var$, 
+            Blank[]]] := 
+         MemberQ[$CellContext`unknownsB$, $CellContext`var$]; \
+$CellContext`part1B$$ = Part[
+           
+           Position[{$CellContext`L0B, $CellContext`V0B}, \
+$CellContext`unknowns1B$], 1, 1]; $CellContext`part2B$$ = Part[
+           
+           Position[{$CellContext`X0B, $CellContext`XNB, $CellContext`Y1B, \
+$CellContext`YN1B}, $CellContext`unknowns2B$], 1, 1]; $CellContext`w$ = 
+         1.5; $CellContext`h$ = 1; $CellContext`ry$ = 
+         0.15; $CellContext`\[Delta]$ = 2; $CellContext`colS$ = 
+         Blue; $CellContext`colU$ = RGBColor[0, 0.6, 0]; $CellContext`column$ = 
+         Graphics[{Thick, 
+            Arrowheads[0.045], 
+            Map[
+            Line[{{(# 0.5) $CellContext`w$, 
+                0}, {(# 0.5) $CellContext`w$, $CellContext`h$}}]& , {-1, 1}], 
+            
+            Circle[{0, $CellContext`h$}, {
+             0.5 $CellContext`w$, $CellContext`ry$}, {0, Pi}], 
+            
+            Circle[{0, 0}, {0.5 $CellContext`w$, $CellContext`ry$}, {
+             Pi, 2 Pi}], 
+            
+            Arrow[{{0.12 $CellContext`w$ + $CellContext`\[Delta]$, 
+               1.5 $CellContext`h$}, {
+              0.13 $CellContext`w$, 1.5 $CellContext`h$}, {
+              0.13 $CellContext`w$, 1.12}}], 
+            
+            Arrow[{{0.13 $CellContext`w$, -0.13}, {
+              0.13 $CellContext`w$, (-0.5) $CellContext`h$}, {
+              0.13 $CellContext`w$ + $CellContext`\[Delta]$, (-0.5) \
+$CellContext`h$}}], 
+            
+            Arrow[{{(-0.13) $CellContext`w$, 1.12}, {(-0.13) $CellContext`w$, 
+               1.5 $CellContext`h$}, {(-0.13) $CellContext`w$ - $CellContext`\
+\[Delta]$, 1.5 $CellContext`h$}}], 
+            
+            Arrow[{{(-0.13) $CellContext`w$ - $CellContext`\[Delta]$, (-0.5) \
+$CellContext`h$}, {(-0.13) $CellContext`w$, (-0.5) $CellContext`h$}, {(-0.13) \
+$CellContext`w$, -0.13}}]}, ImageSize -> {600, 400}]; $CellContext`stripping$ = 
+         Graphics[{
+            Text[
+             Style[
+              Column[{"one stage stripping", 
+                Spacer[0], 
+                Row[{
+                  Subscript[
+                   Style["y", Italic], 1], " = ", 
+                  NumberForm[$CellContext`m$, {3, 1}], 
+                  Subscript[
+                   Style[" x", Italic], 1]}]}, Center], 17], {
+             0, 0.5 $CellContext`h$}], 
+            Text[
+             Style["liquid feed", 17], {
+             0.13 $CellContext`w$ + 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+              Column[{
+                Row[{
+                  Style[
+                   Row[{
+                    Style["L", Italic], " = ", 
+                    If[
+                    $CellContext`listA$[$CellContext`L0A], \
+$CellContext`Lsol1$$, $CellContext`L$], " Mmol/h"}], 
+                   If[
+                    $CellContext`listA$[$CellContext`L0A], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listA$[$CellContext`L0A]], 
+                   Style[
+                    Row[{"correct ", 
+                    Style["L", Italic], " = ", $CellContext`L$, 
+                    " Mmol/h"}], $CellContext`colS$]]}], 
+                Row[{
+                  Style[
+                   Row[{
+                    Subscript[
+                    Style["x", Italic], 0], " = ", 
+                    If[
+                    $CellContext`listA$[$CellContext`X0A], \
+$CellContext`x0sol1$$, $CellContext`x0$], " ppm"}], 17, 
+                   If[
+                    $CellContext`listA$[$CellContext`X0A], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listA$[$CellContext`X0A]], 
+                   Style[
+                    Row[{"correct ", 
+                    Subscript[
+                    Style["x", Italic], 0], " = ", $CellContext`x0$, 
+                    " ppm"}], $CellContext`colS$]]}]}, Center], 17], {
+             0.13 $CellContext`w$ + 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, -1.2}], 
+            Text[
+             Style[
+              Row[{
+                Style[
+                 Row[{
+                   Subscript[
+                    Style["x", Italic], 1], " = ", 
+                   If[
+                    $CellContext`listA$[$CellContext`XNA], \
+$CellContext`xNsol1$$, $CellContext`xN$], " ppm"}], 
+                 If[
+                  $CellContext`listA$[$CellContext`XNA], $CellContext`colU$, 
+                  Black]], 
+                Spacer[10], 
+                If[
+                 And[$CellContext`solution$$, 
+                  $CellContext`listA$[$CellContext`XNA]], 
+                 Style[
+                  Row[{"correct ", 
+                    Subscript[
+                    Style["x", Italic], 1], " = ", $CellContext`xN$, 
+                    " ppm"}], $CellContext`colS$]]}], 17], {
+             0.13 $CellContext`w$ + 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+             "gas feed", 17], {(-0.13) $CellContext`w$ - 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, -1.2}], 
+            Text[
+             Style[
+              Column[{
+                Row[{
+                  Style[
+                   Row[{
+                    Style["V", Italic], " = ", 
+                    If[
+                    $CellContext`listA$[$CellContext`V0A], \
+$CellContext`Vsol1$$, $CellContext`V$], " Mmol/h"}], 
+                   If[
+                    $CellContext`listA$[$CellContext`V0A], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listA$[$CellContext`V0A]], 
+                   Style[
+                    Row[{"correct ", 
+                    Style["V", Italic], " = ", $CellContext`V$, 
+                    " Mmol/h"}], $CellContext`colS$]]}], 
+                Row[{
+                  Style[
+                   Row[{
+                    Subscript[
+                    Style["y", Italic], 2], " = ", 
+                    If[
+                    $CellContext`listA$[$CellContext`YN1A], \
+$CellContext`yN1sol1$$, $CellContext`yN1$], " ppm"}], 
+                   If[
+                    $CellContext`listA$[$CellContext`YN1A], \
+$CellContext`colU$, Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listA$[$CellContext`YN1A]], 
+                   Style[
+                    Row[{"correct ", 
+                    Subscript[
+                    Style["y", Italic], 2], " = ", $CellContext`yN1$, 
+                    " ppm"}], $CellContext`colS$]]}]}, Center], 
+              17], {(-0.13) $CellContext`w$ - 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+              Row[{
+                Style[
+                 Row[{
+                   Subscript[
+                    Style["y", Italic], 1], " = ", 
+                   If[
+                    $CellContext`listA$[$CellContext`Y1A], \
+$CellContext`y1sol1$$, $CellContext`y1$], " ppm"}], 
+                 If[
+                  $CellContext`listA$[$CellContext`Y1A], $CellContext`colU$, 
+                  Black]], 
+                Spacer[10], 
+                If[
+                 And[$CellContext`solution$$, 
+                  $CellContext`listA$[$CellContext`Y1A]], 
+                 Style[
+                  Row[{"correct ", 
+                    Subscript[
+                    Style["y", Italic], 1], " = ", $CellContext`y1$, 
+                    " ppm"}], $CellContext`colS$]]}], 
+              17], {(-0.13) $CellContext`w$ - 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, -1.5}]}]; $CellContext`absorption$ = 
+         Graphics[{
+            Text[
+             Style[
+              Column[{"one stage absorption", 
+                Spacer[0], 
+                Row[{
+                  Subscript[
+                   Style["y", Italic], 1], " = ", 
+                  NumberForm[$CellContext`m$, {3, 1}], 
+                  Subscript[
+                   Style[" x", Italic], 1]}]}, Center], 17], {
+             0, 0.5 $CellContext`h$}], 
+            Text[
+             Style["liquid feed", 17], {
+             0.13 $CellContext`w$ + 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+              Column[{
+                Row[{
+                  Style[
+                   Row[{
+                    Style["L", Italic], " = ", 
+                    NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`L0B], \
+$CellContext`Lsol2$$, $CellContext`L$], {3, 0}], " Mmol/h"}], 
+                   If[
+                    $CellContext`listB$[$CellContext`L0B], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listB$[$CellContext`L0B]], 
+                   Style[
+                    Row[{"correct ", 
+                    Style["L", Italic], " = ", 
+                    NumberForm[$CellContext`L$, {3, 0}], 
+                    " Mmol/h"}], $CellContext`colS$]]}], 
+                Row[{
+                  Style[
+                   Row[{
+                    Subscript[
+                    Style["x", Italic], 0], " = ", 
+                    NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`X0B], \
+$CellContext`x0sol2$$, $CellContext`x0$], {3, 1}], " ppm"}], 
+                   If[
+                    $CellContext`listB$[$CellContext`X0B], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listB$[$CellContext`X0B]], 
+                   Style[
+                    Row[{"correct ", 
+                    Subscript[
+                    Style["x", Italic], 0], " = ", 
+                    NumberForm[$CellContext`x0$, {3, 1}], 
+                    " ppm"}], $CellContext`colS$]]}]}, Center], 17], {
+             0.13 $CellContext`w$ + 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, -1.2}], 
+            Text[
+             Style[
+              Row[{
+                Style[
+                 Row[{
+                   Subscript[
+                    Style["x", Italic], 1], " = ", 
+                   NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`XNB], \
+$CellContext`xNsol2$$, $CellContext`xN$], {4, 1}], " ppm"}], 
+                 If[
+                  $CellContext`listB$[$CellContext`XNB], $CellContext`colU$, 
+                  Black]], 
+                Spacer[10], 
+                If[
+                 And[$CellContext`solution$$, 
+                  $CellContext`listB$[$CellContext`XNB]], 
+                 Style[
+                  Row[{"correct ", 
+                    Subscript[
+                    Style["x", Italic], 1], " = ", 
+                    NumberForm[$CellContext`xN$, {4, 1}], 
+                    " ppm"}], $CellContext`colS$]]}], 17], {
+             0.13 $CellContext`w$ + 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+             "gas feed", 17], {(-0.13) $CellContext`w$ - 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, -1.2}], 
+            Text[
+             Style[
+              Column[{
+                Row[{
+                  Style[
+                   Row[{
+                    Style["V", Italic], " = ", 
+                    NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`V0B], \
+$CellContext`Vsol2$$, $CellContext`V$], {3, 0}], " Mmol/h"}], 
+                   If[
+                    $CellContext`listB$[$CellContext`V0B], $CellContext`colU$,
+                     Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listB$[$CellContext`V0B]], 
+                   Style[
+                    Row[{"correct ", 
+                    Style["V", Italic], " = ", 
+                    NumberForm[$CellContext`V$, {3, 0}], 
+                    " Mmolh"}], $CellContext`colS$]]}], 
+                Row[{
+                  Style[
+                   Row[{
+                    Subscript[
+                    Style["y", Italic], 2], " = ", 
+                    NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`YN1B], \
+$CellContext`yN1sol2$$, $CellContext`yN1$], {3, 0}], " ppm"}], 
+                   If[
+                    $CellContext`listB$[$CellContext`YN1B], \
+$CellContext`colU$, Black]], 
+                  Spacer[10], 
+                  If[
+                   And[$CellContext`solution$$, 
+                    $CellContext`listB$[$CellContext`YN1B]], 
+                   Style[
+                    Row[{"correct ", 
+                    Subscript[
+                    Style["y", Italic], 2], " = ", 
+                    NumberForm[$CellContext`yN1$, {3, 0}], 
+                    " ppm"}], $CellContext`colS$]]}]}, Center], 
+              17], {(-0.13) $CellContext`w$ - 
+              0.5 $CellContext`\[Delta]$, (-0.5) $CellContext`h$}, {0, 1.5}], 
+            Text[
+             Style[
+              Row[{
+                Style[
+                 Row[{
+                   Subscript[
+                    Style["y", Italic], 1], " = ", 
+                   NumberForm[
+                    If[
+                    $CellContext`listB$[$CellContext`Y1B], \
+$CellContext`y1sol2$$, $CellContext`y1$], {3, 0}], " ppm"}], 
+                 If[
+                  $CellContext`listB$[$CellContext`Y1B], $CellContext`colU$, 
+                  Black]], 
+                Spacer[10], 
+                If[
+                 And[$CellContext`solution$$, 
+                  $CellContext`listB$[$CellContext`Y1B]], 
+                 Style[
+                  Row[{"correct ", 
+                    Subscript[
+                    Style["y", Italic], 1], " = ", 
+                    NumberForm[$CellContext`y1$, {3, 0}], 
+                    " ppm"}], $CellContext`colS$]]}], 
+              17], {(-0.13) $CellContext`w$ - 0.5 $CellContext`\[Delta]$, 
+              1.5 $CellContext`h$}, {0, -1.2}]}]; Show[$CellContext`column$, 
+          
+          If[$CellContext`OINB$$ == 
+           1, $CellContext`stripping$, $CellContext`absorption$], 
+          PlotRange -> {{-2.5, 2.4}, All}]], 
+      "Specifications" :> {{$CellContext`reset$$, 0, ControlType -> None, 
+         ControlPlacement -> 
+         1}, {{$CellContext`solution$$, False, "solution"}, {True, False}, 
+         Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         2}, {{$CellContext`OINB$$, 1, ""}, {
+         1 -> " stripping ", 2 -> " absorption "}, ControlType -> Setter, 
+         TrackingFunction -> 
+         Dynamic[($CellContext`OINB$$ = #; $CellContext`solution$$ = False; 
+           Null)& ], ControlPlacement -> 3}, {$CellContext`part1A$$, 1, 
+         ControlType -> None, ControlPlacement -> 4}, {$CellContext`part2A$$, 
+         1, ControlType -> None, ControlPlacement -> 
+         5}, {$CellContext`part1B$$, 1, ControlType -> None, ControlPlacement -> 
+         6}, {$CellContext`part2B$$, 1, ControlType -> None, ControlPlacement -> 
+         7}, {{$CellContext`Lsol1$$, 0, 
+          Row[{"liquid flow rate ", 
+            Style["L", Italic]}]}, 0, 200, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         8}, {{$CellContext`Vsol1$$, 0, 
+          Row[{"vapor flow rate ", 
+            Style["V", Italic]}]}, 0, 50, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         9}, {{$CellContext`Lsol2$$, 0, 
+          Row[{"liquid flow rate ", 
+            Style["L", Italic]}]}, 0, 350, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         10}, {{$CellContext`Vsol2$$, 0, 
+          Row[{"vapor flow rate ", 
+            Style["V", Italic]}]}, 0, 200, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         11}, {{$CellContext`x0sol1$$, 0, 
+          Row[{"inlet liquid mole ratio ", 
+            Subscript[
+             Style["x", Italic], 0]}]}, 0, 500, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         12}, {{$CellContext`xNsol1$$, 0, 
+          Row[{"outlet liquid mole ratio ", 
+            Subscript[
+             Style["x", Italic], 1]}]}, 0, 350, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         13}, {{$CellContext`y1sol1$$, 0, 
+          Row[{"outlet vapor mole ratio ", 
+            Subscript[
+             Style["y", Italic], 1]}]}, 0, 1500, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         14}, {{$CellContext`yN1sol1$$, 0, 
+          Row[{"inlet vapor mole ratio ", 
+            Subscript[
+             Style["y", Italic], 2]}]}, 0, 10, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         15}, {{$CellContext`x0sol2$$, 0, 
+          Row[{"inlet liquid mole ratio ", 
+            Subscript[
+             Style["x", Italic], 0]}]}, 0, 10, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         16}, {{$CellContext`xNsol2$$, 0, 
+          Row[{"outlet liquid mole ratio ", 
+            Subscript[
+             Style["x", Italic], 1]}]}, 0, 100, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         17}, {{$CellContext`y1sol2$$, 0, 
+          Row[{"outlet vapor mole ratio ", 
+            Subscript[
+             Style["y", Italic], 1]}]}, 0, 350, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 
+         18}, {{$CellContext`yN1sol2$$, 0, 
+          Row[{"inlet vapor mole ratio ", 
+            Subscript[
+             Style["y", Italic], 2]}]}, 0, 400, 1, Appearance -> "Labeled", 
+         ImageSize -> Small, Enabled -> Dynamic[
+           If[$CellContext`solution$$, False, True]], ControlPlacement -> 19}, 
+        Grid[{{
+           Button[" new problem ", {
+             Increment[$CellContext`reset$$], $CellContext`solution$$ = 
+             False, $CellContext`Lsol1$$ = 0, $CellContext`Vsol1$$ = 
+             0, $CellContext`Lsol2$$ = 0, $CellContext`Vsol2$$ = 
+             0, $CellContext`x0sol1$$ = 0, $CellContext`xNsol1$$ = 
+             0, $CellContext`y1sol1$$ = 0, $CellContext`yN1sol1$$ = 
+             0, $CellContext`x0sol2$$ = 0, $CellContext`xNsol2$$ = 
+             0, $CellContext`y1sol2$$ = 0, $CellContext`yN1sol2$$ = 0}], 
+           Manipulate`Place[1], 
+           Manipulate`Place[2], 
+           Manipulate`Place[3], 
+           PaneSelector[{1 -> Row[{
+                Manipulate`Place[4], 
+                Manipulate`Place[5]}], 2 -> Row[{
+                Manipulate`Place[6], 
+                Manipulate`Place[7]}]}, 
+            Dynamic[$CellContext`OINB$$]]}, {
+           
+           PaneSelector[{
+            1 -> PaneSelector[{
+               1 -> Manipulate`Place[8], 2 -> Manipulate`Place[9]}, 
+               Dynamic[$CellContext`part1A$$]], 2 -> 
+             PaneSelector[{
+               1 -> Manipulate`Place[10], 2 -> Manipulate`Place[11]}, 
+               Dynamic[$CellContext`part1B$$]]}, 
+            Dynamic[$CellContext`OINB$$]], 
+           
+           PaneSelector[{
+            1 -> PaneSelector[{
+               1 -> Manipulate`Place[12], 2 -> Manipulate`Place[13], 3 -> 
+                Manipulate`Place[14], 4 -> Manipulate`Place[15]}, 
+               Dynamic[$CellContext`part2A$$]], 2 -> 
+             PaneSelector[{
+               1 -> Manipulate`Place[16], 2 -> Manipulate`Place[17], 3 -> 
+                Manipulate`Place[18], 4 -> Manipulate`Place[19]}, 
+               Dynamic[$CellContext`part2B$$]]}, 
+            Dynamic[$CellContext`OINB$$]], SpanFromLeft}}, Alignment -> 
+         Left]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{649., {255., 261.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.7398009131156034`*^9, 3.7398009530166683`*^9, {3.7398010979155183`*^9, 
+   3.739801132451537*^9}, 3.7398012096766186`*^9, {3.739801251915997*^9, 
+   3.7398012836635857`*^9}, 3.7398013260492887`*^9, 3.7398013727291927`*^9, {
+   3.7398014036825476`*^9, 3.7398014285662413`*^9}, {3.739801477270318*^9, 
+   3.7398014971247034`*^9}, {3.7398015884690447`*^9, 
+   3.7398017310142136`*^9}, {3.7398018484309187`*^9, 
+   3.7398018805155544`*^9}, {3.739801945436975*^9, 3.7398019592161455`*^9}, {
+   3.7398020313191648`*^9, 3.7398020395438504`*^9}, {3.739803413928717*^9, 
+   3.7398034158035336`*^9}, {3.7398034915342007`*^9, 3.7398034933469205`*^9}, 
+   3.739803617344592*^9, 3.739803991957632*^9},
+ CellLabel->"Out[4]=",
+ CellID->242534952,ExpressionUUID->"d4bfe48c-fabc-4adf-9fcf-cc540fb40aea"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection",ExpressionUUID->"21d1df7b-1878-434a-9954-d3fa47479ec3"],
+
+Cell["\<\
+In this Demonstration, perform a mass balance on a single stage absorption or \
+stripping operation. Look at the controls to see what unknowns you need to \
+solve for. Once you solve for the unknowns, use the sliders to select the \
+correct values. Check \"solution\" to see the correct answers. Once you check \
+\"solution\", you cannot change your answers. Click \"new problem\" for a new \
+set of conditions. Use the buttons to select a mass balance on either an \
+absorption or a stripping column.\
+\>", "ManipulateCaption",
+ CellChangeTimes->{
+  3.7398022267143593`*^9},ExpressionUUID->"264e73a0-43e6-4d4f-8eea-\
+1d2d2c94ab4d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection",ExpressionUUID->"5f249d7a-41cd-4aaf-8e4c-9caf270c31b3"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Thumbnail Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->
+  False,ExpressionUUID->"4200f082-761e-40a4-a277-06d99f8a5b31"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection",ExpressionUUID->"7d7445d3-51ba-4961-b1ea-e5aded23edb1"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Snapshot Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->
+  False,ExpressionUUID->"c3fe4fc6-77d3-455e-aa27-7f6a50e06936"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection",ExpressionUUID->"87fae9cd-6104-4501-9e45-2b46ca8c544e"],
+
+Cell["\<\
+A mass balance is done on a single stage absorption or a stripping column:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.737296383865245*^9}, {
+  3.7396241498774867`*^9, 3.7396241525080266`*^9}},
+ CellID->485372854,ExpressionUUID->"77c3bfc4-b4c0-4f04-96dd-14f6ec543f9f"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      SubscriptBox["x", "0"], " ", "L"}], "+", 
+     RowBox[{
+      SubscriptBox["y", "2"], " ", "V"}]}], "=", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["x", "1"], " ", "L"}], "+", 
+     RowBox[{
+      SubscriptBox["y", "1"], "V"}]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"40863a3a-f9cd-4d34-8001-f4fc085ff278"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.7372964007500315`*^9}, {
+  3.7389363718079743`*^9, 3.7389363777394776`*^9}, {3.7396241330174894`*^9, 
+  3.7396241366207037`*^9}},
+ CellID->919362469,ExpressionUUID->"d78373a7-cc5e-42b0-b9f2-03f5a4e49023"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "0"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "1003e4da-9286-4e9a-9317-cd9744e782e8"],
+ " is the mole ratio of the liquid feed (ppm), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "2"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "73eede79-0d5d-47ea-9048-f067b38221fc"],
+ " is the mole ratio of the vapor feed (ppm), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["x", "1"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "53d18b99-92e3-4ab5-bfb1-2d23a81771a0"],
+ " is the mole ratio of the liquid exiting stream (ppm), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["y", "1"], TraditionalForm]], "InlineMath",ExpressionUUID->
+  "156ff0ca-f8df-4fe6-a363-f476662fdbe3"],
+ " is the mole ratio of the vapor exiting stream (ppm), ",
+ Cell[BoxData[
+  FormBox["L", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "21ac5ae3-a58e-4fa3-ab31-db2d4d571184"],
+ " is the liquid flow rate (Mmol/h), and ",
+ Cell[BoxData[
+  FormBox["V", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "97d59cd2-4aee-4775-be18-512a906109ee"],
+ " is the vapor flow rate (Mmol/h)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.7372964947061667`*^9}, {
+  3.7396240988120728`*^9, 3.7396240988130693`*^9}, {3.7396241394656677`*^9, 
+  3.739624142699295*^9}},
+ CellID->363522139,ExpressionUUID->"16bafd2a-72ab-4dc4-b8e1-c381c7fed1fd"],
+
+Cell["Henry's law is used:", "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.7372964947061667`*^9}, {
+  3.7396240992498584`*^9, 3.739624104046302*^9}},
+ CellID->18832263,ExpressionUUID->"403f14fa-3d44-4f1f-ade3-f46780aa79f3"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["y", "1"], "=", 
+    RowBox[{"m", " ", 
+     SubscriptBox["x", "1"]}]}], TraditionalForm]], "InlineMath",
+  ExpressionUUID->"4f9d10aa-d59d-4a74-9a21-723c8d7f8d2f"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.7372964947061667`*^9}, {
+  3.7396240992498584`*^9, 3.7396241169581966`*^9}},
+ CellID->131757558,ExpressionUUID->"f1f8d844-d7eb-4445-8123-c9944f7e1d14"],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["m", TraditionalForm]], "InlineMath",ExpressionUUID->
+  "b319fb32-77a3-41cf-bd76-71274a3ed4e0"],
+ " is Henry's constant (UNITS)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.737296371091899*^9, 3.7372964947061667`*^9}, {
+  3.7396240992498584`*^9, 3.739624129311881*^9}},
+ CellID->62886465,ExpressionUUID->"5b2c7486-a017-4c87-8841-ce72f153969c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection",ExpressionUUID->"31eb4ec6-ed02-4df3-a222-29bf87334a80"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Resize Images",ExpressionUUID->"13defbd9-b434-4f32-b1e9-ce174cf38804"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{{3.739802237398862*^9, 3.7398022375394955`*^9}},
+ FontFamily->"Verdana",
+ CellTags->
+  "ResizeImages",ExpressionUUID->"27c69aba-8c4b-4bc3-9269-614ad7992d65"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Rotate and Zoom in 3D",ExpressionUUID->
+    "5141d846-8ef7-4b39-989d-bbb45774f1da"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "RotateAndZoomIn3D",ExpressionUUID->"e92a530a-75df-45f7-9eed-d65d389ba71f"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Drag Locators",ExpressionUUID->"a5ead1c1-3a75-44f8-9605-fdedd9f2a6b0"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "DragLocators",ExpressionUUID->"21e33545-8e5c-4d0e-8c16-44f3686f0716"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Create and Delete Locators",ExpressionUUID->
+    "9964579e-0925-4629-8b86-926dc684a904"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "CreateAndDeleteLocators",ExpressionUUID->"305f22e7-2e48-4079-bee5-\
+4ddbe6335f30"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Slider Zoom",ExpressionUUID->"04383254-ce88-4219-8598-4aaad4580844"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{{3.7398022398720665`*^9, 3.7398022400237865`*^9}},
+ FontFamily->"Verdana",
+ CellTags->
+  "SliderZoom",ExpressionUUID->"40e2f7b7-80af-4c10-8971-e5529536e4e1"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Gamepad Controls",ExpressionUUID->
+    "99de2dd4-adb9-4b0a-b0dd-04205be4eb25"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{
+  3.35696210375764*^9, 3.3895522232313623`*^9, {3.7398022403630543`*^9, 
+   3.739802240488018*^9}},
+ FontFamily->"Verdana",
+ CellTags->
+  "GamepadControls",ExpressionUUID->"20bf1047-7a84-41e4-ab69-db4f0318f1e3"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[
+   " Automatic Animation",ExpressionUUID->
+    "9b3e2f21-e05f-4ab5-8f92-64e55d06065c"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{{3.7398022410194592`*^9, 3.7398022411602316`*^9}},
+ FontFamily->"Verdana",
+ CellTags->
+  "AutomaticAnimation",ExpressionUUID->"0dbeb91c-7296-4b7a-bee5-c2375e66ee53"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[
+   " Bookmark Animation",ExpressionUUID->
+    "484546c6-13b1-4f3b-bb18-ea302cc5a4d8"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->
+  "BookmarkAnimation",ExpressionUUID->"97357279-f6bf-4404-a40c-7dfb7a9f25bc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection",ExpressionUUID->"cdf994ef-a734-49e7-812e-129f228c30a3"],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.737296329639492*^9, 3.737296332959485*^9}},
+ CellID->4865496,ExpressionUUID->"a8d34104-a637-4bd6-8280-4159ca8b47b1"],
+
+Cell["mass balance", "SearchTerms",
+ CellChangeTimes->{{3.737296329639492*^9, 3.737296335509614*^9}},
+ CellID->47375310,ExpressionUUID->"49afc3d0-8b54-4c01-a7de-bc69beaf2fac"],
+
+Cell["absorption column", "SearchTerms",
+ CellChangeTimes->{{3.737296329639492*^9, 3.737296338924899*^9}},
+ CellID->168146718,ExpressionUUID->"f2bac232-7aee-464b-bf18-f7a960ce1d36"],
+
+Cell["stripping column", "SearchTerms",
+ CellChangeTimes->{{3.737296329639492*^9, 3.7372963417244415`*^9}},
+ CellID->9706715,ExpressionUUID->"3a7555dd-1560-4b0b-a3eb-30f53d2d6526"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "RelatedLinksSection",ExpressionUUID->"18040a56-679a-4cea-be14-f5591bcf8f93"],
+
+Cell[TextData[ButtonBox["Construct an x-y Diagram for an Absorption Column",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+ConstructAnXYDiagramForAnAbsorptionColumn/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/\
+ConstructAnXYDiagramForAnAbsorptionColumn/"]], "RelatedLinks",
+ CellChangeTimes->{{3.739802324109411*^9, 3.7398023418792777`*^9}},
+ CellID->818878531,ExpressionUUID->"6caa3ec2-f728-49f1-96b4-89e9b0427a99"],
+
+Cell[TextData[ButtonBox["Operation of an Absorption Column",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/OperationOfAnAbsorptionColumn/"], 
+   None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/OperationOfAnAbsorptionColumn/"]], \
+"RelatedLinks",
+ CellChangeTimes->{{3.7398023499593973`*^9, 3.739802362212111*^9}},
+ CellID->303470480,ExpressionUUID->"73564622-4128-4778-add2-e32b77985186"],
+
+Cell[TextData[ButtonBox["Construct an x-y Diagram for a Stripping Column",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/\
+ConstructAnXYDiagramForAStrippingColumn/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/ConstructAnXYDiagramForAStrippingColumn/\
+"]], "RelatedLinks",
+ CellChangeTimes->{{3.739802373254201*^9, 3.7398023938843203`*^9}},
+ CellID->487161886,ExpressionUUID->"c49a83e8-108f-4956-a058-6a7d7a2a8b46"],
+
+Cell[TextData[ButtonBox["Stripping Column Operation",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://demonstrations.wolfram.com/StrippingColumnOperation/"], None},
+ ButtonNote->
+  "http://demonstrations.wolfram.com/StrippingColumnOperation/"]], \
+"RelatedLinks",
+ CellChangeTimes->{{3.7398024009126773`*^9, 3.739802412929951*^9}},
+ CellID->26712966,ExpressionUUID->"11dc3895-0210-4030-9614-1e6a279801e6"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection",ExpressionUUID->"919d7307-946e-4971-b4d4-92171f8f3672"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"]
+}], "Author",
+ CellID->52184429,ExpressionUUID->"1d754ded-7be9-4708-b834-e0874a8931bc"],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ " and ",
+ ButtonBox["Neil Hendren",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Neil+Hendren"], 
+    None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Neil+Hendren"]
+}], "Author",
+ CellChangeTimes->{{3.730127829878193*^9, 3.7301278795860357`*^9}, {
+  3.7371221284978175`*^9, 3.7371221350049314`*^9}, {3.7372965430825043`*^9, 
+  3.7372965441027994`*^9}},
+ CellID->373235529,ExpressionUUID->"84c609f0-d92a-4d04-9ab6-259b75472b8d"],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellID->77347031,ExpressionUUID->"87037c26-38dd-454a-b595-55c7d62424b1"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{681, 676},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "AutomaticAnimation"->{
+  Cell[118273, 2745, 1655, 35, 22, "ControlSuggestions",ExpressionUUID->"0dbeb91c-7296-4b7a-bee5-c2375e66ee53",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[119931, 2782, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"97357279-f6bf-4404-a40c-7dfb7a9f25bc",
+   CellTags->"BookmarkAnimation"]},
+ "CreateAndDeleteLocators"->{
+  Cell[115928, 2682, 761, 19, 22, "ControlSuggestions",ExpressionUUID->"305f22e7-2e48-4079-bee5-4ddbe6335f30",
+   CellTags->"CreateAndDeleteLocators"]},
+ "DragLocators"->{
+  Cell[115468, 2667, 457, 13, 22, "ControlSuggestions",ExpressionUUID->"21e33545-8e5c-4d0e-8c16-44f3686f0716",
+   CellTags->"DragLocators"]},
+ "GamepadControls"->{
+  Cell[117725, 2729, 545, 14, 22, "ControlSuggestions",ExpressionUUID->"20bf1047-7a84-41e4-ab69-db4f0318f1e3",
+   CellTags->"GamepadControls"]},
+ "ResizeImages"->{
+  Cell[114166, 2633, 496, 11, 22, "ControlSuggestions",ExpressionUUID->"27c69aba-8c4b-4bc3-9269-614ad7992d65",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[114665, 2646, 800, 19, 22, "ControlSuggestions",ExpressionUUID->"e92a530a-75df-45f7-9eed-d65d389ba71f",
+   CellTags->"RotateAndZoomIn3D"]},
+ "SliderZoom"->{
+  Cell[116692, 2703, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"40e2f7b7-80af-4c10-8971-e5529536e4e1",
+   CellTags->"SliderZoom"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"AutomaticAnimation", 125651, 2936},
+ {"BookmarkAnimation", 125824, 2939},
+ {"CreateAndDeleteLocators", 126002, 2942},
+ {"DragLocators", 126174, 2945},
+ {"GamepadControls", 126338, 2948},
+ {"ResizeImages", 126502, 2951},
+ {"RotateAndZoomIn3D", 126668, 2954},
+ {"SliderZoom", 126832, 2957}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 177, 3, 104, "DemoTitle",ExpressionUUID->"18e5a461-1831-4eda-bac0-b72ea3d301e1"],
+Cell[760, 27, 88, 0, 275, "InitializationSection",ExpressionUUID->"83ba7a6f-088e-44c3-b78d-8ba7345bdcfb"],
+Cell[CellGroupData[{
+Cell[873, 31, 84, 0, 189, "ManipulateSection",ExpressionUUID->"18a4d686-bdaf-4fe2-8987-176c19da15d5"],
+Cell[CellGroupData[{
+Cell[982, 35, 71496, 1637, 4580, "Input",ExpressionUUID->"644499f1-f9d4-453a-ac96-198944600eca"],
+Cell[72481, 1674, 34302, 749, 528, "Output",ExpressionUUID->"d4bfe48c-fabc-4adf-9fcf-cc540fb40aea",
+ CellID->242534952]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[106832, 2429, 91, 0, 169, "ManipulateCaptionSection",ExpressionUUID->"21d1df7b-1878-434a-9954-d3fa47479ec3"],
+Cell[106926, 2431, 642, 11, 97, "ManipulateCaption",ExpressionUUID->"264e73a0-43e6-4d4f-8eea-1d2d2c94ab4d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[107605, 2447, 83, 0, 172, "ThumbnailSection",ExpressionUUID->"5f249d7a-41cd-4aaf-8e4c-9caf270c31b3"],
+Cell[107691, 2449, 1300, 35, 230, "Output",ExpressionUUID->"4200f082-761e-40a4-a277-06d99f8a5b31"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[109028, 2489, 83, 0, 142, "SnapshotsSection",ExpressionUUID->"7d7445d3-51ba-4961-b1ea-e5aded23edb1"],
+Cell[109114, 2491, 1299, 35, 230, "Output",ExpressionUUID->"c3fe4fc6-77d3-455e-aa27-7f6a50e06936"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[110450, 2531, 81, 0, 339, "DetailsSection",ExpressionUUID->"87fae9cd-6104-4501-9e45-2b46ca8c544e"],
+Cell[110534, 2533, 299, 5, 22, "DetailNotes",ExpressionUUID->"77c3bfc4-b4c0-4f04-96dd-14f6ec543f9f",
+ CellID->485372854],
+Cell[110836, 2540, 687, 20, 23, "DetailNotes",ExpressionUUID->"d78373a7-cc5e-42b0-b9f2-03f5a4e49023",
+ CellID->919362469],
+Cell[111526, 2562, 1415, 34, 39, "DetailNotes",ExpressionUUID->"16bafd2a-72ab-4dc4-b8e1-c381c7fed1fd",
+ CellID->363522139],
+Cell[112944, 2598, 236, 3, 22, "DetailNotes",ExpressionUUID->"403f14fa-3d44-4f1f-ade3-f46780aa79f3",
+ CellID->18832263],
+Cell[113183, 2603, 455, 12, 23, "DetailNotes",ExpressionUUID->"f1f8d844-d7eb-4445-8123-c9944f7e1d14",
+ CellID->131757558],
+Cell[113641, 2617, 393, 9, 23, "DetailNotes",ExpressionUUID->"5b2c7486-a017-4c87-8841-ce72f153969c",
+ CellID->62886465]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[114071, 2631, 92, 0, 126, "ControlSuggestionsSection",ExpressionUUID->"31eb4ec6-ed02-4df3-a222-29bf87334a80"],
+Cell[114166, 2633, 496, 11, 22, "ControlSuggestions",ExpressionUUID->"27c69aba-8c4b-4bc3-9269-614ad7992d65",
+ CellTags->"ResizeImages"],
+Cell[114665, 2646, 800, 19, 22, "ControlSuggestions",ExpressionUUID->"e92a530a-75df-45f7-9eed-d65d389ba71f",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[115468, 2667, 457, 13, 22, "ControlSuggestions",ExpressionUUID->"21e33545-8e5c-4d0e-8c16-44f3686f0716",
+ CellTags->"DragLocators"],
+Cell[115928, 2682, 761, 19, 22, "ControlSuggestions",ExpressionUUID->"305f22e7-2e48-4079-bee5-4ddbe6335f30",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[116692, 2703, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"40e2f7b7-80af-4c10-8971-e5529536e4e1",
+ CellTags->"SliderZoom"],
+Cell[117725, 2729, 545, 14, 22, "ControlSuggestions",ExpressionUUID->"20bf1047-7a84-41e4-ab69-db4f0318f1e3",
+ CellTags->"GamepadControls"],
+Cell[118273, 2745, 1655, 35, 22, "ControlSuggestions",ExpressionUUID->"0dbeb91c-7296-4b7a-bee5-c2375e66ee53",
+ CellTags->"AutomaticAnimation"],
+Cell[119931, 2782, 1030, 24, 22, "ControlSuggestions",ExpressionUUID->"97357279-f6bf-4404-a40c-7dfb7a9f25bc",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[120998, 2811, 85, 0, 158, "SearchTermsSection",ExpressionUUID->"cdf994ef-a734-49e7-812e-129f228c30a3"],
+Cell[121086, 2813, 182, 2, 22, "SearchTerms",ExpressionUUID->"a8d34104-a637-4bd6-8280-4159ca8b47b1",
+ CellID->4865496],
+Cell[121271, 2817, 175, 2, 22, "SearchTerms",ExpressionUUID->"49afc3d0-8b54-4c01-a7de-bc69beaf2fac",
+ CellID->47375310],
+Cell[121449, 2821, 181, 2, 22, "SearchTerms",ExpressionUUID->"f2bac232-7aee-464b-bf18-f7a960ce1d36",
+ CellID->168146718],
+Cell[121633, 2825, 180, 2, 22, "SearchTerms",ExpressionUUID->"3a7555dd-1560-4b0b-a3eb-30f53d2d6526",
+ CellID->9706715]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[121850, 2832, 86, 0, 143, "RelatedLinksSection",ExpressionUUID->"18040a56-679a-4cea-be14-f5591bcf8f93"],
+Cell[121939, 2834, 472, 9, 22, "RelatedLinks",ExpressionUUID->"6caa3ec2-f728-49f1-96b4-89e9b0427a99",
+ CellID->818878531],
+Cell[122414, 2845, 434, 9, 22, "RelatedLinks",ExpressionUUID->"73564622-4128-4778-add2-e32b77985186",
+ CellID->303470480],
+Cell[122851, 2856, 466, 9, 22, "RelatedLinks",ExpressionUUID->"c49a83e8-108f-4956-a058-6a7d7a2a8b46",
+ CellID->487161886],
+Cell[123320, 2867, 412, 8, 22, "RelatedLinks",ExpressionUUID->"11dc3895-0210-4030-9614-1e6a279801e6",
+ CellID->26712966]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[123769, 2880, 80, 0, 141, "AuthorSection",ExpressionUUID->"919d7307-946e-4971-b4d4-92171f8f3672"],
+Cell[123852, 2882, 385, 10, 22, "Author",ExpressionUUID->"1d754ded-7be9-4708-b834-e0874a8931bc",
+ CellID->52184429],
+Cell[124240, 2894, 824, 21, 22, "Author",ExpressionUUID->"84c609f0-d92a-4d04-9ab6-259b75472b8d",
+ CellID->373235529],
+Cell[125067, 2917, 185, 4, 22, "Author",ExpressionUUID->"87037c26-38dd-454a-b595-55c7d62424b1",
+ CellID->77347031]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

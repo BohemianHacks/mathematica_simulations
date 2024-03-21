@@ -1,0 +1,1610 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     59089,       1601]
+NotebookOptionsPosition[     54557,       1464]
+NotebookOutlinePosition[     56155,       1514]
+CellTagsIndexPosition[     55827,       1502]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["CSTR Bioreactor (Chemostat)", "DemoTitle",
+ CellChangeTimes->{{3.6490938747664766`*^9, 3.6490938946125755`*^9}}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\[Mu]", ",", "Cc", ",", "Cs", ",", "DCc", ",", "Dmax", ",", "Dmaxprod",
+        ",", "ag", ",", "conc", ",", "Dconc"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"\[Mu]", "[", "d_", "]"}], ":=", 
+       RowBox[{"\[Mu]max", "*", 
+        FractionBox[
+         RowBox[{"Cs", "[", "d", "]"}], 
+         RowBox[{"ks", "+", 
+          RowBox[{"Cs", "[", "d", "]"}]}]]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Cc", "[", "d_", "]"}], ":=", 
+       RowBox[{"Piecewise", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"0.5", "*", "d", "*", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"Cs0", "-", 
+                RowBox[{"Cs", "[", "d", "]"}]}], ")"}], "/", 
+              RowBox[{"\[Mu]", "[", "d", "]"}]}]}], ",", 
+            RowBox[{"d", "\[LessEqual]", "Dmax"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", 
+            RowBox[{"Dmax", "<", "d"}]}], "}"}]}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Cs", "[", "d_", "]"}], ":=", 
+       RowBox[{"Piecewise", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", 
+             FractionBox[
+              RowBox[{"ks", "*", 
+               RowBox[{"(", 
+                RowBox[{"d", "+", "kd"}], ")"}]}], 
+              RowBox[{"d", "+", "kd", "-", "\[Mu]max"}]]}], ",", 
+            RowBox[{"d", "\[LessEqual]", "Dmax"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", 
+             FractionBox[
+              RowBox[{"ks", "*", 
+               RowBox[{"(", 
+                RowBox[{"Dmax", "+", "kd"}], ")"}]}], 
+              RowBox[{"Dmax", "+", "kd", "-", "\[Mu]max"}]]}], ",", 
+            RowBox[{"Dmax", "<", "d"}]}], "}"}]}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"DCc", "[", "d_", "]"}], ":=", 
+       RowBox[{"d", "*", 
+        RowBox[{"Cc", "[", "d", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Dmax", ":=", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"Cs0", "*", "kd"}], "+", 
+          RowBox[{"kd", "*", "ks"}], "-", 
+          RowBox[{"Cs0", "*", "\[Mu]max"}]}], 
+         RowBox[{"Cs0", "+", "ks"}]]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Dmaxprod", ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Length", "[", 
+           RowBox[{"Quiet", "@", 
+            RowBox[{
+             RowBox[{"FindMaximum", "[", 
+              RowBox[{
+               RowBox[{"DCc", "[", "d", "]"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"d", ",", "0.0001", ",", "0", ",", "Dmax"}], "}"}]}], 
+              "]"}], "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "\[Equal]", "1"}], ",", 
+         RowBox[{"d", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{
+            RowBox[{"FindMaximum", "[", 
+             RowBox[{
+              RowBox[{"DCc", "[", "d", "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"d", ",", "0.0001", ",", "0", ",", "Dmax"}], "}"}]}], 
+             "]"}], "[", 
+            RowBox[{"[", "2", "]"}], "]"}]}]}], ",", "0"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"ag", ":=", 
+       RowBox[{"Sequence", "[", 
+        RowBox[{
+         RowBox[{"LabelStyle", "\[Rule]", "14"}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"555", ",", "340"}], "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", 
+              RowBox[{"\[Mu]max", "-", "kd"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "All"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"PlotRangePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"None", ",", "None"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Scaled", "[", "0.05", "]"}], ",", 
+              RowBox[{"Scaled", "[", "0.26", "]"}]}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"50", ",", "85"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"45", ",", "10"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], 
+         RowBox[{"(*", 
+          RowBox[{"68", "/", "111"}], "*)"}], ",", 
+         RowBox[{"PlotRangeClipping", "\[Rule]", "True"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"conc", ":=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"Thick", ",", "Blue", ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"Table", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"d", ",", 
+                  RowBox[{"Cs", "[", "d", "]"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"d", ",", "0.00001", ",", "Dmax", ",", "0.0001"}], 
+                 "}"}]}], "]"}], "]"}], ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"Dmax", ",", 
+                  RowBox[{"Cs", "[", "Dmax", "]"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"\[Mu]max", "-", "kd"}], ",", 
+                  RowBox[{"Cs", "[", "Dmax", "]"}]}], "}"}]}], "}"}], "]"}], 
+             ",", "Dashed", ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"Table", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"d", ",", 
+                  RowBox[{"Cc", "[", "d", "]"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"d", ",", "0.00001", ",", "Dmax", ",", "0.001"}], 
+                 "}"}]}], "]"}], "]"}], ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"Dmax", ",", "0"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"\[Mu]max", "-", "kd"}], ",", "0"}], "}"}]}], "}"}],
+               "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Framed", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"Subscript", "[", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<C\>\"", ",", "Italic"}], "]"}], ",", 
+                   "\"\<cell\>\""}], "]"}], ",", "17", ",", "Blue"}], "]"}], 
+               ",", 
+               RowBox[{"Background", "\[Rule]", "White"}], ",", 
+               RowBox[{"FrameMargins", "\[Rule]", "Tiny"}], ",", 
+               RowBox[{"FrameStyle", "\[Rule]", "None"}]}], "]"}], ",", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"Dmax", ">", "0"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"0.5", "*", "Dmax"}], ",", 
+                 RowBox[{"Cc", "[", 
+                  RowBox[{"0.5", "*", "Dmax"}], "]"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"0.5", "*", 
+                  RowBox[{"(", 
+                   RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], ",", 
+                 RowBox[{"Cc", "[", 
+                  RowBox[{"0.5", "*", 
+                   RowBox[{"(", 
+                    RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], "]"}]}], 
+                "}"}]}], "]"}]}], "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Framed", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"Subscript", "[", 
+                  RowBox[{
+                   RowBox[{"Style", "[", 
+                    RowBox[{"\"\<C\>\"", ",", "Italic"}], "]"}], ",", 
+                   "\"\<substrate\>\""}], "]"}], ",", "17", ",", "Blue"}], 
+                "]"}], ",", 
+               RowBox[{"Background", "\[Rule]", "White"}], ",", 
+               RowBox[{"FrameMargins", "\[Rule]", "Tiny"}], ",", 
+               RowBox[{"FrameStyle", "\[Rule]", "None"}]}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"0.85", "*", 
+                RowBox[{"(", 
+                 RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], ",", 
+               RowBox[{"Cs", "[", 
+                RowBox[{"0.85", "*", 
+                 RowBox[{"(", 
+                  RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], "]"}]}], "}"}]}], 
+            "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Framed", "@", 
+              RowBox[{"Style", "[", 
+               RowBox[{
+                RowBox[{"Column", "[", 
+                 RowBox[{
+                  RowBox[{"{", "\[IndentingNewLine]", 
+                   RowBox[{
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<max-production dilution rate = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"Dmaxprod", "<", "0.00001"}], ",", "0", ",", 
+                    "Dmaxprod"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"4", ",", "2"}], "}"}]}], "]"}], ",", 
+                    RowBox[{"Superscript", "[", 
+                    RowBox[{"\"\< h\>\"", ",", 
+                    RowBox[{"-", "1"}]}], "]"}]}], "}"}], "]"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Row", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<wash-out dilution rate = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"Dmax", "<", "0.0001"}], ",", "0", ",", "Dmax"}], 
+                    "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"5", ",", "2"}], "}"}]}], "]"}], ",", 
+                    RowBox[{"Superscript", "[", 
+                    RowBox[{"\"\< h\>\"", ",", 
+                    RowBox[{"-", "1"}]}], "]"}]}], "}"}], "]"}]}], 
+                   "\[IndentingNewLine]", "}"}], ",", "Center"}], "]"}], ",", 
+                "17"}], "]"}]}], ",", 
+             RowBox[{"Scaled", "[", 
+              RowBox[{"{", 
+               RowBox[{"0.35", ",", "0.89"}], "}"}], "]"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"Frame", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"True", ",", "True", ",", "True", ",", "False"}], "}"}]}], 
+         ",", 
+         RowBox[{"FrameStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"Black", ",", "Blue", ",", "Black", ",", "Black"}], 
+           "}"}]}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "[", 
+               RowBox[{"{", 
+                RowBox[{"\"\<dilution rate, \>\"", ",", 
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<D\>\"", ",", "Italic"}], "]"}], ",", 
+                 "\"\< (1/h)\>\""}], "}"}], "]"}], ",", "17"}], "]"}], ",", 
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<concentration  (g/L)\>\"", ",", "17"}], "]"}], ",", 
+            "None", ",", "None"}], "}"}]}], ",", 
+         RowBox[{"Evaluate", "@", "ag"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Dconc", ":=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"Thick", ",", 
+             RowBox[{"RGBColor", "[", 
+              RowBox[{"0.", ",", "0.666", ",", "0.02"}], "]"}], ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"Table", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"d", ",", 
+                  RowBox[{"DCc", "[", "d", "]"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"d", ",", "0.00001", ",", 
+                  RowBox[{"1.1", "*", "Dmax"}], ",", "0.001"}], "}"}]}], 
+               "]"}], "]"}], ",", 
+             RowBox[{"Line", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"Dmax", ",", "0"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"\[Mu]max", "-", "kd"}], ",", "0"}], "}"}]}], "}"}],
+               "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Framed", "[", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"Row", "[", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<D\>\"", ",", "Italic"}], "]"}], ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\< \[Times] \>\"", ",", "10"}], "]"}], ",", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<C\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<cell\>\""}], "]"}]}], "}"}], "]"}], ",", "17", ",", 
+                 RowBox[{"RGBColor", "[", 
+                  RowBox[{"0.", ",", "0.666", ",", "0.02"}], "]"}]}], "]"}], 
+               ",", 
+               RowBox[{"Background", "\[Rule]", "White"}], ",", 
+               RowBox[{"FrameMargins", "\[Rule]", "Tiny"}], ",", 
+               RowBox[{"FrameStyle", "\[Rule]", "None"}]}], "]"}], ",", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"Dmax", ">", "0"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"0.5", "*", "Dmax"}], ",", 
+                 RowBox[{"DCc", "[", 
+                  RowBox[{"0.5", "*", "Dmax"}], "]"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"0.5", "*", 
+                  RowBox[{"(", 
+                   RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], ",", 
+                 RowBox[{"DCc", "[", 
+                  RowBox[{"0.5", "*", 
+                   RowBox[{"(", 
+                    RowBox[{"\[Mu]max", "-", "kd"}], ")"}]}], "]"}]}], 
+                "}"}]}], "]"}]}], "]"}]}], "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"Frame", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"False", ",", "False", ",", "False", ",", "True"}], 
+           "}"}]}], ",", 
+         RowBox[{"FrameStyle", "\[Rule]", 
+          RowBox[{"RGBColor", "[", 
+           RowBox[{"0.", ",", "0.666", ",", "0.02"}], "]"}]}], ",", 
+         RowBox[{"FrameTicks", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"None", ",", "None", ",", "None", ",", "All"}], "}"}]}], 
+         ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"None", ",", "None", ",", "None", ",", 
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<D\>\"", ",", "Italic"}], "]"}], ",", 
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<  \[Times] \>\"", ",", "10"}], "]"}], ",", 
+                 "\"\< concentration  (g/L/h)\>\""}], "}"}], "]"}], ",", 
+              "17"}], "]"}]}], "}"}]}], ",", 
+         RowBox[{"Evaluate", "@", "ag"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Overlay", "[", 
+       RowBox[{"{", 
+        RowBox[{"Dconc", ",", "conc"}], "}"}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "Cs0", ",", " ", "1", ",", " ", 
+        "\"\<feed substrate concentration (g/L)\>\""}], "}"}], ",", " ", 
+      "0.5", ",", " ", "2", ",", " ", "0.1", ",", " ", 
+      RowBox[{"Appearance", "\[Rule]", " ", "\"\<Labeled\>\""}]}], "}"}], 
+    "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"ks", ",", "0.5", ",", "\"\<Monod constant (g/L)\>\""}], "}"}],
+       ",", "0.01", ",", "1", ",", " ", "0.01", ",", " ", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "\[Mu]max", ",", "0.2", ",", " ", "\"\<max growth rate (1/h)\>\""}], 
+       "}"}], ",", " ", "0.15", ",", " ", "1", ",", " ", "0.01", ",", " ", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "kd", ",", "0.06", ",", " ", "\"\<death rate constant (1/h)\>\""}], 
+       "}"}], ",", "0", ",", "0.1", ",", "0.01", ",", " ", 
+      RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.648910010670311*^9, {3.6489100467613754`*^9, 3.648910232935024*^9}, {
+   3.6489102739103675`*^9, 3.648910532986186*^9}, {3.6489105832320595`*^9, 
+   3.648910650833926*^9}, {3.6489106865059667`*^9, 3.6489107326946087`*^9}, {
+   3.648910837012575*^9, 3.6489109443427143`*^9}, {3.648910975376489*^9, 
+   3.648911004955181*^9}, {3.648911037925067*^9, 3.6489111857075195`*^9}, {
+   3.648911222280611*^9, 3.6489113890511503`*^9}, 3.648911527973096*^9, {
+   3.6489115665953045`*^9, 3.648911656708459*^9}, {3.6489177334270277`*^9, 
+   3.648917759439515*^9}, {3.648927716819045*^9, 3.6489277244414806`*^9}, {
+   3.648927754553203*^9, 3.6489280108008595`*^9}, 3.648928047085935*^9, {
+   3.648928288533745*^9, 3.648928311884081*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`Cs0$$ = 2., $CellContext`kd$$ = 
+    0.02, $CellContext`ks$$ = 0.33, $CellContext`\[Mu]max$$ = 0.31, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`Cs0$$], 1, "feed substrate concentration (g/L)"}, 
+      0.5, 2, 0.1}, {{
+       Hold[$CellContext`ks$$], 0.5, "Monod constant (g/L)"}, 0.01, 1, 
+      0.01}, {{
+       Hold[$CellContext`\[Mu]max$$], 0.2, "max growth rate (1/h)"}, 0.15, 1, 
+      0.01}, {{
+       Hold[$CellContext`kd$$], 0.06, "death rate constant (1/h)"}, 0, 0.1, 
+      0.01}}, Typeset`size$$ = {555., {166., 174.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`Cs0$483364$$ = 0, $CellContext`ks$483365$$ = 
+    0, $CellContext`\[Mu]max$483366$$ = 0, $CellContext`kd$483367$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`Cs0$$ = 1, $CellContext`kd$$ = 
+        0.06, $CellContext`ks$$ = 0.5, $CellContext`\[Mu]max$$ = 0.2}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`Cs0$$, $CellContext`Cs0$483364$$, 0], 
+        Hold[$CellContext`ks$$, $CellContext`ks$483365$$, 0], 
+        Hold[$CellContext`\[Mu]max$$, $CellContext`\[Mu]max$483366$$, 0], 
+        Hold[$CellContext`kd$$, $CellContext`kd$483367$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`\[Mu]$, $CellContext`Cc$, $CellContext`Cs$, \
+$CellContext`DCc$, $CellContext`Dmax$, $CellContext`Dmaxprod$, \
+$CellContext`ag$, $CellContext`conc$, $CellContext`Dconc$}, \
+$CellContext`\[Mu]$[
+           Pattern[$CellContext`d$, 
+            
+            Blank[]]] := $CellContext`\[Mu]max$$ \
+($CellContext`Cs$[$CellContext`d$]/($CellContext`ks$$ + \
+$CellContext`Cs$[$CellContext`d$])); $CellContext`Cc$[
+           Pattern[$CellContext`d$, 
+            Blank[]]] := 
+         Piecewise[{{(
+              0.5 $CellContext`d$) (($CellContext`Cs0$$ - \
+$CellContext`Cs$[$CellContext`d$])/$CellContext`\[Mu]$[$CellContext`d$]), \
+$CellContext`d$ <= $CellContext`Dmax$}, {
+            0, $CellContext`Dmax$ < $CellContext`d$}}]; $CellContext`Cs$[
+           Pattern[$CellContext`d$, 
+            Blank[]]] := 
+         Piecewise[{{-($CellContext`ks$$ (($CellContext`d$ + \
+$CellContext`kd$$)/($CellContext`d$ + $CellContext`kd$$ - \
+$CellContext`\[Mu]max$$))), $CellContext`d$ <= $CellContext`Dmax$}, \
+{-($CellContext`ks$$ (($CellContext`Dmax$ + \
+$CellContext`kd$$)/($CellContext`Dmax$ + $CellContext`kd$$ - $CellContext`\
+\[Mu]max$$))), $CellContext`Dmax$ < $CellContext`d$}}]; $CellContext`DCc$[
+           Pattern[$CellContext`d$, 
+            
+            Blank[]]] := $CellContext`d$ $CellContext`Cc$[$CellContext`d$]; \
+$CellContext`Dmax$ := -(($CellContext`Cs0$$ $CellContext`kd$$ + \
+$CellContext`kd$$ $CellContext`ks$$ - $CellContext`Cs0$$ \
+$CellContext`\[Mu]max$$)/($CellContext`Cs0$$ + $CellContext`ks$$)); \
+$CellContext`Dmaxprod$ := If[Length[
+             Quiet[
+              Part[
+               FindMaximum[
+                $CellContext`DCc$[$CellContext`d], {$CellContext`d, 0.0001, 
+                 0, $CellContext`Dmax$}], 2]]] == 1, 
+           ReplaceAll[$CellContext`d, 
+            Quiet[
+             Part[
+              FindMaximum[
+               $CellContext`DCc$[$CellContext`d], {$CellContext`d, 0.0001, 
+                0, $CellContext`Dmax$}], 2]]], 0]; $CellContext`ag$ := 
+         Sequence[
+          LabelStyle -> 14, ImageSize -> {555, 340}, 
+           PlotRange -> {{0, $CellContext`\[Mu]max$$ - $CellContext`kd$$}, {
+             0, All}}, PlotRangePadding -> {{None, None}, {
+              Scaled[0.05], 
+              Scaled[0.26]}}, ImagePadding -> {{50, 85}, {45, 10}}, Axes -> 
+           False, AspectRatio -> Full, PlotRangeClipping -> 
+           True]; $CellContext`conc$ := Graphics[{{Thick, Blue, 
+             Line[
+              Table[{$CellContext`d, 
+                $CellContext`Cs$[$CellContext`d]}, {$CellContext`d, 
+                0.00001, $CellContext`Dmax$, 0.0001}]], 
+             Line[{{$CellContext`Dmax$, 
+                $CellContext`Cs$[$CellContext`Dmax$]}, \
+{$CellContext`\[Mu]max$$ - $CellContext`kd$$, 
+                $CellContext`Cs$[$CellContext`Dmax$]}}], Dashed, 
+             Line[
+              Table[{$CellContext`d, 
+                $CellContext`Cc$[$CellContext`d]}, {$CellContext`d, 
+                0.00001, $CellContext`Dmax$, 0.001}]], 
+             
+             Line[{{$CellContext`Dmax$, 
+                0}, {$CellContext`\[Mu]max$$ - $CellContext`kd$$, 0}}]}, 
+            Text[
+             Framed[
+              Style[
+               Subscript[
+                Style["C", Italic], "cell"], 17, Blue], Background -> White, 
+              FrameMargins -> Tiny, FrameStyle -> None], 
+             If[$CellContext`Dmax$ > 0, {0.5 $CellContext`Dmax$, 
+               $CellContext`Cc$[0.5 $CellContext`Dmax$]}, {
+              0.5 ($CellContext`\[Mu]max$$ - $CellContext`kd$$), 
+               $CellContext`Cc$[
+               0.5 ($CellContext`\[Mu]max$$ - $CellContext`kd$$)]}]], 
+            Text[
+             Framed[
+              Style[
+               Subscript[
+                Style["C", Italic], "substrate"], 17, Blue], Background -> 
+              White, FrameMargins -> Tiny, FrameStyle -> None], {
+             0.85 ($CellContext`\[Mu]max$$ - $CellContext`kd$$), 
+              $CellContext`Cs$[
+              0.85 ($CellContext`\[Mu]max$$ - $CellContext`kd$$)]}], 
+            Text[
+             Framed[
+              Style[
+               Column[{
+                 Row[{"max-production dilution rate = ", 
+                   NumberForm[
+                    If[$CellContext`Dmaxprod$ < 0.00001, 
+                    0, $CellContext`Dmaxprod$], {4, 2}], 
+                   Superscript[" h", -1]}], 
+                 Row[{"wash-out dilution rate = ", 
+                   NumberForm[
+                    If[$CellContext`Dmax$ < 0.0001, 0, $CellContext`Dmax$], {
+                    5, 2}], 
+                   Superscript[" h", -1]}]}, Center], 17]], 
+             Scaled[{0.35, 0.89}]]}, Frame -> {True, True, True, False}, 
+           FrameStyle -> {Black, Blue, Black, Black}, FrameLabel -> {
+             Style[
+              Row[{"dilution rate, ", 
+                Style["D", Italic], " (1/h)"}], 17], 
+             Style["concentration  (g/L)", 17], None, None}, 
+           Evaluate[$CellContext`ag$]]; $CellContext`Dconc$ := 
+         Graphics[{{Thick, 
+             RGBColor[0., 0.666, 0.02], 
+             Line[
+              Table[{$CellContext`d, 
+                $CellContext`DCc$[$CellContext`d]}, {$CellContext`d, 0.00001, 
+                1.1 $CellContext`Dmax$, 0.001}]], 
+             
+             Line[{{$CellContext`Dmax$, 
+                0}, {$CellContext`\[Mu]max$$ - $CellContext`kd$$, 0}}]}, 
+            Text[
+             Framed[
+              Style[
+               Row[{
+                 Style["D", Italic], 
+                 Style[" \[Times] ", 10], 
+                 Subscript[
+                  Style["C", Italic], "cell"]}], 17, 
+               RGBColor[0., 0.666, 0.02]], Background -> White, FrameMargins -> 
+              Tiny, FrameStyle -> None], 
+             If[$CellContext`Dmax$ > 0, {0.5 $CellContext`Dmax$, 
+               $CellContext`DCc$[0.5 $CellContext`Dmax$]}, {
+              0.5 ($CellContext`\[Mu]max$$ - $CellContext`kd$$), 
+               $CellContext`DCc$[
+               0.5 ($CellContext`\[Mu]max$$ - $CellContext`kd$$)]}]]}, 
+           Frame -> {False, False, False, True}, FrameStyle -> 
+           RGBColor[0., 0.666, 0.02], FrameTicks -> {None, None, None, All}, 
+           FrameLabel -> {None, None, None, 
+             Style[
+              Row[{
+                Style["D", Italic], 
+                Style["  \[Times] ", 10], " concentration  (g/L/h)"}], 17]}, 
+           Evaluate[$CellContext`ag$]]; 
+        Overlay[{$CellContext`Dconc$, $CellContext`conc$}]], 
+      "Specifications" :> {{{$CellContext`Cs0$$, 1, 
+          "feed substrate concentration (g/L)"}, 0.5, 2, 0.1, Appearance -> 
+         "Labeled"}, {{$CellContext`ks$$, 0.5, "Monod constant (g/L)"}, 0.01, 
+         1, 0.01, Appearance -> 
+         "Labeled"}, {{$CellContext`\[Mu]max$$, 0.2, "max growth rate (1/h)"},
+          0.15, 1, 0.01, Appearance -> 
+         "Labeled"}, {{$CellContext`kd$$, 0.06, "death rate constant (1/h)"}, 
+         0, 0.1, 0.01, Appearance -> "Labeled"}}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{604., {270., 277.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.648910011717371*^9, {3.648910047788434*^9, 3.6489100592880917`*^9}, {
+   3.648910090167858*^9, 3.648910233656065*^9}, 3.6489102887642174`*^9, {
+   3.648910334147813*^9, 3.648910359880285*^9}, {3.6489104011216435`*^9, 
+   3.6489104149164324`*^9}, {3.648910467408435*^9, 3.648910480927208*^9}, 
+   3.6489105358573503`*^9, 3.648910587396298*^9, 3.648910651541967*^9, {
+   3.648910704713008*^9, 3.6489107140545425`*^9}, 3.648910746412393*^9, {
+   3.6489108459830885`*^9, 3.6489108764978333`*^9}, 3.648910906788566*^9, 
+   3.6489109449267473`*^9, 3.648910976295542*^9, {3.6489110225701885`*^9, 
+   3.648911057797203*^9}, {3.648911172664773*^9, 3.6489111865885696`*^9}, {
+   3.6489112265758567`*^9, 3.64891124551294*^9}, 3.648911291025543*^9, {
+   3.6489113237404146`*^9, 3.648911330692812*^9}, {3.648911362048606*^9, 
+   3.6489113901102104`*^9}, 3.648911531073273*^9, 3.6489115674173517`*^9, 
+   3.6489116204753866`*^9, 3.6489116729823895`*^9, {3.6489177355961514`*^9, 
+   3.6489177603775687`*^9}, 3.6489179349355536`*^9, {3.648927764333762*^9, 
+   3.6489277939244547`*^9}, 3.6489278476775293`*^9, {3.6489279513254576`*^9, 
+   3.6489279792290535`*^9}, 3.6489280136290216`*^9, 3.6489280555554194`*^9, {
+   3.648928292676982*^9, 3.6489283126151223`*^9}},
+ CellID->391684139]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell["XXXX", "ManipulateCaption"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Thumbnail Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ GraphicsBox[
+  {EdgeForm[GrayLevel[0]], FaceForm[GrayLevel[1]], RectangleBox[{0, 0}], 
+   InsetBox[
+    StyleBox["\<\"Snapshot Placeholder\"\>",
+     StripOnInput->False,
+     FontFamily->"Verdana",
+     FontSize->14], {0.5, 0.6}], InsetBox[
+    StyleBox["\<\"Replace this with your\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.45}], InsetBox[
+    StyleBox["\<\"Manipulate at a particular setting.\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.39}], InsetBox[
+    StyleBox["\<\"(Do not use a bitmap.)\"\>",
+     StripOnInput->False,
+     FrontFaceColor->GrayLevel[0.5],
+     GraphicsColor->GrayLevel[0.5],
+     FontFamily->"Verdana",
+     FontSize->10,
+     FontColor->GrayLevel[0.5],
+     $CellContext`BackFaceColor -> GrayLevel[0.5]], {0.5, 0.315}]},
+  ImageMargins->0.,
+  ImageSize->220]], "Output",
+ CellEditDuplicate->False]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ "Rates of cell growth (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["r", "g"], TraditionalForm]], "InlineMath"],
+ "), cell death (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["r", "d"], TraditionalForm]], "InlineMath"],
+ "), and substrate consumption (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"-", 
+    SubscriptBox["r", "s"]}], TraditionalForm]], "InlineMath"],
+ ") are:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477129202776*^9}},
+ CellID->248411856],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["r", "g"], "=", 
+    RowBox[{"\[Mu]", " ", 
+     SubscriptBox["C", 
+      StyleBox["c",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.6484771575063953`*^9}, {
+  3.648477312091237*^9, 3.6484773263200507`*^9}},
+ CellID->779959811],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["r", "d"], "=", 
+    RowBox[{
+     SubscriptBox["k", "d"], " ", 
+     SubscriptBox["C", 
+      StyleBox["c",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477168746038*^9}, {
+  3.648477322866853*^9, 3.64847732299086*^9}},
+ CellID->17600439],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", 
+     SubscriptBox["r", "s"]}], "=", 
+    RowBox[{
+     SubscriptBox["Y", 
+      RowBox[{
+       StyleBox["s",
+        FontSlant->"Plain"], "/", 
+       StyleBox["c",
+        FontSlant->"Plain"]}]], " ", 
+     SubscriptBox["r", "g"]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477227387392*^9}, {3.648477271779931*^9, 
+  3.6484772717839313`*^9}, {3.6484773166914997`*^9, 3.648477319509661*^9}},
+ CellID->660231998],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Mu]", "=", 
+    RowBox[{
+     SubscriptBox["\[Mu]", "max"], " ", 
+     FractionBox[
+      SubscriptBox["C", 
+       StyleBox["s",
+        FontSlant->"Plain"]], 
+      RowBox[{
+       SubscriptBox["k", "s"], "+", 
+       SubscriptBox["C", 
+        StyleBox["s",
+         FontSlant->"Plain"]]}]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477227387392*^9}, {3.648477271779931*^9, 
+  3.6484773335194626`*^9}},
+ CellID->11472946],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["\[Mu]", TraditionalForm]], "InlineMath"],
+ " is the specific cell growth rate (1/s), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    StyleBox["c",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    StyleBox["s",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " are the cell and substrate concentrations (g/L), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "d"], TraditionalForm]], "InlineMath"],
+ " is the specific death rate constant (1/h), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["Y", 
+    RowBox[{
+     StyleBox["s",
+      FontSlant->"Plain"], 
+     StyleBox["/",
+      FontSlant->"Italic"], 
+     StyleBox["c",
+      FontSlant->"Plain"]}]], TraditionalForm]], "InlineMath"],
+ " is the yield coefficient, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["\[Mu]", "max"], TraditionalForm]], "InlineMath"],
+ " is the maximum specific growth rate (1/s), and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "s"], TraditionalForm]], "InlineMath"],
+ " is the Monod constant (g/L)."
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.6484775142507997`*^9}},
+ CellID->31180844],
+
+Cell["\<\
+The cell and substrate concentrations are found by solving the CSTR mass \
+balances at steady-state:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.64847762596719*^9}},
+ CellID->195758653],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["C", 
+       StyleBox["c",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{"0", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "D"}], " ", 
+       SubscriptBox["C", 
+        StyleBox["C",
+         FontSlant->"Plain"]]}], "+", 
+      SubscriptBox["r", "g"], "-", 
+      SubscriptBox["r", "d"]}]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477664284381*^9}},
+ CellID->387514741],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["C", 
+       StyleBox["s",
+        FontSlant->"Plain"]]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{"0", "=", 
+     RowBox[{
+      RowBox[{"D", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         SubscriptBox["C", 
+          RowBox[{
+           StyleBox["s",
+            FontSlant->"Plain"], ",", "0"}]], "-", 
+         SubscriptBox["C", 
+          StyleBox["s",
+           FontSlant->"Plain"]]}], ")"}]}], "+", 
+      SubscriptBox["r", "s"]}]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.6484777211426334`*^9}, {
+  3.6484788077587843`*^9, 3.6484788077627845`*^9}},
+ CellID->673866624],
+
+Cell[TextData[{
+ "solving for ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    StyleBox["c",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    StyleBox["s",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ ":"
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.6484777211426334`*^9}, {
+  3.6484788077587843`*^9, 3.6484788186574078`*^9}},
+ CellID->194579020],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", 
+     StyleBox["c",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{
+     SubscriptBox["Y", 
+      RowBox[{
+       StyleBox["c",
+        FontSlant->"Plain"], "/", 
+       StyleBox["s",
+        FontSlant->"Plain"]}]], " ", "D", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["C", 
+         RowBox[{
+          StyleBox["s",
+           FontSlant->"Plain"], ",", "0"}]], "-", 
+        SubscriptBox["C", 
+         StyleBox["s",
+          FontSlant->"Plain"]]}], ")"}], "/", "\[Mu]"}]}]}], 
+   TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.6484777211426334`*^9}, {
+  3.6484788077587843`*^9, 3.6484788563195615`*^9}, {3.649081768528701*^9, 
+  3.6490817728009453`*^9}},
+ CellID->124872210],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", 
+     StyleBox["s",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{"-", 
+     FractionBox[
+      RowBox[{
+       SubscriptBox["k", "s"], " ", 
+       RowBox[{"(", 
+        RowBox[{"D", "+", 
+         SubscriptBox["k", "d"]}], ")"}]}], 
+      RowBox[{"D", "+", 
+       SubscriptBox["k", "d"], "-", 
+       SubscriptBox["\[Mu]", "max"]}]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.6484777211426334`*^9}, {
+  3.6484788077587843`*^9, 3.6484788839081397`*^9}},
+ CellID->38833440],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["D", TraditionalForm]], "InlineMath"],
+ " is the dilution rate (1/h), ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", 
+    RowBox[{
+     StyleBox["s",
+      FontSlant->"Plain"], ",", "0"}]], TraditionalForm]], "InlineMath"],
+ " is the feed substrate concentration (g/L), and ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["Y", 
+     RowBox[{
+      StyleBox["c",
+       FontSlant->"Plain"], "/", 
+      StyleBox["s",
+       FontSlant->"Plain"]}]], "=", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      SubscriptBox["Y", 
+       RowBox[{
+        StyleBox["s",
+         FontSlant->"Plain"], "/", 
+        StyleBox["c",
+         FontSlant->"Plain"]}]], ")"}], 
+     RowBox[{"-", "1"}]]}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.6484778033443346`*^9}, {
+  3.648478896011832*^9, 3.6484789266865864`*^9}},
+ CellID->201311052],
+
+Cell[TextData[{
+ "Wash-out (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["D", "max"], TraditionalForm]], "InlineMath"],
+ ") occurs when the cell concentration is zero:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+   3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+   3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+   3.6484779640475264`*^9, 3.648478032216426*^9}, 3.648478104346551*^9, {
+   3.648478144859868*^9, 3.648478152333296*^9}, {3.648478935528092*^9, 
+   3.6484789431425276`*^9}, {3.6484790258442583`*^9, 3.6484790270963297`*^9}, 
+   3.6484796706111364`*^9},
+ CellID->46402779],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["D", "max"], "=", 
+    RowBox[{"-", 
+     FractionBox[
+      RowBox[{
+       RowBox[{
+        SubscriptBox["C", 
+         RowBox[{
+          StyleBox["s",
+           FontSlant->"Plain"], ",", "0"}]], " ", 
+        SubscriptBox["k", "d"]}], "+", 
+       RowBox[{
+        SubscriptBox["k", "d"], " ", 
+        SubscriptBox["k", "s"]}], "-", 
+       RowBox[{
+        SubscriptBox["C", 
+         RowBox[{
+          StyleBox["s",
+           FontSlant->"Plain"], ",", "0"}]], " ", 
+        SubscriptBox["\[Mu]", "max"]}]}], 
+      RowBox[{
+       SubscriptBox["C", 
+        RowBox[{
+         StyleBox["s",
+          FontSlant->"Plain"], ",", "0"}]], "+", 
+       SubscriptBox["k", "s"]}]]}]}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+  3.6484779640475264`*^9, 3.6484780321994247`*^9}, {3.6484781559745045`*^9, 
+  3.6484782329079046`*^9}},
+ CellID->41137895],
+
+Cell[TextData[{
+ "The maximum rate of cell production (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["D", "maxprod"], TraditionalForm]], "InlineMath"],
+ ") is dilution rate where ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"D", " ", 
+    SubscriptBox["C", 
+     StyleBox["c",
+      FontSlant->"Plain"]]}], TraditionalForm]], "InlineMath"],
+ " is greatest, or:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+  3.6484779640475264`*^9, 3.6484780321994247`*^9}, {3.6484781559745045`*^9, 
+  3.648478232887903*^9}, {3.648479081197424*^9, 3.6484791944669027`*^9}, {
+  3.6484792268797565`*^9, 3.648479233435131*^9}},
+ CellID->51158186],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      RowBox[{"(", 
+       RowBox[{"D", " ", 
+        SubscriptBox["C", 
+         StyleBox["c",
+          FontSlant->"Plain"]]}], ")"}]}], 
+     RowBox[{"\[DifferentialD]", "D"}]], "=", "0"}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+  3.6484779640475264`*^9, 3.6484780321994247`*^9}, {3.6484781559745045`*^9, 
+  3.648478232887903*^9}, {3.648479081197424*^9, 3.6484792218104663`*^9}},
+ CellID->162994708],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["D", "maxprod"], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["Y", 
+       RowBox[{
+        StyleBox["c",
+         FontSlant->"Plain"], "/", 
+        StyleBox["s",
+         FontSlant->"Plain"]}]], " ", "D", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         SuperscriptBox[
+          RowBox[{"(", 
+           RowBox[{"D", "+", 
+            SubscriptBox["k", "d"]}], ")"}], "2"], " ", 
+         SubscriptBox["k", "s"], " ", 
+         RowBox[{"(", 
+          RowBox[{"D", "+", 
+           RowBox[{"2", " ", 
+            SubscriptBox["k", "d"]}], "-", 
+           RowBox[{"2", " ", 
+            SubscriptBox["\[Mu]", "max"]}]}], ")"}]}], "+", 
+        RowBox[{
+         SubscriptBox["C", 
+          RowBox[{
+           StyleBox["s",
+            FontSlant->"Plain"], ",", "0"}]], " ", 
+         RowBox[{"(", 
+          RowBox[{"D", "+", 
+           RowBox[{"2", " ", 
+            SubscriptBox["k", "d"]}]}], ")"}], " ", 
+         SuperscriptBox[
+          RowBox[{"(", 
+           RowBox[{"D", "+", 
+            SubscriptBox["k", "d"], "-", 
+            SubscriptBox["\[Mu]", "max"]}], ")"}], "2"]}]}], ")"}]}], 
+     RowBox[{
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{"D", "+", 
+         SubscriptBox["k", "d"]}], ")"}], "2"], " ", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{"D", "+", 
+         SubscriptBox["k", "d"], "-", 
+         SubscriptBox["\[Mu]", "max"]}], ")"}], "2"]}]]}], TraditionalForm]], 
+  "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+  3.6484779640475264`*^9, 3.6484780321994247`*^9}, {3.6484781559745045`*^9, 
+  3.648478232887903*^9}, {3.648479081197424*^9, 3.648479242337641*^9}, {
+  3.6484793480586877`*^9, 3.648479478971175*^9}},
+ CellID->138891066],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["D", "max"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["D", "maxprod"], TraditionalForm]], "InlineMath"],
+ " are in units of 1/h."
+}], "DetailNotes",
+ CellChangeTimes->{{3.648477087077367*^9, 3.648477189804242*^9}, {
+  3.6484772205490007`*^9, 3.648477236425909*^9}, {3.648477335464574*^9, 
+  3.648477514225798*^9}, {3.6484775603754377`*^9, 3.648477803343335*^9}, {
+  3.6484779640475264`*^9, 3.6484780321994247`*^9}, {3.6484781559745045`*^9, 
+  3.648478232887903*^9}, {3.648479081197424*^9, 3.648479242337641*^9}, {
+  3.6484793480586877`*^9, 3.648479494476062*^9}},
+ CellID->127406539]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell["", "SearchTermsSection"],
+
+Cell["", "RelatedLinksSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell["Contributed by: XXXX", "Author"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1473, 829},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 7, 2015)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "WindowsANSI"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[48786, 1303, 312, 8, 27, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[49101, 1313, 678, 16, 27, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[49782, 1331, 340, 11, 27, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[50125, 1344, 637, 15, 27, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[50765, 1361, 844, 21, 27, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[51612, 1384, 369, 9, 27, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[51984, 1395, 1464, 31, 27, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[53451, 1428, 908, 21, 27, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 54928, 1475},
+ {"RotateAndZoomIn3D", 55037, 1478},
+ {"DragLocators", 55147, 1481},
+ {"CreateAndDeleteLocators", 55263, 1484},
+ {"SliderZoom", 55377, 1487},
+ {"GamepadControls", 55483, 1490},
+ {"AutomaticAnimation", 55596, 1493},
+ {"BookmarkAnimation", 55713, 1496}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 118, 1, 74, "DemoTitle"],
+Cell[701, 25, 33, 0, 287, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[759, 29, 29, 0, 192, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[813, 33, 18963, 454, 911, "Input"],
+Cell[19779, 489, 10636, 210, 559, "Output",
+ CellID->391684139]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30464, 705, 36, 0, 169, "ManipulateCaptionSection"],
+Cell[30503, 707, 33, 0, 22, "ManipulateCaption"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30573, 712, 28, 0, 173, "ThumbnailSection"],
+Cell[30604, 714, 1242, 34, 230, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[31883, 753, 28, 0, 143, "SnapshotsSection"],
+Cell[31914, 755, 1241, 34, 230, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33192, 794, 26, 0, 336, "DetailsSection"],
+Cell[33221, 796, 493, 17, 26, "DetailNotes",
+ CellID->248411856],
+Cell[33717, 815, 388, 13, 26, "DetailNotes",
+ CellID->779959811],
+Cell[34108, 830, 403, 14, 23, "DetailNotes",
+ CellID->17600439],
+Cell[34514, 846, 602, 19, 26, "DetailNotes",
+ CellID->660231998],
+Cell[35119, 867, 599, 20, 37, "DetailNotes",
+ CellID->11472946],
+Cell[35721, 889, 1338, 44, 41, "DetailNotes",
+ CellID->31180844],
+Cell[37062, 935, 364, 7, 22, "DetailNotes",
+ CellID->195758653],
+Cell[37429, 944, 766, 24, 34, "DetailNotes",
+ CellID->387514741],
+Cell[38198, 970, 939, 29, 34, "DetailNotes",
+ CellID->673866624],
+Cell[39140, 1001, 609, 19, 23, "DetailNotes",
+ CellID->194579020],
+Cell[39752, 1022, 989, 32, 25, "DetailNotes",
+ CellID->124872210],
+Cell[40744, 1056, 762, 23, 38, "DetailNotes",
+ CellID->38833440],
+Cell[41509, 1081, 1091, 36, 25, "DetailNotes",
+ CellID->201311052],
+Cell[42603, 1119, 676, 14, 23, "DetailNotes",
+ CellID->46402779],
+Cell[43282, 1135, 1155, 36, 39, "DetailNotes",
+ CellID->41137895],
+Cell[44440, 1173, 810, 20, 26, "DetailNotes",
+ CellID->51158186],
+Cell[45253, 1195, 744, 20, 35, "DetailNotes",
+ CellID->162994708],
+Cell[46000, 1217, 2009, 60, 43, "DetailNotes",
+ CellID->138891066],
+Cell[48012, 1279, 697, 17, 26, "DetailNotes",
+ CellID->127406539]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[48746, 1301, 37, 0, 126, "ControlSuggestionsSection"],
+Cell[48786, 1303, 312, 8, 27, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[49101, 1313, 678, 16, 27, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[49782, 1331, 340, 11, 27, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[50125, 1344, 637, 15, 27, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[50765, 1361, 844, 21, 27, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[51612, 1384, 369, 9, 27, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[51984, 1395, 1464, 31, 27, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[53451, 1428, 908, 21, 27, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[54374, 1452, 30, 0, 155, "SearchTermsSection"],
+Cell[54407, 1454, 31, 0, 129, "RelatedLinksSection"],
+Cell[CellGroupData[{
+Cell[54463, 1458, 25, 0, 129, "AuthorSection"],
+Cell[54491, 1460, 38, 0, 22, "Author"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

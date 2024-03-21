@@ -1,0 +1,1098 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     48410,       1089]
+NotebookOptionsPosition[     47930,       1068]
+NotebookOutlinePosition[     48272,       1083]
+CellTagsIndexPosition[     48229,       1080]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "vr", ",", "k", ",", "vo", ",", "ra", ",", "sol", ",", "Ca", ",", "Cb", 
+       ",", "x", ",", "profit", ",", "optimalvolume", ",", "profitPlot", ",", 
+       "concentrationPlot"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"vr", ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"TrueQ", "[", "op", "]"}], ",", "optimalvolume", ",", 
+         RowBox[{"vrpt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"k", "=", "0.1"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"vo", "=", "10"}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"ra", "[", "V_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"-", "k"}], "*", 
+        RowBox[{"ca", "[", "V", "]"}], "*", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"reaction", "\[Equal]", "1"}], ",", "1", ",", 
+          RowBox[{"cb", "[", "V", "]"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"sol", ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"reactor", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Quiet", "@", 
+          RowBox[{"First", "@", 
+           RowBox[{"Solve", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"V", "\[Equal]", 
+               FractionBox[
+                RowBox[{"vo", "*", 
+                 RowBox[{"(", 
+                  RowBox[{"Ca0", "-", 
+                   RowBox[{"ca", "[", "V", "]"}]}], ")"}]}], 
+                RowBox[{"-", 
+                 RowBox[{"ra", "[", "V", "]"}]}]]}], "\[And]", 
+              RowBox[{"V", "\[Equal]", 
+               FractionBox[
+                RowBox[{"vo", "*", 
+                 RowBox[{"(", 
+                  RowBox[{"Cb0", "-", 
+                   RowBox[{"cb", "[", "V", "]"}]}], ")"}]}], 
+                RowBox[{"ra", "[", "V", "]"}]]}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"ca", "[", "V", "]"}], ",", 
+               RowBox[{"cb", "[", "V", "]"}]}], "}"}]}], "]"}]}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Quiet", "@", 
+          RowBox[{"First", "@", 
+           RowBox[{"NDSolve", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{
+                RowBox[{
+                 RowBox[{"ca", "'"}], "[", "V", "]"}], "\[Equal]", 
+                RowBox[{
+                 RowBox[{"ra", "[", "V", "]"}], "/", "vo"}]}], ",", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"cb", "'"}], "[", "V", "]"}], "\[Equal]", 
+                RowBox[{
+                 RowBox[{"-", 
+                  RowBox[{"ra", "[", "V", "]"}]}], "/", "vo"}]}], ",", 
+               RowBox[{
+                RowBox[{"ca", "[", "0", "]"}], "\[Equal]", "Ca0"}], ",", 
+               RowBox[{
+                RowBox[{"cb", "[", "0", "]"}], "\[Equal]", "Cb0"}]}], "}"}], 
+             ",", 
+             RowBox[{"{", 
+              RowBox[{"ca", ",", "cb"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"V", ",", "0", ",", "1000"}], "}"}]}], "]"}]}]}]}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Ca", "[", "vol_", "]"}], ":=", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"ca", "[", "V", "]"}], "/.", "sol"}], "/.", 
+         RowBox[{"V", "\[Rule]", "vol"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Cb", "[", "vol_", "]"}], ":=", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"cb", "[", "V", "]"}], "/.", "sol"}], "/.", 
+         RowBox[{"V", "\[Rule]", "vol"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"x", "[", "vol_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"Ca0", "-", 
+          RowBox[{"Ca", "[", "vol", "]"}]}], ")"}], "/", "Ca0"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"profit", "[", "vol_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"reactor", "\[Equal]", "1"}], ",", 
+           RowBox[{"vo", "*", "Ca0", "*", 
+            RowBox[{"x", "[", "vol", "]"}]}], ",", 
+           RowBox[{"vo", "*", 
+            RowBox[{"Cb", "[", "vol", "]"}]}]}], "]"}], "*", "pb"}], "-", 
+        RowBox[{"vo", "*", "Ca0", "*", "pa"}], "-", 
+        RowBox[{"reactorprice", "*", "vol"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"optimalvolume", ":=", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Sum", "[", 
+           RowBox[{
+            RowBox[{"x", "[", "vol", "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"vol", ",", "1", ",", "1000"}], "}"}]}], "]"}], 
+          "\[Equal]", "0"}], ",", "1", ",", 
+         RowBox[{"V", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{
+            RowBox[{"FindMaximum", "[", 
+             RowBox[{
+              RowBox[{"profit", "[", "V", "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"V", ",", 
+                RowBox[{"vrpt", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], ",", "1", ",", "1000"}], 
+               "}"}]}], "]"}], "[", 
+            RowBox[{"[", "2", "]"}], "]"}]}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"profitPlot", ":=", 
+       RowBox[{"Show", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Plot", "[", 
+          RowBox[{
+           RowBox[{"profit", "[", "vol", "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"vol", ",", "0", ",", "1000"}], "}"}], ",", 
+           RowBox[{"PlotStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0.02", ",", "0.44", ",", "0."}], "]"}]}], "}"}]}]}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Graphics", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"PointSize", "[", "0.0325", "]"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"vr", ",", 
+               RowBox[{"profit", "[", "vr", "]"}]}], "}"}], "]"}]}], "}"}], 
+          "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<reactor volume (L)\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<profit  ($/min)\>\"", ",", "17"}], "]"}]}], "}"}]}],
+          ",", "\[IndentingNewLine]", 
+         RowBox[{"PlotRange", "\[Rule]", "All"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PlotRangePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"10", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Scaled", "[", "0.01", "]"}], ",", 
+              RowBox[{"Scaled", "[", "0.1", "]"}]}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"75", ",", "15"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"45", ",", "10"}], "}"}]}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"concentrationPlot", ":=", 
+       RowBox[{"Show", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Plot", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Ca", "[", "vol", "]"}], ",", 
+             RowBox[{"Cb", "[", "vol", "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"vol", ",", "0", ",", "vr"}], "}"}], ",", 
+           RowBox[{"PlotStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"Thick", ",", "Black"}], "}"}]}], "}"}]}]}], "]"}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"Graphics", "[", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Text", "[", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\< reactant \>\"", ",", "17", ",", "Blue", ",", 
+                RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.33", "*", "vr"}], ",", 
+                RowBox[{"Ca", "[", 
+                 RowBox[{"0.33", "*", "vr"}], "]"}]}], "}"}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Text", "[", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\< product \>\"", ",", "17", ",", 
+                RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"0.666", "*", "vr"}], ",", 
+                RowBox[{"Cb", "[", 
+                 RowBox[{"0.666", "*", "vr"}], "]"}]}], "}"}]}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<reactor volume (L)\>\"", ",", "17"}], "]"}], ",", 
+            RowBox[{"Style", "[", 
+             RowBox[{"\"\<concentration  (mol/L)\>\"", ",", "17"}], "]"}]}], 
+           "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "vr"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"All", ",", "All"}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"50", ",", "15"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"45", ",", "10"}], "}"}]}], "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Column", "[", 
+       RowBox[{
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Text", "@", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+            "\"\<reactor cannot operate under these conditions\>\"", ",", 
+             "18", ",", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"optimalvolume", "\[Equal]", "1"}], ",", "Black", ",", 
+               "Transparent"}], "]"}]}], "]"}]}], ",", "\[IndentingNewLine]", 
+          RowBox[{"Show", "[", 
+           RowBox[{
+            RowBox[{"Switch", "[", 
+             RowBox[{
+             "plot", ",", "1", ",", "profitPlot", ",", "2", ",", 
+              "concentrationPlot"}], "]"}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"400", ",", "325"}], "}"}]}], ",", 
+            RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+            RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+            RowBox[{"LabelStyle", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"Black", ",", "14"}], "}"}]}], ",", 
+            RowBox[{"Axes", "\[Rule]", "False"}]}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Spacer", "[", "10", "]"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"Text", "@", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+             RowBox[{"Row", "[", 
+              RowBox[{"{", 
+               RowBox[{"\"\<profit = \>\"", ",", 
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"profit", "[", "vr", "]"}], "<", "0"}], ",", 
+                  "\"\<-$\>\"", ",", "\"\<$\>\""}], "]"}], ",", 
+                RowBox[{"NumberForm", "[", 
+                 RowBox[{
+                  RowBox[{"Round", "[", 
+                   RowBox[{"Abs", "@", 
+                    RowBox[{"profit", "[", "vr", "]"}]}], "]"}], ",", 
+                  RowBox[{"DigitBlock", "\[Rule]", "3"}]}], "]"}], ",", 
+                "\"\</min\>\"", ",", 
+                RowBox[{"Spacer", "[", "25", "]"}], ",", 
+                "\"\<conversion = \>\"", ",", 
+                RowBox[{"NumberForm", "[", 
+                 RowBox[{
+                  RowBox[{"x", "[", "vr", "]"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"2", ",", "2"}], "}"}]}], "]"}]}], "}"}], "]"}], 
+             ",", "18"}], "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+        "Center"}], "]"}]}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Column", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<select a plot:\>\"", ",", "Bold"}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"plot", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\<profit\>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\<concentration\>\""}]}], "}"}], ",", 
+          "RadioButton"}], "}"}], "]"}], ",", 
+       RowBox[{"Spacer", "[", "0", "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<reactor type:\>\"", ",", "Bold"}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"reactor", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\<CSTR\>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\<PFR\>\""}]}], "}"}], ",", 
+          "RadioButton"}], "}"}], "]"}], ",", 
+       RowBox[{"Spacer", "[", "0", "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<reaction:\>\"", ",", "Bold"}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"reaction", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "\[Rule]", "\"\<first order\>\""}], ",", 
+            RowBox[{"2", "\[Rule]", "\"\<autocatalytic\>\""}]}], "}"}], ",", 
+          "RadioButton"}], "}"}], "]"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     "Left"}], "]"}], ",", "\[IndentingNewLine]", "Delimiter", ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"Column", "[", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Style", "[", 
+       RowBox[{"\"\<feed concentrations (mol/L)\>\"", ",", "Bold"}], "]"}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Ca0", ",", "5", ",", "\"\<reactant\>\""}], "}"}], ",", "1",
+          ",", "5", ",", "1", ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Cb0", ",", "1", ",", "\"\<product\>\""}], "}"}], ",", "0", 
+         ",", "5", ",", "1", ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}]}], 
+     "\[IndentingNewLine]", "}"}], "]"}], ",", "\[IndentingNewLine]", 
+   "Delimiter", ",", "\[IndentingNewLine]", 
+   RowBox[{"PaneSelector", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"1", "\[Rule]", 
+        RowBox[{"Column", "[", 
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Style", "[", 
+            RowBox[{"\"\<value and cost ($/mol)\>\"", ",", "Bold"}], "]"}], 
+           ",", "\[IndentingNewLine]", 
+           RowBox[{"Control", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"pb", ",", "100", ",", "\"\<product\>\""}], "}"}], ",",
+               "20", ",", "200", ",", "1", ",", 
+              RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+              RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Control", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"pa", ",", "10", ",", "\"\<reactant\>\""}], "}"}], ",",
+               "1", ",", "20", ",", "0.5", ",", 
+              RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+              RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Style", "[", 
+            RowBox[{"\"\<cost ($/L/min)\>\"", ",", "Bold"}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Control", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"reactorprice", ",", "5", ",", "\"\<reactor\>\""}], 
+               "}"}], ",", "1", ",", "10", ",", "1", ",", 
+              RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+              RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+           RowBox[{"Spacer", "[", "0", "]"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"Control", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"op", ",", "False", ",", "\"\<optimize\>\""}], "}"}], 
+              ",", 
+              RowBox[{"{", 
+               RowBox[{"True", ",", "False"}], "}"}]}], "}"}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"2", "\[Rule]", 
+        RowBox[{"Control", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"op", ",", "False", ",", "\"\<optimize\>\""}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"True", ",", "False"}], "}"}]}], "}"}], "]"}]}]}], 
+      "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Dynamic", "@", "plot"}]}], "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"vrpt", ",", 
+        RowBox[{"{", 
+         RowBox[{"50", ",", "0"}], "}"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"1", ",", 
+        RowBox[{"-", "25000"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"1000", ",", "10000"}], "}"}], ",", "Locator", ",", 
+      RowBox[{"Appearance", "\[Rule]", "None"}]}], "}"}], "]"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"ControlPlacement", "\[Rule]", "Left"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.648394312598261*^9, 3.648394451199188*^9}, {
+   3.6483944845640965`*^9, 3.6483947012364893`*^9}, {3.648394739449675*^9, 
+   3.648394757226692*^9}, {3.64839480561946*^9, 3.648394822856446*^9}, {
+   3.6483948932744737`*^9, 3.648394904592121*^9}, {3.648395043432062*^9, 
+   3.6483952073144355`*^9}, {3.6483952389142427`*^9, 
+   3.6483957796901736`*^9}, {3.648395812914074*^9, 3.648395940196354*^9}, {
+   3.64839609171002*^9, 3.6483961613150015`*^9}, {3.6483962795807657`*^9, 
+   3.648396491768902*^9}, {3.6483965793649125`*^9, 3.6483966197182207`*^9}, {
+   3.6483966541981926`*^9, 3.6483967171357927`*^9}, {3.64839686291413*^9, 
+   3.648397011289617*^9}, {3.648397084059779*^9, 3.6483971706117296`*^9}, {
+   3.648397209228938*^9, 3.648397557198841*^9}, {3.6483975892526746`*^9, 
+   3.648397628483918*^9}, {3.648397674184532*^9, 3.648397725417463*^9}, {
+   3.648397766385806*^9, 3.6483978710467925`*^9}, {3.648397908578939*^9, 
+   3.6483979843252716`*^9}, {3.648398046914851*^9, 3.6483981987805376`*^9}, {
+   3.648398257625903*^9, 3.648398700929259*^9}, {3.6483987896013308`*^9, 
+   3.648398855921124*^9}, {3.648398887180912*^9, 3.6483989144014688`*^9}, {
+   3.648398949665486*^9, 3.6483995389611917`*^9}, {3.648399569237923*^9, 
+   3.6483996751239796`*^9}, {3.648399721498632*^9, 3.6483998741443624`*^9}, {
+   3.648399905441153*^9, 3.6483999248522635`*^9}, {3.6484001586606364`*^9, 
+   3.6484002236023507`*^9}, {3.64840046468714*^9, 3.648400552011135*^9}, {
+   3.6484015000813613`*^9, 3.6484015018014593`*^9}, {3.6484892354112115`*^9, 
+   3.6484892356342244`*^9}, 3.648489352974936*^9, 3.648489415500512*^9, {
+   3.6484895575696383`*^9, 3.6484895653760843`*^9}, {3.6488418887167993`*^9, 
+   3.6488419699634466`*^9}, {3.648842002232292*^9, 3.648842012639887*^9}, {
+   3.6488422829033456`*^9, 3.64884238247204*^9}, {3.6488424169060097`*^9, 
+   3.6488424210722485`*^9}, {3.648913951296702*^9, 3.648914058972861*^9}, {
+   3.6489141072936244`*^9, 3.6489141751965084`*^9}, {3.64891452193134*^9, 
+   3.648914654746937*^9}, {3.648914689208908*^9, 3.6489147584748697`*^9}, {
+   3.648914810380839*^9, 3.6489153330677347`*^9}, {3.648915387812866*^9, 
+   3.6489155564045086`*^9}, {3.6489159910483694`*^9, 3.648916017716894*^9}, {
+   3.6489298447437553`*^9, 3.6489298588075595`*^9}, {3.6489298995238886`*^9, 
+   3.6489300006706734`*^9}, {3.6495149534093027`*^9, 3.6495150015180545`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`Ca0$$ = 5, $CellContext`Cb0$$ = 
+    1, $CellContext`op$$ = False, $CellContext`pa$$ = 10, $CellContext`pb$$ = 
+    100, $CellContext`plot$$ = 1, $CellContext`reaction$$ = 
+    1, $CellContext`reactor$$ = 1, $CellContext`reactorprice$$ = 
+    5, $CellContext`vrpt$$ = {50, 0}, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`plot$$], 1, ""}, {
+      1 -> "profit", 2 -> "concentration"}}, {{
+       Hold[$CellContext`reactor$$], 1, ""}, {1 -> "CSTR", 2 -> "PFR"}}, {{
+       Hold[$CellContext`reaction$$], 1, ""}, {
+      1 -> "first order", 2 -> "autocatalytic"}}, {
+      Hold[
+       Column[{
+         Style["select a plot:", Bold], 
+         Manipulate`Place[1], 
+         Spacer[0], 
+         Style["reactor type:", Bold], 
+         Manipulate`Place[2], 
+         Spacer[0], 
+         Style["reaction:", Bold], 
+         Manipulate`Place[3]}, Left]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Ca0$$], 5, "reactant"}, 1, 5, 1}, {{
+       Hold[$CellContext`Cb0$$], 1, "product"}, 0, 5, 1}, {
+      Hold[
+       Column[{
+         Style["feed concentrations (mol/L)", Bold], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`pb$$], 100, "product"}, 20, 200, 1}, {{
+       Hold[$CellContext`pa$$], 10, "reactant"}, 1, 20, 0.5}, {{
+       Hold[$CellContext`reactorprice$$], 5, "reactor"}, 1, 10, 1}, {{
+       Hold[$CellContext`op$$], False, "optimize"}, {True, False}}, {{
+       Hold[$CellContext`op$$], False, "optimize"}, {True, False}}, {
+      Hold[
+       PaneSelector[{1 -> Column[{
+            Style["value and cost ($/mol)", Bold], 
+            Manipulate`Place[6], 
+            Manipulate`Place[7], 
+            Style["cost ($/L/min)", Bold], 
+            Manipulate`Place[8], 
+            Spacer[0], 
+            Manipulate`Place[9]}], 2 -> Manipulate`Place[10]}, 
+        Dynamic[$CellContext`plot$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`vrpt$$], {50, 0}}, {1, -25000}, {1000, 10000}}}, 
+    Typeset`size$$ = {400., {191.5, 198.5}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`plot$33088$$ = False, $CellContext`reactor$33089$$ = 
+    False, $CellContext`reaction$33090$$ = False, $CellContext`Ca0$33091$$ = 
+    0, $CellContext`Cb0$33092$$ = 0, $CellContext`pb$33093$$ = 
+    0, $CellContext`pa$33094$$ = 0, $CellContext`reactorprice$33095$$ = 
+    0, $CellContext`op$33096$$ = False, $CellContext`vrpt$33097$$ = {0, 0}}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`Ca0$$ = 5, $CellContext`Cb0$$ = 
+        1, $CellContext`op$$ = False, $CellContext`pa$$ = 
+        10, $CellContext`pb$$ = 100, $CellContext`plot$$ = 
+        1, $CellContext`reaction$$ = 1, $CellContext`reactor$$ = 
+        1, $CellContext`reactorprice$$ = 5, $CellContext`vrpt$$ = {50, 0}}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`plot$$, $CellContext`plot$33088$$, False], 
+        Hold[$CellContext`reactor$$, $CellContext`reactor$33089$$, False], 
+        Hold[$CellContext`reaction$$, $CellContext`reaction$33090$$, False], 
+        Hold[$CellContext`Ca0$$, $CellContext`Ca0$33091$$, 0], 
+        Hold[$CellContext`Cb0$$, $CellContext`Cb0$33092$$, 0], 
+        Hold[$CellContext`pb$$, $CellContext`pb$33093$$, 0], 
+        Hold[$CellContext`pa$$, $CellContext`pa$33094$$, 0], 
+        Hold[$CellContext`reactorprice$$, $CellContext`reactorprice$33095$$, 
+         0], 
+        Hold[$CellContext`op$$, $CellContext`op$33096$$, False], 
+        Hold[$CellContext`vrpt$$, $CellContext`vrpt$33097$$, {0, 0}]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`vr$, $CellContext`k$, $CellContext`vo$, \
+$CellContext`ra$, $CellContext`sol$, $CellContext`Ca$, $CellContext`Cb$, \
+$CellContext`x$, $CellContext`profit$, $CellContext`optimalvolume$, \
+$CellContext`profitPlot$, $CellContext`concentrationPlot$}, $CellContext`vr$ := 
+         If[
+           TrueQ[$CellContext`op$$], $CellContext`optimalvolume$, 
+           Part[$CellContext`vrpt$$, 1]]; $CellContext`k$ = 
+         0.1; $CellContext`vo$ = 10; $CellContext`ra$[
+           Pattern[$CellContext`V$, 
+            Blank[]]] := (-$CellContext`k$) $CellContext`ca[$CellContext`V$] 
+          If[$CellContext`reaction$$ == 1, 1, 
+            $CellContext`cb[$CellContext`V$]]; $CellContext`sol$ := 
+         If[$CellContext`reactor$$ == 1, 
+           Quiet[
+            First[
+             Solve[
+              
+              And[$CellContext`V == $CellContext`vo$ ($CellContext`Ca0$$ - \
+$CellContext`ca[$CellContext`V])/(-$CellContext`ra$[$CellContext`V]), \
+$CellContext`V == $CellContext`vo$ ($CellContext`Cb0$$ - \
+$CellContext`cb[$CellContext`V])/$CellContext`ra$[$CellContext`V]], {
+               $CellContext`ca[$CellContext`V], 
+               $CellContext`cb[$CellContext`V]}]]], 
+           Quiet[
+            First[
+             
+             NDSolve[{
+              Derivative[
+                1][$CellContext`ca][$CellContext`V] == \
+$CellContext`ra$[$CellContext`V]/$CellContext`vo$, 
+               Derivative[
+                1][$CellContext`cb][$CellContext`V] == \
+(-$CellContext`ra$[$CellContext`V])/$CellContext`vo$, $CellContext`ca[
+                0] == $CellContext`Ca0$$, $CellContext`cb[
+                0] == $CellContext`Cb0$$}, {$CellContext`ca, \
+$CellContext`cb}, {$CellContext`V, 0, 1000}]]]]; $CellContext`Ca$[
+           Pattern[$CellContext`vol$, 
+            Blank[]]] := Evaluate[
+           ReplaceAll[
+            ReplaceAll[
+             $CellContext`ca[$CellContext`V], $CellContext`sol$], \
+$CellContext`V -> $CellContext`vol$]]; $CellContext`Cb$[
+           Pattern[$CellContext`vol$, 
+            Blank[]]] := Evaluate[
+           ReplaceAll[
+            ReplaceAll[
+             $CellContext`cb[$CellContext`V], $CellContext`sol$], \
+$CellContext`V -> $CellContext`vol$]]; $CellContext`x$[
+           Pattern[$CellContext`vol$, 
+            
+            Blank[]]] := ($CellContext`Ca0$$ - \
+$CellContext`Ca$[$CellContext`vol$])/$CellContext`Ca0$$; $CellContext`profit$[
+           Pattern[$CellContext`vol$, 
+            Blank[]]] := 
+         If[$CellContext`reactor$$ == 
+             1, $CellContext`vo$ $CellContext`Ca0$$ \
+$CellContext`x$[$CellContext`vol$], $CellContext`vo$ \
+$CellContext`Cb$[$CellContext`vol$]] $CellContext`pb$$ - $CellContext`vo$ \
+$CellContext`Ca0$$ $CellContext`pa$$ - $CellContext`reactorprice$$ \
+$CellContext`vol$; $CellContext`optimalvolume$ := If[Sum[
+             $CellContext`x$[$CellContext`vol], {$CellContext`vol, 1, 1000}] == 
+           0, 1, 
+           ReplaceAll[$CellContext`V, 
+            Quiet[
+             Part[
+              FindMaximum[
+               $CellContext`profit$[$CellContext`V], {$CellContext`V, 
+                Part[$CellContext`vrpt$$, 1], 1, 1000}], 
+              2]]]]; $CellContext`profitPlot$ := Show[
+           Plot[
+            $CellContext`profit$[$CellContext`vol], {$CellContext`vol, 0, 
+             1000}, PlotStyle -> {Thick, 
+              RGBColor[0.02, 0.44, 0.]}], 
+           Graphics[{
+             PointSize[0.0325], 
+             Point[{$CellContext`vr$, 
+               $CellContext`profit$[$CellContext`vr$]}]}], FrameLabel -> {
+             Style["reactor volume (L)", 17], 
+             Style["profit  ($/min)", 17]}, PlotRange -> All, 
+           PlotRangePadding -> {{10, 10}, {
+              Scaled[0.01], 
+              Scaled[0.1]}}, 
+           ImagePadding -> {{75, 15}, {45, 
+            10}}]; $CellContext`concentrationPlot$ := Show[
+           Plot[{
+             $CellContext`Ca$[$CellContext`vol], 
+             $CellContext`Cb$[$CellContext`vol]}, {$CellContext`vol, 
+             0, $CellContext`vr$}, 
+            PlotStyle -> {{Thick, Blue}, {Thick, Black}}], 
+           Graphics[{
+             Text[
+              Style[" reactant ", 17, Blue, Background -> White], {
+              0.33 $CellContext`vr$, 
+               $CellContext`Ca$[0.33 $CellContext`vr$]}], 
+             Text[
+              Style[" product ", 17, Background -> White], {
+              0.666 $CellContext`vr$, 
+               $CellContext`Cb$[0.666 $CellContext`vr$]}]}], FrameLabel -> {
+             Style["reactor volume (L)", 17], 
+             Style["concentration  (mol/L)", 17]}, 
+           PlotRange -> {{0, $CellContext`vr$}, {All, All}}, 
+           ImagePadding -> {{50, 15}, {45, 10}}]; Column[{
+           Text[
+            Style["reactor cannot operate under these conditions", 18, 
+             If[$CellContext`optimalvolume$ == 1, Black, Transparent]]], 
+           Show[
+            
+            Switch[$CellContext`plot$$, 1, $CellContext`profitPlot$, 
+             2, $CellContext`concentrationPlot$], ImageSize -> {400, 325}, 
+            AspectRatio -> Full, Frame -> True, LabelStyle -> {Black, 14}, 
+            Axes -> False], 
+           Spacer[10], 
+           Text[
+            Style[
+             Row[{"profit = ", 
+               If[$CellContext`profit$[$CellContext`vr$] < 0, "-$", "$"], 
+               NumberForm[
+                Round[
+                 Abs[
+                  $CellContext`profit$[$CellContext`vr$]]], DigitBlock -> 3], 
+               "/min", 
+               Spacer[25], "conversion = ", 
+               NumberForm[
+                $CellContext`x$[$CellContext`vr$], {2, 2}]}], 18]]}, Center]],
+       "Specifications" :> {{{$CellContext`plot$$, 1, ""}, {
+         1 -> "profit", 2 -> "concentration"}, ControlType -> RadioButton, 
+         ControlPlacement -> 1}, {{$CellContext`reactor$$, 1, ""}, {
+         1 -> "CSTR", 2 -> "PFR"}, ControlType -> RadioButton, 
+         ControlPlacement -> 2}, {{$CellContext`reaction$$, 1, ""}, {
+         1 -> "first order", 2 -> "autocatalytic"}, ControlType -> 
+         RadioButton, ControlPlacement -> 3}, 
+        Column[{
+          Style["select a plot:", Bold], 
+          Manipulate`Place[1], 
+          Spacer[0], 
+          Style["reactor type:", Bold], 
+          Manipulate`Place[2], 
+          Spacer[0], 
+          Style["reaction:", Bold], 
+          Manipulate`Place[3]}, Left], 
+        Delimiter, {{$CellContext`Ca0$$, 5, "reactant"}, 1, 5, 1, Appearance -> 
+         "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`Cb0$$, 1, "product"}, 0, 5, 1, Appearance -> 
+         "Labeled", ImageSize -> Tiny, ControlPlacement -> 5}, 
+        Column[{
+          Style["feed concentrations (mol/L)", Bold], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], 
+        Delimiter, {{$CellContext`pb$$, 100, "product"}, 20, 200, 1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         6}, {{$CellContext`pa$$, 10, "reactant"}, 1, 20, 0.5, Appearance -> 
+         "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`reactorprice$$, 5, "reactor"}, 1, 10, 1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`op$$, False, "optimize"}, {True, False}, 
+         ControlPlacement -> 9}, {{$CellContext`op$$, False, "optimize"}, {
+         True, False}, ControlPlacement -> 10}, 
+        PaneSelector[{1 -> Column[{
+             Style["value and cost ($/mol)", Bold], 
+             Manipulate`Place[6], 
+             Manipulate`Place[7], 
+             Style["cost ($/L/min)", Bold], 
+             Manipulate`Place[8], 
+             Spacer[0], 
+             Manipulate`Place[9]}], 2 -> Manipulate`Place[10]}, 
+         Dynamic[$CellContext`plot$$]], {{$CellContext`vrpt$$, {50, 0}}, {
+         1, -25000}, {1000, 10000}, ControlType -> Locator, Appearance -> 
+         None}}, "Options" :> {ControlPlacement -> Left}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{638., {227., 234.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.648394723131742*^9, 3.648394757853728*^9}, 
+   3.6483948399294224`*^9, 3.64839490738428*^9, 3.648395222442301*^9, {
+   3.648395266160801*^9, 3.6483954970700083`*^9}, {3.6483955388834*^9, 
+   3.648395546095813*^9}, {3.648395586171105*^9, 3.6483956492417126`*^9}, {
+   3.6483956877929173`*^9, 3.648395755253776*^9}, {3.6483957911278276`*^9, 
+   3.648395908674551*^9}, 3.6483959407273846`*^9, 3.6483961297721972`*^9, 
+   3.6483961623640614`*^9, {3.6483964603361044`*^9, 3.6483964923779373`*^9}, 
+   3.648396592053638*^9, 3.648396635816141*^9, 3.6483967191829095`*^9, 
+   3.6483968785250235`*^9, 3.648396924378646*^9, {3.6483969584685955`*^9, 
+   3.648397012104664*^9}, 3.6483971034858904`*^9, {3.6483972599308386`*^9, 
+   3.648397335518162*^9}, {3.648397382431845*^9, 3.648397557604864*^9}, {
+   3.648397590818764*^9, 3.648397629107954*^9}, {3.6483976747505646`*^9, 
+   3.6483977259374924`*^9}, {3.648397795409466*^9, 3.64839780492601*^9}, {
+   3.648397864266404*^9, 3.6483978720658503`*^9}, {3.648397922943761*^9, 
+   3.648397965561198*^9}, {3.6483980509180803`*^9, 3.6483981679307733`*^9}, 
+   3.64839819918056*^9, {3.6483982582919416`*^9, 3.6483983354833565`*^9}, 
+   3.6483983753766384`*^9, 3.648398990543824*^9, 3.648399162635667*^9, 
+   3.6483992323356533`*^9, {3.648399315621417*^9, 3.648399337050643*^9}, {
+   3.648399433941185*^9, 3.648399441462615*^9}, 3.6483995513569*^9, 
+   3.648399677563119*^9, {3.6483998002131343`*^9, 3.648399812462835*^9}, {
+   3.648399879740683*^9, 3.648399925632308*^9}, {3.6484004986740837`*^9, 
+   3.64840055332721*^9}, {3.648401502669509*^9, 3.648401532330206*^9}, 
+   3.6484892378533516`*^9, 3.6484893537359796`*^9, 3.648489416474568*^9, 
+   3.648489567085182*^9, {3.6488419735866537`*^9, 3.648841978043908*^9}, 
+   3.648842014042968*^9, 3.648842387407323*^9, 3.648842455689228*^9, 
+   3.6489140775739245`*^9, 3.6489141788567176`*^9, {3.6489145286777267`*^9, 
+   3.648914567641955*^9}, {3.6489146036710157`*^9, 3.6489146164287453`*^9}, 
+   3.6489146584641495`*^9, {3.648914697000354*^9, 3.6489147158614326`*^9}, 
+   3.648914759939954*^9, 3.648914867301094*^9, 3.6489149018080683`*^9, 
+   3.648914935567999*^9, {3.648914966287756*^9, 3.648915029742386*^9}, {
+   3.648915073792905*^9, 3.6489151726865616`*^9}, {3.6489152247195377`*^9, 
+   3.648915290937325*^9}, 3.648915324293233*^9, 3.6489155801148653`*^9, {
+   3.648916022293156*^9, 3.648916043300358*^9}, 3.648929861635721*^9, {
+   3.6489299851227846`*^9, 3.6489300318534575`*^9}, 3.6489301189254375`*^9, {
+   3.6495149580005655`*^9, 3.6495149762126074`*^9}, {3.649515006805357*^9, 
+   3.6495150165829163`*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{
+   RowBox[{"If", "[", 
+    RowBox[{
+     RowBox[{"reaction", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Quiet", "@", 
+      RowBox[{"First", "@", 
+       RowBox[{"Solve", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"V", "\[Equal]", 
+           FractionBox[
+            RowBox[{"vo", "*", 
+             RowBox[{"(", 
+              RowBox[{"Ca0", "-", 
+               RowBox[{"ca", "[", "V", "]"}]}], ")"}]}], 
+            RowBox[{"-", 
+             RowBox[{"ra", "[", "V", "]"}]}]]}], "\[And]", 
+          RowBox[{"V", "\[Equal]", 
+           FractionBox[
+            RowBox[{"vo", "*", 
+             RowBox[{"(", 
+              RowBox[{"Cb0", "-", 
+               RowBox[{"cb", "[", "V", "]"}]}], ")"}]}], 
+            RowBox[{"ra", "[", "V", "]"}]]}]}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"ca", "[", "V", "]"}], ",", 
+           RowBox[{"cb", "[", "V", "]"}]}], "}"}]}], "]"}]}]}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Quiet", "@", 
+      RowBox[{"First", "@", 
+       RowBox[{"Solve", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{"ca", "[", "V", "]"}], "\[Equal]", 
+           FractionBox[
+            RowBox[{"vo", "*", "Ca0"}], 
+            RowBox[{"vo", "+", 
+             RowBox[{"k", "*", "V", "*", 
+              RowBox[{"cb", "[", "V", "]"}]}]}]]}], "\[And]", 
+          RowBox[{
+           RowBox[{"cb", "[", "V", "]"}], "\[Equal]", 
+           FractionBox[
+            RowBox[{"vo", "*", "Cb0"}], 
+            RowBox[{"vo", "-", 
+             RowBox[{"k", "*", "V", "*", 
+              RowBox[{"ca", "[", "V", "]"}]}]}]]}]}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"ca", "[", "V", "]"}], ",", 
+           RowBox[{"cb", "[", "V", "]"}]}], "}"}]}], "]"}]}]}]}], "]"}], 
+   ","}], "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Module", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"k", ",", "vo", ",", "\[Tau]", ",", "Ca0"}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"k", "=", "0.1"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"vo", "=", "10"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"\[Tau]", ":=", 
+     RowBox[{"V", "/", "vo"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Ca0", "=", "1"}], ";", "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Show", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Plot", "[", 
+       RowBox[{
+        FractionBox[
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"k", "*", "Ca0", "*", "\[Tau]"}]}], ")"}], "+", 
+          SqrtBox[
+           RowBox[{
+            SuperscriptBox[
+             RowBox[{"(", 
+              RowBox[{"1", "+", 
+               RowBox[{"k", "*", "Ca0", "*", "\[Tau]"}]}], ")"}], "2"], "-", 
+            RowBox[{"4", "*", "k", "*", "\[Tau]", "*", "Ca0"}]}]]}], 
+         RowBox[{"2", "*", "k", "*", "\[Tau]"}]], ",", 
+        RowBox[{"{", 
+         RowBox[{"V", ",", "0", ",", "50"}], "}"}], ",", 
+        RowBox[{"PlotStyle", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"Thick", ",", "Blue"}], "}"}]}]}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Plot", "[", 
+       RowBox[{
+        FractionBox[
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"k", "*", "Ca0", "*", "\[Tau]"}]}], ")"}], "-", 
+          SqrtBox[
+           RowBox[{
+            SuperscriptBox[
+             RowBox[{"(", 
+              RowBox[{"1", "+", 
+               RowBox[{"k", "*", "Ca0", "*", "\[Tau]"}]}], ")"}], "2"], "-", 
+            RowBox[{"4", "*", "k", "*", "\[Tau]", "*", "Ca0"}]}]]}], 
+         RowBox[{"2", "*", "k", "*", "\[Tau]"}]], ",", 
+        RowBox[{"{", 
+         RowBox[{"V", ",", "0", ",", "50"}], "}"}], ",", 
+        RowBox[{"PlotStyle", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{"Thick", ",", "Dashed", ",", "Black"}], "}"}]}]}], "]"}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Plot", "[", 
+         RowBox[{
+          FractionBox[
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"1", "+", 
+              RowBox[{"0.01", "*", "V", "*", "Ca0"}]}], ")"}], "-", 
+            SqrtBox[
+             RowBox[{
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{"1", "+", 
+                 RowBox[{"0.01", "*", "V", "*", "Ca0"}]}], ")"}], "2"], "-", 
+              RowBox[{"4", "*", "0.01", "*", "V", "*", "Ca0"}]}]]}], 
+           RowBox[{"2", "*", "0.01", "*", "V"}]], ",", 
+          RowBox[{"{", 
+           RowBox[{"V", ",", "0", ",", "50"}], "}"}], ",", 
+          RowBox[{"PlotStyle", "\[Rule]", 
+           RowBox[{"{", 
+            RowBox[{"Thick", ",", "Dashed", ",", "Black"}], "}"}]}]}], "]"}], 
+        ","}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"AxesOrigin", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", "0"}], "}"}]}], ",", 
+      RowBox[{"PlotRange", "\[Rule]", "All"}]}], "]"}]}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.649528761749095*^9, 3.649528985782909*^9}, {
+  3.6495310960716105`*^9, 3.6495311611983356`*^9}, {3.649531202241683*^9, 
+  3.649531307166684*^9}}],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    {RGBColor[0, 0, 1], Thickness[Large], Opacity[1.], LineBox[CompressedData["
+1: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
+      "]]}}, {{}, {}, 
+    {GrayLevel[0], Thickness[Large], Opacity[1.], Dashing[{Small, Small}], 
+     LineBox[CompressedData["
+1:eJxTTMoPSmViYGDwA2IQrTbdzOpq+n17TgYQ+GAf9Ssy5gWQ//c/CLy3v6Xa
+ZvEs/b39LyhfhlW556/ZD3tmqPql1Yz/mGMZHNih/MjpF66FhrE4MED5vJvn
+r1/uz+HABuUrKZy5xWLK4/APat4ctz9MhrwCDv+h/Lkh9p+VtYQcYObPS2p6
+LOYuAjfvHaOpygd7MYevUPW2C5+nnLSQcPgN5TNJuDM8j5aCqz/Rt2w2S70M
+nG+3zuSB+gw5uP230hInLY1QcPgD5dvYP4jRClaEy88Xj1df76vkwATVvyfa
+RD4sVhlu3q35nOJ/c1TgfBs1AfVTr1Xg/pm3Rsx8epYqXD55p3K4YYaaAyOU
+3yB1wvtcgjrc/XOrcxyyIzXg+jkfZV70eqABV1/qkZ6kla4Jd5+vaFLLyxIt
+uPlnVk05N7tAG+5eb4fjEn45Og6w+Gx1DJigVKsL17/f6Sb79149uPlBM34G
+n5upD5f/9I3nwqUgA7h7+NksuXacN4Cr1xFNdZnrYwiXV5wv/Kwz2gjunr0f
+f67PjDCG80U2mC3PzjKB8w8f4iouKDeF2yc1Tyw9o8gMbp7O04qOpiZzuPqn
+X4Qu9TdYwOW/Rbh8mF9pCdd/SOOM9aV2Kzj/z5fVX5+wWsP1mx7sXv+92Rru
+fp/DYg2zeWzg6pOPLgywn4rgLyus6E6RtoWrfyXrf6xzoS3cPAl7k5Tjs+3g
+8oxn8vXVV9vD+ScmFArahjjA1e95WvY1/QKC31eg/kE53BGufvP9z3U3ryD4
+21qyVRRinRD5ie9/bMIdBH+C4z1GpUhnOP/Dqow9JQ+c4eGz5Acf98E4Fzg/
+Z9f2vfqLEXzTmoSCec9d4PaJCOvfOKvlCvf/55V/7f/musLV/zG6VbhyjSvc
+PpY92xaHvnaFp7c/918keOm7wc37zCwtZ1+M4JsazNZR+uQG17+YLX1pW547
+3Pz3QvdMar4i+Pbdy48Vm3jA9fczF0ZkFyP4crc+LN+60wOuft2Ggu///yPk
+Aey2Krg=
+      "]]}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0, 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None},
+  PlotRange->All,
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.649528882484*^9, {3.6495289446555567`*^9, 3.6495289862519355`*^9}, {
+   3.649531096474633*^9, 3.6495311094003725`*^9}, {3.649531208329031*^9, 
+   3.649531307916727*^9}}]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 7, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 21736, 500, 1577, "Input"],
+Cell[22319, 524, 15282, 295, 478, "Output"]
+}, Open  ]],
+Cell[37616, 822, 1887, 54, 99, "Input"],
+Cell[CellGroupData[{
+Cell[39528, 880, 3361, 87, 361, "Input"],
+Cell[42892, 969, 5022, 96, 238, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

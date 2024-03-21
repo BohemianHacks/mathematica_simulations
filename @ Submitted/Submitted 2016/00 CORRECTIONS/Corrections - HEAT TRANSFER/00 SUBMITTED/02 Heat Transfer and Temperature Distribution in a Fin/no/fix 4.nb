@@ -1,0 +1,3640 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[    163191,       3632]
+NotebookOptionsPosition[    156783,       3432]
+NotebookOutlinePosition[    158396,       3482]
+CellTagsIndexPosition[    158060,       3470]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Heat Transfer and Temperature Distribution in a Fin", "DemoTitle",
+ CellChangeTimes->{{3.602003765397332*^9, 3.6020037821850452`*^9}}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "h", ",", "k", ",", " ", "tempInf", ",", " ", "tempBase", ",", " ", 
+       "len", ",", "ac", ",", "p", ",", "m", ",", "tAdiabatic", ",", 
+       "qAdiabatic", ",", "tConvection", ",", "qConvection", ",", "Trev", ",",
+        "col", ",", "table", ",", "p1", ",", "p2", ",", "p3"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"h", "=", "50"}], ";", " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"W", "/", "m2"}], "/", "K"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"k", "=", 
+       RowBox[{"Switch", "[", 
+        RowBox[{
+        "material", ",", "1", ",", "400", ",", "2", ",", "70", ",", "3", ",", 
+         "54"}], "]"}]}], ";", " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"W", "/", "m"}], "/", "K"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"tempInf", "=", "25"}], ";", " ", 
+      RowBox[{"(*", "C", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"tempBase", "=", "100"}], ";", " ", 
+      RowBox[{"(*", "C", "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"len", "=", 
+       RowBox[{"length", "/", "100"}]}], ";", " ", 
+      RowBox[{"(*", 
+       RowBox[{"centimeters", " ", "to", " ", "meters"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"ac", "=", 
+       RowBox[{"Switch", "[", 
+        RowBox[{"crosssection", ",", "1", ",", 
+         RowBox[{"t", "*", 
+          RowBox[{"w", "/", "1000000"}]}], ",", "2", ",", 
+         RowBox[{
+          FractionBox[
+           RowBox[{"Pi", "*", 
+            SuperscriptBox["d", "2"]}], "4"], "/", "1000000"}]}], "]"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"p", "=", 
+       RowBox[{"Switch", "[", 
+        RowBox[{"crosssection", ",", "1", ",", 
+         RowBox[{"2", "*", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"t", "+", "w"}], ")"}], "/", "1000"}]}], ",", "2", ",", 
+         RowBox[{"d", "*", 
+          RowBox[{"Pi", "/", "1000"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"m", "=", 
+       SqrtBox[
+        FractionBox[
+         RowBox[{"h", "*", "p"}], 
+         RowBox[{"k", "*", "ac"}]]]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"tAdiabatic", "[", "xa_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{
+         FractionBox[
+          RowBox[{"Cosh", "[", 
+           RowBox[{"m", "*", 
+            RowBox[{"(", 
+             RowBox[{"len", "-", "xa"}], ")"}]}], "]"}], 
+          RowBox[{"Cosh", "[", 
+           RowBox[{"m", "*", "len"}], "]"}]], "*", 
+         RowBox[{"(", 
+          RowBox[{"tempBase", "-", "tempInf"}], ")"}]}], "+", "tempInf"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"qAdiabatic", "=", 
+       RowBox[{
+        SqrtBox[
+         RowBox[{"h", "*", "p", "*", "k", "*", "ac"}]], "*", 
+        RowBox[{"(", 
+         RowBox[{"tempBase", "-", "tempInf"}], ")"}], "*", 
+        RowBox[{"Tanh", "[", 
+         RowBox[{"m", "*", "len"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"tConvection", "[", "xa_", "]"}], " ", ":=", " ", 
+       RowBox[{
+        RowBox[{
+         FractionBox[
+          RowBox[{
+           RowBox[{"Cosh", "[", 
+            RowBox[{"m", "*", 
+             RowBox[{"(", 
+              RowBox[{"len", "-", "xa"}], ")"}]}], "]"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             FractionBox["h", 
+              RowBox[{"m", "*", "k"}]], ")"}], "*", 
+            RowBox[{"Sinh", "[", 
+             RowBox[{"m", "*", 
+              RowBox[{"(", 
+               RowBox[{"len", "-", "xa"}], ")"}]}], "]"}]}]}], 
+          RowBox[{
+           RowBox[{"Cosh", "[", 
+            RowBox[{"m", "*", "len"}], "]"}], "+", 
+           RowBox[{
+            FractionBox["h", 
+             RowBox[{"m", "*", "k"}]], "*", 
+            RowBox[{"Sinh", "[", 
+             RowBox[{"m", "*", "len"}], "]"}]}]}]], "*", 
+         RowBox[{"(", 
+          RowBox[{"tempBase", "-", "tempInf"}], ")"}]}], "+", "tempInf"}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{"qConvection", " ", "=", 
+       RowBox[{
+        SqrtBox[
+         RowBox[{"h", "*", "p", "*", "k", "*", "ac"}]], "*", 
+        RowBox[{"(", 
+         RowBox[{"tempBase", "-", "tempInf"}], ")"}], "*", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"Sinh", "[", 
+           RowBox[{"m", "*", "len"}], "]"}], "+", 
+          RowBox[{
+           FractionBox["h", 
+            RowBox[{"m", "*", "k"}]], "*", 
+           RowBox[{"Cosh", "[", 
+            RowBox[{"m", "*", "len"}], "]"}]}]}], 
+         RowBox[{
+          RowBox[{"Cosh", "[", 
+           RowBox[{"m", "*", "len"}], "]"}], "+", 
+          RowBox[{
+           FractionBox["h", 
+            RowBox[{"m", "*", "k"}]], "*", 
+           RowBox[{"Sinh", "[", 
+            RowBox[{"m", "*", "len"}], "]"}]}]}]]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"table", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{"Text", "@", 
+          RowBox[{"Style", "[", 
+           RowBox[{
+            RowBox[{"Column", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+               "\"\<total heat transfer\>\"", ",", "\[IndentingNewLine]", 
+                RowBox[{"Framed", "@", 
+                 RowBox[{"Column", "[", "\[IndentingNewLine]", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"#1", ",", 
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\< q\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"N", "@", "#2"}], ",", "3"}], "]"}], ",", 
+                    "\"\< W\>\""}], "}"}]}], "&"}], "@@@", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<adiabatic\>\"", ",", "qAdiabatic"}], "}"}], 
+                    ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<convection\>\"", ",", "qConvection"}], 
+                    "}"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+                   RowBox[{"Alignment", "\[Rule]", "\"\<=\>\""}]}], "]"}]}]}],
+                "\[IndentingNewLine]", "}"}], ",", "Center"}], "]"}], ",", 
+            "17"}], "]"}]}], "\[IndentingNewLine]", "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p1", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"tAdiabatic", "[", 
+            RowBox[{"x", "/", "100"}], "]"}], ",", 
+           RowBox[{"tConvection", "[", 
+            RowBox[{"x", "/", "100"}], "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"x", ",", "0", ",", "length"}], "}"}], ",", " ", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0", ",", "0.6", ",", "0"}], "]"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", " ", "Blue"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "length"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"tConvection", "[", "len", "]"}], ",", "100"}], "}"}]}],
+            "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+           "\"\<distance from base (cm)\>\"", ",", 
+            "\"\<temperature (\[Degree]C)\>\""}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"ImagePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"80", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"50", ",", "5"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"PlotRangePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"None", ",", 
+              RowBox[{"0.22", "*", "length"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Scaled", "@", "0.13"}], ",", "None"}], "}"}]}], 
+           "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "375"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Inset", "[", 
+             RowBox[{"table", ",", 
+              RowBox[{"Scaled", "@", 
+               RowBox[{"{", 
+                RowBox[{"0.8", ",", "0.85"}], "}"}]}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{"#1", ",", "18", ",", "#2"}], "]"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"length", ",", "#3"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"-", "1.2"}], ",", "0"}], "}"}]}], "]"}], "&"}], "@@@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<adiabatic\>\"", ",", 
+                 RowBox[{"RGBColor", "[", 
+                  RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+                 RowBox[{"tAdiabatic", "[", "len", "]"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"\"\<convection\>\"", ",", "Blue", ",", 
+                 RowBox[{"tConvection", "[", "len", "]"}]}], "}"}]}], "}"}]}],
+             ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", 
+              RowBox[{"Arrow", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", 
+                   RowBox[{
+                    RowBox[{"1.05", "*", 
+                    RowBox[{"tConvection", "[", "len", "]"}]}], "-", "5"}]}], 
+                  "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"length", ",", 
+                   RowBox[{
+                    RowBox[{"1.05", "*", 
+                    RowBox[{"tConvection", "[", "len", "]"}]}], "-", "5"}]}], 
+                  "}"}]}], "}"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{
+                  RowBox[{"Row", "@", 
+                   RowBox[{"{", 
+                    RowBox[{"\"\<fin \>\"", ",", "#1"}], "}"}]}], ",", "18"}],
+                  "]"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"#2", ",", 
+                  RowBox[{
+                   RowBox[{"1.05", "*", 
+                    RowBox[{"tConvection", "[", "len", "]"}]}], "-", "5"}]}], 
+                 "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"#3", ",", "1.5"}], "}"}]}], "]"}], "&"}], "@@@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<base\>\"", ",", "0", ",", 
+                 RowBox[{"-", "1.2"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"\"\<tip\>\"", ",", "length", ",", "0"}], "}"}]}], 
+              "}"}]}]}], "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"col", "[", "xa_", "]"}], ":=", 
+       RowBox[{
+        RowBox[{"ColorData", "[", "\"\<TemperatureMap\>\"", "]"}], "[", 
+        RowBox[{"Rescale", "[", 
+         RowBox[{
+          RowBox[{"tConvection", "[", 
+           RowBox[{"xa", "/", "100"}], "]"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"tempInf", ",", "tempBase"}], "}"}]}], "]"}], "]"}]}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p2", "=", 
+       RowBox[{"Show", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Graphics3D", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"col", "[", "0", "]"}], ",", 
+            RowBox[{"Cuboid", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"0", ",", 
+                RowBox[{"-", "5"}], ",", 
+                RowBox[{"-", "40"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"crosssection", "\[Equal]", "1"}], ",", "w", ",", 
+                  "50"}], "]"}], ",", "0", ",", "40"}], "}"}]}], "]"}]}], 
+           "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"crosssection", "\[Equal]", "1"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"RegionPlot3D", "[", 
+            RowBox[{
+             RowBox[{"z", "<", "t"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"x", ",", "0", ",", "w"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"y", ",", "0", ",", 
+               RowBox[{"10", "*", "length"}]}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{
+                RowBox[{"-", "t"}], "/", "2"}], ",", 
+               RowBox[{"t", "/", "2"}]}], "}"}], ",", 
+             RowBox[{"Mesh", "\[Rule]", "None"}], ",", 
+             RowBox[{"ColorFunction", "\[Rule]", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"col", "[", 
+                 RowBox[{"#2", "/", "10"}], "]"}], "&"}], ")"}]}], ",", 
+             RowBox[{"ColorFunctionScaling", "\[Rule]", "False"}]}], "]"}], 
+           ",", "\[IndentingNewLine]", 
+           RowBox[{"ParametricPlot3D", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{
+                RowBox[{
+                 FractionBox["d", "2"], "*", 
+                 RowBox[{"Sin", "[", "\[Theta]", "]"}]}], "+", "25"}], ",", 
+               "x", ",", 
+               RowBox[{
+                FractionBox["d", "2"], "*", 
+                RowBox[{"Cos", "[", "\[Theta]", "]"}]}]}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"\[Theta]", ",", "0", ",", 
+               RowBox[{"2", "*", "\[Pi]"}]}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"x", ",", "0", ",", 
+               RowBox[{"10", "*", "length"}]}], "}"}], ",", 
+             RowBox[{"Mesh", "\[Rule]", "None"}], ",", 
+             RowBox[{"ColorFunction", "\[Rule]", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"col", "[", 
+                 RowBox[{"#2", "/", "10"}], "]"}], "&"}], ")"}]}], ",", 
+             RowBox[{"ColorFunctionScaling", "\[Rule]", "False"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "]"}], ",", 
+         RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+         RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+         RowBox[{"ViewPoint", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "2", ",", "1"}], "}"}]}], ",", 
+         RowBox[{"Lighting", "\[Rule]", "\"\<Neutral\>\""}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "50"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "5"}], ",", "200"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "40"}], ",", "40"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "260"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Trev", "[", "T_", "]"}], ":=", 
+       RowBox[{"3.674", "*", 
+        RowBox[{"ArcCosh", "[", 
+         RowBox[{"2.051*^-26", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "2.3285*^29"}], "+", 
+            RowBox[{"9.314*^27", "*", "T"}], "+", 
+            SqrtBox[
+             RowBox[{"5.4182*^58", "-", 
+              RowBox[{"4.337*^57", "*", "T"}], "+", 
+              RowBox[{"8.6745*^55", "*", 
+               SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"p3", "=", 
+       RowBox[{"DensityPlot", "[", 
+        RowBox[{
+         RowBox[{"Trev", "[", "T", "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"T", ",", "25", ",", "100"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"y", ",", "0", ",", "1"}], "}"}], ",", 
+         RowBox[{"ColorFunction", "\[Rule]", 
+          RowBox[{"ColorData", "[", 
+           RowBox[{"{", 
+            RowBox[{"\"\<TemperatureMap\>\"", ",", "\"\<Reverse\>\""}], "}"}],
+            "]"}]}], ",", 
+         RowBox[{"PlotPoints", "\[Rule]", "50"}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"25", ",", "100"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "1.75"}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Frame", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"False", ",", "False"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"True", ",", "False"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"600", ",", "110"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<temperature (\[Degree]C)\>\"", ",", "None"}], "}"}]}],
+          ",", "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Line", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Trev", "[", 
+                  RowBox[{"tConvection", "[", "len", "]"}], "]"}], ",", "0"}],
+                 "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Trev", "[", 
+                  RowBox[{"tConvection", "[", "len", "]"}], "]"}], ",", 
+                 "1.25"}], "}"}]}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"Text", "[", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               RowBox[{
+                RowBox[{"NumberForm", "[", 
+                 RowBox[{
+                  RowBox[{"tConvection", "[", "len", "]"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"5", ",", "0"}], "}"}]}], "]"}], ",", "17"}], 
+               "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"Trev", "[", 
+                 RowBox[{"tConvection", "[", "len", "]"}], "]"}], ",", 
+                "1.25"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"0", ",", 
+                RowBox[{"-", "1.1"}]}], "}"}]}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Switch", "[", 
+       RowBox[{"display", ",", "1", ",", "p1", ",", "2", ",", 
+        RowBox[{"Column", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"p2", ",", "p3"}], "}"}], ",", "Center"}], "]"}]}], 
+       "]"}]}]}], 
+    RowBox[{"(*", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"tConvection", "[", "len", "]"}], ",", 
+       RowBox[{"tConvection", "[", 
+        RowBox[{"x", "/", "100"}], "]"}]}], "}"}], "*)"}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"crosssection", ",", "1", ",", "\"\<cross section\>\""}],
+              "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< rectangular \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< pin \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"length", ",", "1.5", ",", "\"\<fin length (cm)\>\""}], 
+             "}"}], " ", ",", "0.5", ",", "20", ",", "0.5", " ", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], " ", 
+           "}"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"material", ",", "2", ",", "\"\<fin material\>\""}], 
+             "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< copper \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< platinum \>\""}], ",", 
+              RowBox[{"3", "\[Rule]", "\"\< carbon steel \>\""}]}], "}"}], 
+            ",", "Setter"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"1", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"w", ",", "50", ",", "\"\<width (mm)\>\""}], "}"}], 
+                 " ", ",", "5", ",", "50", " ", ",", "0.5", ",", 
+                 RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "  ",
+                 "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+             RowBox[{"2", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"d", ",", "50", ",", "\"\<diameter (mm)\>\""}], 
+                  "}"}], " ", ",", "5", ",", "50", ",", "0.5", ",", 
+                 RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "  ",
+                 "}"}], "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "crosssection"}]}], "]"}]}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"display", ",", "2", ",", "\"\<display\>\""}], "}"}], 
+            ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< graph \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< fin \>\""}]}], "}"}], ",", 
+            "Setter"}], "}"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"1", "\[Rule]", 
+             RowBox[{"Control", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"t", ",", "50", ",", "\"\<height (mm)\>\""}], "}"}], 
+                " ", ",", "5", ",", "50", ",", " ", "0.5", ",", 
+                RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}]}], "}"}],
+               "]"}]}], "}"}], ",", 
+           RowBox[{"Dynamic", "@", "crosssection"}]}], "]"}]}], "}"}]}], 
+      "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.6019600945010386`*^9, {3.602010093345995*^9, 3.602010093908268*^9}, {
+   3.602275646363402*^9, 3.602275668983696*^9}, {3.602275839265435*^9, 
+   3.6022758606056557`*^9}, {3.6022769519550776`*^9, 3.602276958379445*^9}, 
+   3.6024382412504935`*^9, {3.6024413006137424`*^9, 3.602441302948876*^9}, {
+   3.60244134393122*^9, 3.6024413871426916`*^9}, {3.602442191387692*^9, 
+   3.6024422104887843`*^9}, {3.602442241862579*^9, 3.602442256762431*^9}, {
+   3.602442301747004*^9, 3.602442434873618*^9}, {3.6024424685795465`*^9, 
+   3.602442534660326*^9}, {3.602442656617302*^9, 3.602442666959893*^9}, {
+   3.6024476841216044`*^9, 3.602447748718299*^9}, {3.6024477887985916`*^9, 
+   3.6024478440147495`*^9}, {3.602447889325341*^9, 3.602447890488408*^9}, {
+   3.6024479437854567`*^9, 3.60244794420048*^9}, {3.602448497325117*^9, 
+   3.6024484977021384`*^9}, {3.6024485350252733`*^9, 
+   3.6024486315357933`*^9}, {3.6024487036799197`*^9, 3.60244872518915*^9}, {
+   3.602448894822852*^9, 3.602448896222933*^9}, {3.602448983103902*^9, 
+   3.6024489857270517`*^9}, {3.6024490904490414`*^9, 
+   3.6024491209617867`*^9}, {3.6024493084775124`*^9, 3.602449381672699*^9}, {
+   3.602449470543782*^9, 3.6024494765681267`*^9}, {3.602449510989095*^9, 
+   3.6024495112021074`*^9}, {3.602449546902149*^9, 3.602449572035587*^9}, {
+   3.60244961195687*^9, 3.6024496123488927`*^9}, {3.6024496457198014`*^9, 
+   3.6024496863071227`*^9}, {3.6024497270054502`*^9, 3.6024497401052*^9}, {
+   3.602449814882477*^9, 3.602449861301132*^9}, {3.6024499431608143`*^9, 
+   3.602450011695734*^9}, {3.6024500455436697`*^9, 3.602450045693679*^9}, {
+   3.602450097927666*^9, 3.6024501092433133`*^9}, {3.602450160827264*^9, 
+   3.6024502038017216`*^9}, {3.6024503313700185`*^9, 3.602450367919109*^9}, {
+   3.602450428344565*^9, 3.6024504381861277`*^9}, {3.602450491077153*^9, 
+   3.6024505425330963`*^9}, {3.6024505865456133`*^9, 
+   3.6024505890787582`*^9}, {3.602450715900012*^9, 3.6024507304708457`*^9}, {
+   3.6024508414571934`*^9, 3.602450922390823*^9}, {3.6024510133170233`*^9, 
+   3.602451045563868*^9}, {3.602451321725663*^9, 3.6024513336093435`*^9}, {
+   3.6024607292700624`*^9, 3.6024607760987415`*^9}, {3.6024608654078493`*^9, 
+   3.6024608667259245`*^9}, {3.6028672078933544`*^9, 
+   3.6028673919873543`*^9}, {3.6028674262033544`*^9, 
+   3.6028674819693546`*^9}, {3.6028675195283546`*^9, 
+   3.6028677435893545`*^9}, {3.602867779911354*^9, 3.6028677799523544`*^9}, {
+   3.6028678491483545`*^9, 3.6028678492893543`*^9}, {3.602867879838354*^9, 
+   3.6028679096253543`*^9}, {3.6028679465323544`*^9, 3.602867948331354*^9}, {
+   3.602868154343354*^9, 3.6028681569643545`*^9}, {3.602868816423354*^9, 
+   3.6028688178623543`*^9}, {3.6028688677523546`*^9, 
+   3.6028688821393547`*^9}, {3.602869095673354*^9, 3.6028691018613544`*^9}, {
+   3.6028691489203544`*^9, 3.6028691926693544`*^9}, {3.602869229246354*^9, 
+   3.6028693026353545`*^9}, {3.6028694050453544`*^9, 
+   3.6028694057033544`*^9}, {3.6028694511293545`*^9, 
+   3.6028694523493547`*^9}, {3.6028696946163545`*^9, 3.602869754251354*^9}, {
+   3.6028711896352262`*^9, 3.6028711924873896`*^9}, {3.6041707157047577`*^9, 
+   3.604170819407248*^9}, {3.604170870592029*^9, 3.604170884723176*^9}, {
+   3.604681293962997*^9, 3.604681299719301*^9}, {3.681480401729067*^9, 
+   3.6814806698833303`*^9}, 3.681486763551135*^9, {3.6814870214048843`*^9, 
+   3.6814871333099546`*^9}, {3.6814871719260273`*^9, 
+   3.6814871954798703`*^9}, {3.6814872275187445`*^9, 3.681487562803737*^9}, {
+   3.681487593137394*^9, 3.681487742826778*^9}, {3.68148778247165*^9, 
+   3.681487805135908*^9}, {3.68148790124833*^9, 3.681487927428793*^9}, {
+   3.6814879604630685`*^9, 3.6814879630274734`*^9}, {3.681488022433998*^9, 
+   3.681488064215105*^9}, {3.6814881445492673`*^9, 3.6814882578353434`*^9}, {
+   3.681488297504032*^9, 3.6814883194460716`*^9}, {3.6814883563785696`*^9, 
+   3.6814884688737774`*^9}, {3.681488505663474*^9, 3.681488598371889*^9}, {
+   3.6814886408557816`*^9, 3.6814887457700224`*^9}, {3.6814888993181543`*^9, 
+   3.681489180052997*^9}, {3.681489237312504*^9, 3.681489480518427*^9}, {
+   3.681489555481994*^9, 3.681489594745082*^9}, {3.6814896870070667`*^9, 
+   3.6814902176578856`*^9}, {3.681490266144973*^9, 3.681490274532404*^9}, {
+   3.6814903701670246`*^9, 3.6814903915788794`*^9}, {3.6814904336637573`*^9, 
+   3.681490486318682*^9}, {3.681490519018159*^9, 3.681490586003513*^9}, {
+   3.6814906696948986`*^9, 3.6814907597491283`*^9}, {3.6814907973150115`*^9, 
+   3.681490905511056*^9}, {3.6814910608586736`*^9, 3.6814912209322147`*^9}, {
+   3.681491260016085*^9, 3.6814913799637346`*^9}, {3.6814914384324565`*^9, 
+   3.6814915760505238`*^9}, {3.6814916141974916`*^9, 3.681491614587493*^9}, {
+   3.6814916664698043`*^9, 3.6814916696708097`*^9}, {3.6814917716670046`*^9, 
+   3.681491784354444*^9}, {3.6814918187637205`*^9, 3.681491895212291*^9}, {
+   3.6814919440713787`*^9, 3.681492157738643*^9}, {3.6814923185857496`*^9, 
+   3.6814923477762203`*^9}, {3.6814926084437733`*^9, 
+   3.6814926186209917`*^9}, {3.6814928012721615`*^9, 3.681492843719883*^9}, {
+   3.68149290365121*^9, 3.68149298827838*^9}, {3.681493019176051*^9, 
+   3.6814930608889427`*^9}, {3.6814931259334793`*^9, 
+   3.6814931568939514`*^9}, {3.681494425680379*^9, 3.6814944777340755`*^9}, {
+   3.6814945223319893`*^9, 3.681494524548995*^9}, {3.6814945590610576`*^9, 
+   3.6814946483960695`*^9}, {3.6814947011692295`*^9, 3.681494745026312*^9}, {
+   3.681494782681403*^9, 3.681494944880522*^9}, {3.6814950112108903`*^9, 
+   3.6814950934132886`*^9}, 3.681497128510006*^9, {3.681497179875517*^9, 
+   3.681497185757727*^9}, {3.681497516452033*^9, 3.6814976814618597`*^9}, {
+   3.68149772622136*^9, 3.6814978590380845`*^9}, {3.681497937117239*^9, 
+   3.6814980048863792`*^9}, {3.681498040575677*^9, 3.681498053971717*^9}, {
+   3.681498105303872*^9, 3.681498160827012*^9}, {3.6814982638448257`*^9, 
+   3.6814982913017063`*^9}, {3.6814983217833924`*^9, 3.68149836398967*^9}, {
+   3.681498426394418*^9, 3.681498430748825*^9}, {3.6814985160349984`*^9, 
+   3.6814985344690495`*^9}, {3.68149862960128*^9, 3.6814986440075064`*^9}, 
+   3.681498694717601*^9, {3.6814987568215165`*^9, 3.68149895934894*^9}, {
+   3.681499005092841*^9, 3.6814990054848423`*^9}, {3.6814990482465343`*^9, 
+   3.68149905637455*^9}, {3.681499112996304*^9, 3.68149912176952*^9}, {
+   3.681499194258683*^9, 3.6814992607282057`*^9}, {3.681499569971981*^9, 
+   3.6814995981758347`*^9}, {3.6814996445355344`*^9, 3.68149966214697*^9}, {
+   3.681499826171198*^9, 3.6814999431758738`*^9}, {3.6815000168276463`*^9, 
+   3.6815000324270744`*^9}, {3.681500065144552*^9, 3.6815007456745024`*^9}, {
+   3.681500777110575*^9, 3.6815008354327154`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+    1.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+    50, $CellContext`w$$ = 50, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 1, "cross section"}, {
+      1 -> " rectangular ", 2 -> " pin "}}, {{
+       Hold[$CellContext`length$$], 1.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`material$$], 2, "fin material"}, {
+      1 -> " copper ", 2 -> " platinum ", 3 -> " carbon steel "}}, {{
+       Hold[$CellContext`w$$], 50, "width (mm)"}, 5, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 5, 50, 0.5}, {{
+       Hold[$CellContext`display$$], 2, "display"}, {
+      1 -> " graph ", 2 -> " fin "}}, {{
+       Hold[$CellContext`t$$], 50, "height (mm)"}, 5, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Manipulate`Place[1], 
+          Manipulate`Place[2]}, {
+          Manipulate`Place[3], 
+          PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+           Dynamic[$CellContext`crosssection$$]]}, {
+          Manipulate`Place[6], 
+          PaneSelector[{1 -> Manipulate`Place[7]}, 
+           Dynamic[$CellContext`crosssection$$]]}}, Alignment -> Left]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    600., {184., 191.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$368118$$ = 
+    False, $CellContext`length$368119$$ = 0, $CellContext`material$368120$$ = 
+    False, $CellContext`w$368121$$ = 0, $CellContext`d$368122$$ = 
+    0, $CellContext`display$368123$$ = False, $CellContext`t$368124$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+        1.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+        50, $CellContext`w$$ = 50}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$368118$$, 
+         False], 
+        Hold[$CellContext`length$$, $CellContext`length$368119$$, 0], 
+        Hold[$CellContext`material$$, $CellContext`material$368120$$, False], 
+        Hold[$CellContext`w$$, $CellContext`w$368121$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$368122$$, 0], 
+        Hold[$CellContext`display$$, $CellContext`display$368123$$, False], 
+        Hold[$CellContext`t$$, $CellContext`t$368124$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`Trev$, \
+$CellContext`col$, $CellContext`table$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$}, $CellContext`h$ = 50; $CellContext`k$ = 
+         Switch[$CellContext`material$$, 1, 400, 2, 70, 3, 
+           54]; $CellContext`tempInf$ = 25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi $CellContext`d$$^2/4)/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/1000)]; $CellContext`m$ = 
+         Sqrt[$CellContext`h$ $CellContext`p$/($CellContext`k$ \
+$CellContext`ac$)]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] := (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         Sqrt[$CellContext`h$ $CellContext`p$ $CellContext`k$ \
+$CellContext`ac$] ($CellContext`tempBase$ - $CellContext`tempInf$) 
+          Tanh[$CellContext`m$ $CellContext`len$]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] := ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         Sqrt[$CellContext`h$ $CellContext`p$ $CellContext`k$ \
+$CellContext`ac$] ($CellContext`tempBase$ - $CellContext`tempInf$) ((
+            Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Cosh[$CellContext`m$ $CellContext`len$])/(
+           Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+            Sinh[$CellContext`m$ $CellContext`len$])); $CellContext`table$ = 
+         Graphics[{
+            Text[
+             Style[
+              Column[{"total heat transfer", 
+                Framed[
+                 Column[
+                  Apply[Row[{#, 
+                    Style[" q", Italic], " = ", 
+                    NumberForm[
+                    N[#2], 3], " W"}]& , {{
+                    "adiabatic", $CellContext`qAdiabatic$}, {
+                    "convection", $CellContext`qConvection$}}, {1}], 
+                  Alignment -> "="]]}, Center], 17]]}]; $CellContext`p1$ = 
+         Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, PlotStyle -> {{Thick, 
+              RGBColor[0, 0.6, 0]}, {Thick, Blue}}, 
+           PlotRange -> {{0, $CellContext`length$$}, {
+              $CellContext`tConvection$[$CellContext`len$], 100}}, Frame -> 
+           True, FrameLabel -> {
+            "distance from base (cm)", "temperature (\[Degree]C)"}, 
+           LabelStyle -> {17, Black}, ImagePadding -> {{80, 10}, {50, 5}}, 
+           PlotRangePadding -> {{None, 0.22 $CellContext`length$$}, {
+              Scaled[0.13], None}}, ImageSize -> {600, 375}, AspectRatio -> 
+           Full, Epilog -> {
+             Inset[$CellContext`table$, 
+              Scaled[{0.8, 0.85}]], 
+             Apply[Text[
+               Style[#, 18, #2], {$CellContext`length$$, #3}, {-1.2, 0}]& , {{
+               "adiabatic", 
+                RGBColor[0, 0.6, 0], 
+                $CellContext`tAdiabatic$[$CellContext`len$]}, {
+               "convection", Blue, 
+                $CellContext`tConvection$[$CellContext`len$]}}, {1}], {Thick, 
+              
+              Arrow[{{0, 1.05 $CellContext`tConvection$[$CellContext`len$] - 
+                 5}, {$CellContext`length$$, 
+                 1.05 $CellContext`tConvection$[$CellContext`len$] - 5}}]}, 
+             Apply[Text[
+               Style[
+                Row[{"fin ", #}], 18], {#2, 
+                1.05 $CellContext`tConvection$[$CellContext`len$] - 5}, {#3, 
+                1.5}]& , {{"base", 0, -1.2}, {
+               "tip", $CellContext`length$$, 0}}, {1}]}]; $CellContext`col$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] := ColorData["TemperatureMap"][
+           Rescale[
+            $CellContext`tConvection$[$CellContext`xa$/
+             100], {$CellContext`tempInf$, $CellContext`tempBase$}]]; \
+$CellContext`p2$ = Show[
+           Graphics3D[{
+             $CellContext`col$[0], 
+             Cuboid[{0, -5, -40}, {
+               If[$CellContext`crosssection$$ == 1, $CellContext`w$$, 50], 0, 
+               40}]}], 
+           If[$CellContext`crosssection$$ == 1, 
+            
+            RegionPlot3D[$CellContext`z < $CellContext`t$$, {$CellContext`x, 
+              0, $CellContext`w$$}, {$CellContext`y, 0, 
+              10 $CellContext`length$$}, {$CellContext`z, (-$CellContext`t$$)/
+              2, $CellContext`t$$/2}, Mesh -> None, 
+             ColorFunction -> ($CellContext`col$[#2/10]& ), 
+             ColorFunctionScaling -> False], 
+            
+            ParametricPlot3D[{($CellContext`d$$/2) Sin[$CellContext`\[Theta]] + 
+              25, $CellContext`x, ($CellContext`d$$/2) 
+              Cos[$CellContext`\[Theta]]}, {$CellContext`\[Theta], 0, 2 
+              Pi}, {$CellContext`x, 0, 10 $CellContext`length$$}, Mesh -> 
+             None, ColorFunction -> ($CellContext`col$[#2/10]& ), 
+             ColorFunctionScaling -> False]], Boxed -> False, Axes -> False, 
+           ViewPoint -> {2, 2, 1}, Lighting -> "Neutral", 
+           PlotRange -> {{0, 50}, {-5, 200}, {-40, 40}}, 
+           ImageSize -> {600, 260}, AspectRatio -> Full]; $CellContext`Trev$[
+           Pattern[$CellContext`T, 
+            Blank[]]] := 
+         3.674 ArcCosh[
+           2.051*^-26 (-2.3285*^29 + 9.314*^27 $CellContext`T + 
+             Sqrt[5.4182*^58 - 4.337*^57 $CellContext`T + 
+               8.6745*^55 $CellContext`T^2])]; $CellContext`p3$ = DensityPlot[
+           $CellContext`Trev$[$CellContext`T], {$CellContext`T, 25, 
+            100}, {$CellContext`y, 0, 1}, ColorFunction -> 
+           ColorData[{"TemperatureMap", "Reverse"}], PlotPoints -> 50, 
+           PlotRange -> {{25, 100}, {0, 1.75}}, 
+           Frame -> {{False, False}, {True, False}}, 
+           LabelStyle -> {17, Black}, ImageSize -> {600, 110}, AspectRatio -> 
+           Full, FrameLabel -> {"temperature (\[Degree]C)", None}, Epilog -> {
+             Line[{{
+                $CellContext`Trev$[
+                 $CellContext`tConvection$[$CellContext`len$]], 0}, {
+                $CellContext`Trev$[
+                 $CellContext`tConvection$[$CellContext`len$]], 1.25}}], 
+             Text[
+              Style[
+               NumberForm[
+                $CellContext`tConvection$[$CellContext`len$], {5, 0}], 17], {
+               $CellContext`Trev$[
+                $CellContext`tConvection$[$CellContext`len$]], 1.25}, {
+              0, -1.1}]}]; 
+        Switch[$CellContext`display$$, 1, $CellContext`p1$, 2, 
+          Column[{$CellContext`p2$, $CellContext`p3$}, Center]]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 1, 
+          "cross section"}, {1 -> " rectangular ", 2 -> " pin "}, ControlType -> 
+         Setter, ControlPlacement -> 
+         1}, {{$CellContext`length$$, 1.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         2}, {{$CellContext`material$$, 2, "fin material"}, {
+         1 -> " copper ", 2 -> " platinum ", 3 -> " carbon steel "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         3}, {{$CellContext`w$$, 50, "width (mm)"}, 5, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`d$$, 50, "diameter (mm)"}, 5, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`display$$, 2, "display"}, {
+         1 -> " graph ", 2 -> " fin "}, ControlType -> Setter, 
+         ControlPlacement -> 6}, {{$CellContext`t$$, 50, "height (mm)"}, 5, 
+         50, 0.5, Appearance -> "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Manipulate`Place[1], 
+           Manipulate`Place[2]}, {
+           Manipulate`Place[3], 
+           PaneSelector[{1 -> Manipulate`Place[4], 2 -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`crosssection$$]]}, {
+           Manipulate`Place[6], 
+           PaneSelector[{1 -> Manipulate`Place[7]}, 
+            Dynamic[$CellContext`crosssection$$]]}}, Alignment -> Left]}, 
+      "Options" :> {}, "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{649., {257., 264.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.681480474935416*^9, 3.681480556842395*^9, 3.6814806277479534`*^9, 
+   3.681480673746537*^9, 3.6814870235898886`*^9, 3.681487139915569*^9, {
+   3.6814871741588316`*^9, 3.6814871822174463`*^9}, {3.68148735058899*^9, 
+   3.6814873855849*^9}, {3.6814874167511597`*^9, 3.6814874614194565`*^9}, 
+   3.6814875016133776`*^9, {3.6814876257142982`*^9, 3.6814876803644323`*^9}, {
+   3.681487729019353*^9, 3.6814877664822216`*^9}, {3.6814877983750963`*^9, 
+   3.681487806120111*^9}, {3.6814879135347676`*^9, 3.6814879284603944`*^9}, 
+   3.6814879648878765`*^9, 3.6814880311936145`*^9, 3.6814880660111084`*^9, 
+   3.681488122314827*^9, {3.6814881699947443`*^9, 3.681488258256544*^9}, {
+   3.6814882989890347`*^9, 3.681488320368473*^9}, 3.68148847045138*^9, 
+   3.6814885124511023`*^9, {3.681488566247816*^9, 3.6814885991236906`*^9}, {
+   3.6814887191175585`*^9, 3.6814887464418235`*^9}, 3.6814889488696947`*^9, {
+   3.68148897917075*^9, 3.681489108582651*^9}, {3.681489161778964*^9, 
+   3.681489180442998*^9}, {3.681489320556073*^9, 3.681489481626029*^9}, {
+   3.681489559870602*^9, 3.6814895955426836`*^9}, 3.6814897147701325`*^9, 
+   3.681489759745098*^9, 3.681489844489357*^9, {3.681489879930874*^9, 
+   3.6814899033373337`*^9}, {3.6814899878335567`*^9, 3.6814900295694494`*^9}, 
+   3.6814901024691834`*^9, 3.681490221949893*^9, 3.681490281791417*^9, 
+   3.6814903936888833`*^9, {3.6814904807474723`*^9, 3.681490486895883*^9}, 
+   3.6814905382590103`*^9, {3.6814905746246915`*^9, 3.6814905869863143`*^9}, {
+   3.6814906870308695`*^9, 3.6814907276116533`*^9}, 3.681490760831345*^9, {
+   3.681490831229889*^9, 3.68149086643797*^9}, 3.681490907570259*^9, 
+   3.6814910798373075`*^9, 3.6814911111201816`*^9, 3.681491222960218*^9, {
+   3.681491262013889*^9, 3.6814913019645762`*^9}, {3.6814913579908953`*^9, 
+   3.681491380823736*^9}, 3.6814915154280148`*^9, 3.681491546863488*^9, 
+   3.681491578066328*^9, {3.6814916157740946`*^9, 3.6814916304671392`*^9}, 
+   3.6814916708584123`*^9, 3.681491786070447*^9, {3.68149182896194*^9, 
+   3.6814918621232147`*^9}, 3.681492015377138*^9, 3.6814920999519086`*^9, {
+   3.6814921599548473`*^9, 3.6814921822490883`*^9}, 3.681492250028026*^9, {
+   3.681492323333559*^9, 3.681492349273823*^9}, 3.681492619718994*^9, 
+   3.6814928041747665`*^9, 3.6814929494443083`*^9, {3.681492980067765*^9, 
+   3.681492989242797*^9}, 3.681493020504054*^9, 3.6814930616221437`*^9, 
+   3.6814931576271524`*^9, 3.6814944784672766`*^9, 3.681494525907197*^9, {
+   3.6814945603870597`*^9, 3.6814946148123913`*^9}, 3.6814946489118705`*^9, 
+   3.6814947124408503`*^9, 3.6814947455255127`*^9, 3.6814947952906265`*^9, {
+   3.6814948448817215`*^9, 3.6814949457385235`*^9}, {3.6814950379579544`*^9, 
+   3.6814950941152897`*^9}, 3.6814971292120075`*^9, 3.681497186805929*^9, {
+   3.6814975205754404`*^9, 3.681497646640547*^9}, 3.681497733142173*^9, {
+   3.6814977935633297`*^9, 3.6814978211549845`*^9}, 3.681497859615285*^9, {
+   3.681497944640854*^9, 3.68149800532318*^9}, {3.681498041047678*^9, 
+   3.681498054595718*^9}, {3.681498109268279*^9, 3.681498161566822*^9}, {
+   3.6814982652810287`*^9, 3.681498292534108*^9}, {3.6814983401334257`*^9, 
+   3.6814983650056715`*^9}, 3.6814984465916557`*^9, {3.681498521709611*^9, 
+   3.681498542822065*^9}, {3.681498634352689*^9, 3.6814986448967085`*^9}, 
+   3.6814989604097414`*^9, 3.681499006545644*^9, 3.6814990624685607`*^9, 
+   3.681499122799122*^9, {3.6814992069303064`*^9, 3.681499230388549*^9}, 
+   3.681499265531415*^9, 3.681499601970642*^9, {3.6814996473289394`*^9, 
+   3.681499663053771*^9}, 3.681499828077401*^9, {3.6814998865329237`*^9, 
+   3.681499944068075*^9}, 3.6815000334118767`*^9, {3.6815000821499825`*^9, 
+   3.681500153670561*^9}, {3.681500185055833*^9, 3.6815002503101835`*^9}, {
+   3.6815003339308004`*^9, 3.681500380563158*^9}, {3.681500413086417*^9, 
+   3.681500447226713*^9}, {3.6815005863431416`*^9, 3.68150061112158*^9}, {
+   3.6815006664299235`*^9, 3.681500746642704*^9}, {3.6815007790271797`*^9, 
+   3.6815008364019175`*^9}},
+ CellID->321934511]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"p3", "=", 
+     RowBox[{"DensityPlot", "[", 
+      RowBox[{
+       RowBox[{"25", "+", 
+        RowBox[{"0.627", "*", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"Cosh", "[", 
+            RowBox[{"27.22", "*", 
+             RowBox[{"(", 
+              RowBox[{"0.2", "-", 
+               FractionBox["x", "100"]}], ")"}]}], "]"}], "+", 
+           RowBox[{"0.03402", "*", 
+            RowBox[{"Sinh", "[", 
+             RowBox[{"27.22", "*", 
+              RowBox[{"(", 
+               RowBox[{"0.2", "-", 
+                FractionBox["x", "100"]}], ")"}]}], "]"}]}]}], ")"}]}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", "0", ",", "20"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"y", ",", "0", ",", "1"}], "}"}], ",", 
+       RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}], ",", 
+       RowBox[{"PlotPoints", "\[Rule]", "25"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"ImageSize", "\[Rule]", 
+        RowBox[{"{", 
+         RowBox[{"600", ",", "50"}], "}"}]}], ",", 
+       RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}], ";"}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"p3", "=", 
+     RowBox[{"DensityPlot", "[", 
+      RowBox[{
+       RowBox[{"3.674", "*", 
+        RowBox[{"ArcCosh", "[", 
+         RowBox[{"2.051*^-26", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "2.3285*^29"}], "+", 
+            RowBox[{"9.314*^27", "*", "T"}], "+", 
+            SqrtBox[
+             RowBox[{"5.4182*^58", "-", 
+              RowBox[{"4.337*^57", "*", "T"}], "+", 
+              RowBox[{"8.6745*^55", "*", 
+               SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"T", ",", "25", ",", "100"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"y", ",", "0", ",", "1"}], "}"}], ",", 
+       RowBox[{"ColorFunction", "\[Rule]", "\"\<TemperatureMap\>\""}], ",", 
+       RowBox[{"PlotPoints", "\[Rule]", "25"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"ImageSize", "\[Rule]", 
+        RowBox[{"{", 
+         RowBox[{"600", ",", "50"}], "}"}]}], ",", 
+       RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}], ";"}], 
+   "*)"}]}]], "Input",
+ CellID->374527730],
+
+Cell[BoxData[
+ RowBox[{"25", "+", 
+  RowBox[{"0.627", "*", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"Cosh", "[", 
+      RowBox[{"27.22", "*", 
+       RowBox[{"(", 
+        RowBox[{"0.2", "-", 
+         FractionBox["x", "100"]}], ")"}]}], "]"}], "+", 
+     RowBox[{"0.03402", "*", 
+      RowBox[{"Sinh", "[", 
+       RowBox[{"27.22", "*", 
+        RowBox[{"(", 
+         RowBox[{"0.2", "-", 
+          FractionBox["x", "100"]}], ")"}]}], "]"}]}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.6814991485561852`*^9, 3.6814991792374563`*^9}},
+ CellID->442922819],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Module", "[", 
+  RowBox[{
+   RowBox[{"{", "sol", "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"sol", "=", 
+     RowBox[{"x", "/.", 
+      RowBox[{"Quiet", "@", 
+       RowBox[{"Solve", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"25", "+", 
+           RowBox[{"0.627", "*", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"Cosh", "[", 
+               RowBox[{"27.22", "*", 
+                RowBox[{"(", 
+                 RowBox[{"0.2", "-", 
+                  FractionBox["x", "100"]}], ")"}]}], "]"}], "+", 
+              RowBox[{"0.03402", "*", 
+               RowBox[{"Sinh", "[", 
+                RowBox[{"27.22", "*", 
+                 RowBox[{"(", 
+                  RowBox[{"0.2", "-", 
+                   FractionBox["x", "100"]}], ")"}]}], "]"}]}]}], ")"}]}]}], 
+          "\[Equal]", "T"}], ",", "x"}], "]"}]}]}]}], ";", 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    RowBox[{"Plot", "[", 
+     RowBox[{
+      RowBox[{"sol", "[", 
+       RowBox[{"[", "2", "]"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"T", ",", "25.6", ",", "100"}], "}"}], ",", 
+      RowBox[{"PlotRange", "\[Rule]", "All"}], ",", 
+      RowBox[{"AxesOrigin", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"25", ",", "0"}], "}"}]}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"sol", "[", 
+     RowBox[{"[", "4", "]"}], "]"}]}]}], "\[IndentingNewLine]", 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.6814993482612443`*^9, 3.6814994924565916`*^9}, {
+  3.681499616173068*^9, 3.68149961731387*^9}, {3.6814997109941173`*^9, 
+  3.681499766415842*^9}},
+ CellID->135772145],
+
+Cell[BoxData[
+ RowBox[{"3.673769287288758`", " ", 
+  RowBox[{"ArcCosh", "[", 
+   RowBox[{"2.0507059647409244`*^-26", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+      RowBox[{"9.314030865928407`*^27", " ", "T"}], "+", 
+      SqrtBox[
+       RowBox[{"5.418163452128495`*^58", "-", 
+        RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+        RowBox[{"8.674511531743405`*^55", " ", 
+         SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}]], "Output",
+ CellChangeTimes->{
+  3.681499359925681*^9, {3.6814993946505747`*^9, 3.6814994931897926`*^9}, 
+   3.6814996178442707`*^9, {3.6814997150537324`*^9, 3.681499796396513*^9}},
+ CellID->12693939]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"3.673769287288758`", " ", 
+  RowBox[{"ArcCosh", "[", 
+   RowBox[{"2.0507059647409244`*^-26", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+      RowBox[{"9.314030865928407`*^27", " ", "T"}], "+", 
+      SqrtBox[
+       RowBox[{"5.418163452128495`*^58", "-", 
+        RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+        RowBox[{"8.674511531743405`*^55", " ", 
+         SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}]], "Input",
+ CellID->114163841],
+
+Cell[BoxData[
+ RowBox[{"3.674", "*", 
+  RowBox[{"ArcCosh", "[", 
+   RowBox[{"2.051*^-26", "*", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "2.329*^29"}], "+", 
+      RowBox[{"9.314*^27", "*", "T"}], "-", " ", 
+      SqrtBox[
+       RowBox[{"5.418*^58", "-", 
+        RowBox[{"4.337*^57", "*", "T"}], "+", 
+        RowBox[{"8.6745*^55", "*", 
+         SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6814995068878193`*^9, 3.6814995612143655`*^9}},
+ CellID->27992002],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "2", "*)"}], 
+  RowBox[{"Plot", "[", 
+   RowBox[{
+    RowBox[{"3.674", "*", 
+     RowBox[{"ArcCosh", "[", 
+      RowBox[{"2.051*^-26", "*", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "2.329*^29"}], "+", 
+         RowBox[{"9.314*^27", "*", "T"}], "-", " ", 
+         SqrtBox[
+          RowBox[{"5.418*^58", "-", 
+           RowBox[{"4.337*^57", "*", "T"}], "+", 
+           RowBox[{"8.6745*^55", "*", 
+            SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"T", ",", "25.6", ",", "100"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6814996740160213`*^9, 3.6814996903391895`*^9}, {
+  3.681499737800374*^9, 3.6814997388455763`*^9}},
+ CellID->137716208],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
+     1.], LineBox[CompressedData["
+1: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
+rpD4F9EdRwY=
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{30., 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None},
+  PlotRange->{{25.6, 100}, {0., 18.84985807186328}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{{3.681499679731167*^9, 3.681499694431397*^9}},
+ CellID->564700650]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "1", "*)"}], 
+  RowBox[{"Plot", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "3.673769287288758`"}], " ", 
+     RowBox[{"ArcCosh", "[", 
+      RowBox[{"2.0507059647409244`*^-26", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+         RowBox[{"9.314030865928407`*^27", " ", "T"}], "-", 
+         RowBox[{"1.`", " ", 
+          SqrtBox[
+           RowBox[{"5.418163452128495`*^58", "-", 
+            RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+            RowBox[{"8.674511531743405`*^55", " ", 
+             SuperscriptBox["T", "2"]}]}]]}]}], ")"}]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"T", ",", "25", ",", "100"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.681499721172344*^9, 3.681499733722767*^9}},
+ CellID->380562018],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
+     1.], LineBox[CompressedData["
+1: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
+e7+8mA2TI/8HWN1DGw==
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{30., 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None},
+  PlotRange->{{25, 100}, {-20.037594420078083`, 0.}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.6814997284635572`*^9},
+ CellID->198671820]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "3", "*)"}], 
+  RowBox[{"Plot", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "3.673769287288758`"}], " ", 
+     RowBox[{"ArcCosh", "[", 
+      RowBox[{"2.0507059647409244`*^-26", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+         RowBox[{"9.314030865928407`*^27", " ", "T"}], "+", 
+         SqrtBox[
+          RowBox[{"5.418163452128495`*^58", "-", 
+           RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+           RowBox[{"8.674511531743405`*^55", " ", 
+            SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"T", ",", "25", ",", "100"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.681499748700194*^9, 3.6814997558530073`*^9}},
+ CellID->99417873],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
+     1.], LineBox[CompressedData["
+1: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
+7y9J49+/s5A5pJw1pfD/AJrlcAY=
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{30., -40.5},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None},
+  PlotRange->{{25, 100}, {-40.24995851700012, -26.0859119077091}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.6814997565590086`*^9},
+ CellID->757529232]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "4", "*)"}], 
+  RowBox[{"Plot", "[", 
+   RowBox[{
+    RowBox[{"3.673769287288758`", " ", 
+     RowBox[{"ArcCosh", "[", 
+      RowBox[{"2.0507059647409244`*^-26", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+         RowBox[{"9.314030865928407`*^27", " ", "T"}], "+", 
+         SqrtBox[
+          RowBox[{"5.418163452128495`*^58", "-", 
+           RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+           RowBox[{"8.674511531743405`*^55", " ", 
+            SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"T", ",", "25", ",", "100"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.681499773150855*^9, 3.6814997806702843`*^9}},
+ CellID->14229032],
+
+Cell[BoxData[
+ GraphicsBox[{{{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
+     1.], LineBox[CompressedData["
+1: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
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{30., 20.},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None},
+  PlotRange->{{25, 100}, {20.212465341805437`, 40.24995851700012}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.681499781278685*^9},
+ CellID->1131172]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "4", "*)"}], 
+  RowBox[{"Plot", "[", 
+   RowBox[{
+    RowBox[{"3.673769287288758`", " ", 
+     RowBox[{"ArcCosh", "[", 
+      RowBox[{"2.0507059647409244`*^-26", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "2.3285077164821017`*^29"}], "+", 
+         RowBox[{"9.314030865928407`*^27", " ", "T"}], "+", 
+         SqrtBox[
+          RowBox[{"5.418163452128495`*^58", "-", 
+           RowBox[{"4.337255765871702`*^57", " ", "T"}], "+", 
+           RowBox[{"8.674511531743405`*^55", " ", 
+            SuperscriptBox["T", "2"]}]}]]}], ")"}]}], "]"}]}], ",", 
+    RowBox[{"{", 
+     RowBox[{"T", ",", "25", ",", "100"}], "}"}]}], "]"}]}]], "Input",
+ CellID->546586086]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell[TextData[{
+ "This Demonstration calculates temperature distributions and heat transfer \
+for a fin (a.k.a. extended surface) of uniform cross-sectional area. Two \
+possible tip conditions are considered: (1) there is no heat transfer through \
+the tip surface (adiabatic case); (2) the tip loses heat through convection, \
+implying that the size of the tip surface is large enough for heat loss to be \
+taken into account. The fin is attached to a base of equal cross-sectional \
+area that is at a constant temperature of 100",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{" ", 
+    RowBox[{"\[Degree]C", ".", " "}]}], TraditionalForm]], "InlineMath"],
+ " Down the length of the fin, heat is lost through natural convection to the \
+ambient air. The temperature decreases down the fin due to conduction down \
+the fin and to heat being lost by convection. The conduction is assumed to be \
+one-dimensional along the length of the fin. Maximum heat transfer is \
+achieved when the temperature of the fin is uniform, and heat is also lost \
+through the tip. You can vary the dimensions and shape of the fin, as well as \
+the thermal conductivity. A three-dimensional representation of the fin is \
+also shown."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.6019601336102753`*^9, 3.6019601937317142`*^9}, {
+   3.6019627287327075`*^9, 3.6019628029289513`*^9}, {3.6019628653815236`*^9, 
+   3.601963054442337*^9}, {3.6019638179030046`*^9, 3.601963844010498*^9}, {
+   3.602006708545392*^9, 3.60200672320683*^9}, {3.602007995524498*^9, 
+   3.602008265548668*^9}, {3.602008305025215*^9, 3.602008316896204*^9}, {
+   3.602009156367457*^9, 3.602009236541574*^9}, {3.602276078155099*^9, 
+   3.6022761039715757`*^9}, {3.6024385567645397`*^9, 3.602438657248287*^9}, {
+   3.6024387197758636`*^9, 3.6024388664062505`*^9}, {3.6024427496086206`*^9, 
+   3.6024427613362913`*^9}, {3.6024427951972275`*^9, 3.602442796375295*^9}, {
+   3.6024610942959414`*^9, 3.602461110396862*^9}, 3.602601858366533*^9, {
+   3.602871314985396*^9, 3.602871319911678*^9}, {3.60287379948629*^9, 
+   3.6028737999313345`*^9}, {3.6041709537719507`*^9, 
+   3.6041709863276997`*^9}, {3.604171030022613*^9, 3.604171042965908*^9}, {
+   3.604171966046626*^9, 3.604171988068112*^9}, {3.604172037703981*^9, 
+   3.604172124249647*^9}, {3.604172154355123*^9, 3.604172210765341*^9}, {
+   3.6041722454307833`*^9, 3.604172253822925*^9}, {3.6041727400693274`*^9, 
+   3.604172744122775*^9}, {3.604172792919709*^9, 3.604172819653902*^9}, 
+   3.604681509007948*^9},
+ CellID->804356174]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+    3.5, $CellContext`material$$ = 1, $CellContext`t$$ = 
+    50, $CellContext`w$$ = 50, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 1, ""}, {
+      1 -> "rectangle", 2 -> "circle"}}, {{
+       Hold[$CellContext`material$$], 1, ""}, {
+      1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}}, {{
+       Hold[$CellContext`display$$], 1, ""}, {1 -> "graph", 2 -> "fin"}}, {{
+       Hold[$CellContext`length$$], 3.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`w$$], 50, "width (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`t$$], 50, "height (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 1, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Grid[{{"cross section", 
+             Item[
+              Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+             Item[
+              Manipulate`Place[2], Alignment -> Left]}, {"display", 
+             Item[
+              Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+          Column[{
+            Manipulate`Place[4], 
+            PaneSelector[{1 -> Column[{
+                 Manipulate`Place[5], 
+                 Manipulate`Place[6]}], 2 -> 
+              Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+             Right]}, Right]}}, Alignment -> Top]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    500., {172., 178.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$222606$$ = 
+    False, $CellContext`material$222607$$ = 
+    False, $CellContext`display$222608$$ = 
+    False, $CellContext`length$222609$$ = 0, $CellContext`w$222610$$ = 
+    0, $CellContext`t$222611$$ = 0, $CellContext`d$222612$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+        3.5, $CellContext`material$$ = 1, $CellContext`t$$ = 
+        50, $CellContext`w$$ = 50}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$222606$$, 
+         False], 
+        Hold[$CellContext`material$$, $CellContext`material$222607$$, False], 
+        Hold[$CellContext`display$$, $CellContext`display$222608$$, False], 
+        Hold[$CellContext`length$$, $CellContext`length$222609$$, 0], 
+        Hold[$CellContext`w$$, $CellContext`w$222610$$, 0], 
+        Hold[$CellContext`t$$, $CellContext`t$222611$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$222612$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`table$, \
+$CellContext`p1$, $CellContext`labels$, $CellContext`cylinder$, \
+$CellContext`rectangle$, $CellContext`finshape$}, $CellContext`h$ = 
+         50; $CellContext`k$ = 
+         Which[$CellContext`material$$ == 1, 400, $CellContext`material$$ == 
+           2, 70, $CellContext`material$$ == 3, 54]; $CellContext`tempInf$ = 
+         25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi ($CellContext`d$$^2/4))/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/
+            1000)]; $CellContext`m$ = ($CellContext`h$ \
+($CellContext`p$/($CellContext`k$ $CellContext`ac$)))^
+          Rational[1, 2]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] = (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) 
+           Tanh[$CellContext`m$ $CellContext`len$], 
+           2]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] = ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[
+              1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) ((
+             Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Cosh[$CellContext`m$ $CellContext`len$])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])), 
+           2]; $CellContext`table$ = Graphics[{
+            Inset[
+             Grid[{{
+                Style["total heat transfer\n", 16]}}, Alignment -> Center], {
+             0, 0}], 
+            Inset[
+             Grid[{{
+                Style[
+                 Row[{"adiabatic ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qAdiabatic$, 3], 16], 
+                Style["W", 16]}, {
+                Style[
+                 Row[{"convection ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qConvection$, 3], 16], 
+                Style["W", 16]}}, Alignment -> "=", 
+              Dividers -> {True, True, False, True}], {
+             0, -0.3}]}]; $CellContext`p1$ = Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, 
+           PlotRange -> {{0, $CellContext`length$$ 1.25}, Automatic}, Frame -> 
+           True, FrameLabel -> {
+            "length down the fin (cm)", "temperature (\[Degree]C)"}, 
+           PlotStyle -> {{Thick, Green}, {Thick, Blue}}, 
+           LabelStyle -> {FontSize -> 16}, ImageSize -> {500, 350}, 
+           ImagePadding -> {{70, 0}, {50, 0}}, Epilog -> 
+           Inset[$CellContext`table$, 
+             Scaled[{0.8, 0.85}]]]; $CellContext`labels$ = Graphics[{
+            Text[
+             Style["adiabatic", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tAdiabatic$[0.9 $CellContext`len$]}, {-3, -0.25}], 
+            Text[
+             Style["convection", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tConvection$[0.9 $CellContext`len$]}, {-2.6, 
+             0.75}]}]; $CellContext`cylinder$ = 
+         Cylinder[{{25, 0, 25}, {
+            25, $CellContext`length$$ 10, 25}}, $CellContext`d$$/
+           2]; $CellContext`rectangle$ = 
+         Cuboid[{0, 0, 
+           0}, {$CellContext`w$$, $CellContext`length$$ 
+            10, $CellContext`t$$}]; $CellContext`finshape$ = Framed[
+           Graphics3D[{
+             
+             Which[$CellContext`material$$ == 1, 
+              Orange, $CellContext`material$$ == 2, 
+              Blue, $CellContext`material$$ == 3, Green], 
+             
+             If[$CellContext`crosssection$$ == 
+              1, $CellContext`rectangle$, $CellContext`cylinder$], Opacity -> 
+             1}, ViewPoint -> {4, 1, 1}, 
+            PlotRange -> {{0, 50}, {0, 200}, {0, 50}}, Boxed -> False, 
+            ImageSize -> {500, 340}, Epilog -> Inset[$CellContext`table$, 
+              Scaled[{0.82, 1.15}]]]]; Which[$CellContext`display$$ == 1, 
+          
+          Show[$CellContext`p1$, $CellContext`labels$], \
+$CellContext`display$$ == 2, $CellContext`finshape$]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 1, ""}, {
+         1 -> "rectangle", 2 -> "circle"}, ControlPlacement -> 
+         1}, {{$CellContext`material$$, 1, ""}, {
+         1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}, 
+         ControlPlacement -> 2}, {{$CellContext`display$$, 1, ""}, {
+         1 -> "graph", 2 -> "fin"}, ControlPlacement -> 
+         3}, {{$CellContext`length$$, 3.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`w$$, 50, "width (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`t$$, 50, "height (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         6}, {{$CellContext`d$$, 50, "diameter (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Grid[{{"cross section", 
+              Item[
+               Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+              Item[
+               Manipulate`Place[2], Alignment -> Left]}, {"display", 
+              Item[
+               Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+           Column[{
+             Manipulate`Place[4], 
+             PaneSelector[{1 -> Column[{
+                  Manipulate`Place[5], 
+                  Manipulate`Place[6]}], 2 -> 
+               Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+              Right]}, Right]}}, Alignment -> Top]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{628., {246., 253.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1266344358]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+    1.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+    3., $CellContext`w$$ = 3.5, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 1, ""}, {
+      1 -> "rectangle", 2 -> "circle"}}, {{
+       Hold[$CellContext`material$$], 2, ""}, {
+      1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}}, {{
+       Hold[$CellContext`display$$], 1, ""}, {1 -> "graph", 2 -> "fin"}}, {{
+       Hold[$CellContext`length$$], 1.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`w$$], 3.5, "width (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`t$$], 3., "height (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 1, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Grid[{{"cross section", 
+             Item[
+              Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+             Item[
+              Manipulate`Place[2], Alignment -> Left]}, {"display", 
+             Item[
+              Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+          Column[{
+            Manipulate`Place[4], 
+            PaneSelector[{1 -> Column[{
+                 Manipulate`Place[5], 
+                 Manipulate`Place[6]}], 2 -> 
+              Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+             Right]}, Right]}}, Alignment -> Top]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    500., {172., 178.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$222696$$ = 
+    False, $CellContext`material$222697$$ = 
+    False, $CellContext`display$222698$$ = 
+    False, $CellContext`length$222699$$ = 0, $CellContext`w$222700$$ = 
+    0, $CellContext`t$222701$$ = 0, $CellContext`d$222702$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+        1.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+        3., $CellContext`w$$ = 3.5}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$222696$$, 
+         False], 
+        Hold[$CellContext`material$$, $CellContext`material$222697$$, False], 
+        Hold[$CellContext`display$$, $CellContext`display$222698$$, False], 
+        Hold[$CellContext`length$$, $CellContext`length$222699$$, 0], 
+        Hold[$CellContext`w$$, $CellContext`w$222700$$, 0], 
+        Hold[$CellContext`t$$, $CellContext`t$222701$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$222702$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`table$, \
+$CellContext`p1$, $CellContext`labels$, $CellContext`cylinder$, \
+$CellContext`rectangle$, $CellContext`finshape$}, $CellContext`h$ = 
+         50; $CellContext`k$ = 
+         Which[$CellContext`material$$ == 1, 400, $CellContext`material$$ == 
+           2, 70, $CellContext`material$$ == 3, 54]; $CellContext`tempInf$ = 
+         25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi ($CellContext`d$$^2/4))/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/
+            1000)]; $CellContext`m$ = ($CellContext`h$ \
+($CellContext`p$/($CellContext`k$ $CellContext`ac$)))^
+          Rational[1, 2]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] = (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) 
+           Tanh[$CellContext`m$ $CellContext`len$], 
+           2]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] = ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[
+              1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) ((
+             Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Cosh[$CellContext`m$ $CellContext`len$])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])), 
+           2]; $CellContext`table$ = Graphics[{
+            Inset[
+             Grid[{{
+                Style["total heat transfer\n", 16]}}, Alignment -> Center], {
+             0, 0}], 
+            Inset[
+             Grid[{{
+                Style[
+                 Row[{"adiabatic ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qAdiabatic$, 3], 16], 
+                Style["W", 16]}, {
+                Style[
+                 Row[{"convection ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qConvection$, 3], 16], 
+                Style["W", 16]}}, Alignment -> "=", 
+              Dividers -> {True, True, False, True}], {
+             0, -0.3}]}]; $CellContext`p1$ = Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, 
+           PlotRange -> {{0, $CellContext`length$$ 1.25}, Automatic}, Frame -> 
+           True, FrameLabel -> {
+            "length down the fin (cm)", "temperature (\[Degree]C)"}, 
+           PlotStyle -> {{Thick, Green}, {Thick, Blue}}, 
+           LabelStyle -> {FontSize -> 16}, ImageSize -> {500, 350}, 
+           ImagePadding -> {{70, 0}, {50, 0}}, Epilog -> 
+           Inset[$CellContext`table$, 
+             Scaled[{0.8, 0.85}]]]; $CellContext`labels$ = Graphics[{
+            Text[
+             Style["adiabatic", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tAdiabatic$[0.9 $CellContext`len$]}, {-3, -0.25}], 
+            Text[
+             Style["convection", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tConvection$[0.9 $CellContext`len$]}, {-2.6, 
+             0.75}]}]; $CellContext`cylinder$ = 
+         Cylinder[{{25, 0, 25}, {
+            25, $CellContext`length$$ 10, 25}}, $CellContext`d$$/
+           2]; $CellContext`rectangle$ = 
+         Cuboid[{0, 0, 
+           0}, {$CellContext`w$$, $CellContext`length$$ 
+            10, $CellContext`t$$}]; $CellContext`finshape$ = Framed[
+           Graphics3D[{
+             
+             Which[$CellContext`material$$ == 1, 
+              Orange, $CellContext`material$$ == 2, 
+              Blue, $CellContext`material$$ == 3, Green], 
+             
+             If[$CellContext`crosssection$$ == 
+              1, $CellContext`rectangle$, $CellContext`cylinder$], Opacity -> 
+             1}, ViewPoint -> {4, 1, 1}, 
+            PlotRange -> {{0, 50}, {0, 200}, {0, 50}}, Boxed -> False, 
+            ImageSize -> {500, 340}, Epilog -> Inset[$CellContext`table$, 
+              Scaled[{0.82, 1.15}]]]]; Which[$CellContext`display$$ == 1, 
+          
+          Show[$CellContext`p1$, $CellContext`labels$], \
+$CellContext`display$$ == 2, $CellContext`finshape$]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 1, ""}, {
+         1 -> "rectangle", 2 -> "circle"}, ControlPlacement -> 
+         1}, {{$CellContext`material$$, 2, ""}, {
+         1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}, 
+         ControlPlacement -> 2}, {{$CellContext`display$$, 1, ""}, {
+         1 -> "graph", 2 -> "fin"}, ControlPlacement -> 
+         3}, {{$CellContext`length$$, 1.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`w$$, 3.5, "width (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`t$$, 3., "height (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         6}, {{$CellContext`d$$, 50, "diameter (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Grid[{{"cross section", 
+              Item[
+               Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+              Item[
+               Manipulate`Place[2], Alignment -> Left]}, {"display", 
+              Item[
+               Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+           Column[{
+             Manipulate`Place[4], 
+             PaneSelector[{1 -> Column[{
+                  Manipulate`Place[5], 
+                  Manipulate`Place[6]}], 2 -> 
+               Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+              Right]}, Right]}}, Alignment -> Top]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{628., {246., 253.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1886683136],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 2, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+    8.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+    3., $CellContext`w$$ = 3.5, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 2, ""}, {
+      1 -> "rectangle", 2 -> "circle"}}, {{
+       Hold[$CellContext`material$$], 2, ""}, {
+      1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}}, {{
+       Hold[$CellContext`display$$], 1, ""}, {1 -> "graph", 2 -> "fin"}}, {{
+       Hold[$CellContext`length$$], 8.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`w$$], 3.5, "width (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`t$$], 3., "height (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 1, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Grid[{{"cross section", 
+             Item[
+              Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+             Item[
+              Manipulate`Place[2], Alignment -> Left]}, {"display", 
+             Item[
+              Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+          Column[{
+            Manipulate`Place[4], 
+            PaneSelector[{1 -> Column[{
+                 Manipulate`Place[5], 
+                 Manipulate`Place[6]}], 2 -> 
+              Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+             Right]}, Right]}}, Alignment -> Top]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    500., {172., 178.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$222786$$ = 
+    False, $CellContext`material$222787$$ = 
+    False, $CellContext`display$222788$$ = 
+    False, $CellContext`length$222789$$ = 0, $CellContext`w$222790$$ = 
+    0, $CellContext`t$222791$$ = 0, $CellContext`d$222792$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 2, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 1, $CellContext`length$$ = 
+        8.5, $CellContext`material$$ = 2, $CellContext`t$$ = 
+        3., $CellContext`w$$ = 3.5}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$222786$$, 
+         False], 
+        Hold[$CellContext`material$$, $CellContext`material$222787$$, False], 
+        Hold[$CellContext`display$$, $CellContext`display$222788$$, False], 
+        Hold[$CellContext`length$$, $CellContext`length$222789$$, 0], 
+        Hold[$CellContext`w$$, $CellContext`w$222790$$, 0], 
+        Hold[$CellContext`t$$, $CellContext`t$222791$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$222792$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`table$, \
+$CellContext`p1$, $CellContext`labels$, $CellContext`cylinder$, \
+$CellContext`rectangle$, $CellContext`finshape$}, $CellContext`h$ = 
+         50; $CellContext`k$ = 
+         Which[$CellContext`material$$ == 1, 400, $CellContext`material$$ == 
+           2, 70, $CellContext`material$$ == 3, 54]; $CellContext`tempInf$ = 
+         25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi ($CellContext`d$$^2/4))/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/
+            1000)]; $CellContext`m$ = ($CellContext`h$ \
+($CellContext`p$/($CellContext`k$ $CellContext`ac$)))^
+          Rational[1, 2]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] = (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) 
+           Tanh[$CellContext`m$ $CellContext`len$], 
+           2]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] = ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[
+              1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) ((
+             Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Cosh[$CellContext`m$ $CellContext`len$])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])), 
+           2]; $CellContext`table$ = Graphics[{
+            Inset[
+             Grid[{{
+                Style["total heat transfer\n", 16]}}, Alignment -> Center], {
+             0, 0}], 
+            Inset[
+             Grid[{{
+                Style[
+                 Row[{"adiabatic ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qAdiabatic$, 3], 16], 
+                Style["W", 16]}, {
+                Style[
+                 Row[{"convection ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qConvection$, 3], 16], 
+                Style["W", 16]}}, Alignment -> "=", 
+              Dividers -> {True, True, False, True}], {
+             0, -0.3}]}]; $CellContext`p1$ = Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, 
+           PlotRange -> {{0, $CellContext`length$$ 1.25}, Automatic}, Frame -> 
+           True, FrameLabel -> {
+            "length down the fin (cm)", "temperature (\[Degree]C)"}, 
+           PlotStyle -> {{Thick, Green}, {Thick, Blue}}, 
+           LabelStyle -> {FontSize -> 16}, ImageSize -> {500, 350}, 
+           ImagePadding -> {{70, 0}, {50, 0}}, Epilog -> 
+           Inset[$CellContext`table$, 
+             Scaled[{0.8, 0.85}]]]; $CellContext`labels$ = Graphics[{
+            Text[
+             Style["adiabatic", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tAdiabatic$[0.9 $CellContext`len$]}, {-3, -0.25}], 
+            Text[
+             Style["convection", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tConvection$[0.9 $CellContext`len$]}, {-2.6, 
+             0.75}]}]; $CellContext`cylinder$ = 
+         Cylinder[{{25, 0, 25}, {
+            25, $CellContext`length$$ 10, 25}}, $CellContext`d$$/
+           2]; $CellContext`rectangle$ = 
+         Cuboid[{0, 0, 
+           0}, {$CellContext`w$$, $CellContext`length$$ 
+            10, $CellContext`t$$}]; $CellContext`finshape$ = Framed[
+           Graphics3D[{
+             
+             Which[$CellContext`material$$ == 1, 
+              Orange, $CellContext`material$$ == 2, 
+              Blue, $CellContext`material$$ == 3, Green], 
+             
+             If[$CellContext`crosssection$$ == 
+              1, $CellContext`rectangle$, $CellContext`cylinder$], Opacity -> 
+             1}, ViewPoint -> {4, 1, 1}, 
+            PlotRange -> {{0, 50}, {0, 200}, {0, 50}}, Boxed -> False, 
+            ImageSize -> {500, 340}, Epilog -> Inset[$CellContext`table$, 
+              Scaled[{0.82, 1.15}]]]]; Which[$CellContext`display$$ == 1, 
+          
+          Show[$CellContext`p1$, $CellContext`labels$], \
+$CellContext`display$$ == 2, $CellContext`finshape$]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 2, ""}, {
+         1 -> "rectangle", 2 -> "circle"}, ControlPlacement -> 
+         1}, {{$CellContext`material$$, 2, ""}, {
+         1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}, 
+         ControlPlacement -> 2}, {{$CellContext`display$$, 1, ""}, {
+         1 -> "graph", 2 -> "fin"}, ControlPlacement -> 
+         3}, {{$CellContext`length$$, 8.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`w$$, 3.5, "width (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`t$$, 3., "height (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         6}, {{$CellContext`d$$, 50, "diameter (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Grid[{{"cross section", 
+              Item[
+               Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+              Item[
+               Manipulate`Place[2], Alignment -> Left]}, {"display", 
+              Item[
+               Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+           Column[{
+             Manipulate`Place[4], 
+             PaneSelector[{1 -> Column[{
+                  Manipulate`Place[5], 
+                  Manipulate`Place[6]}], 2 -> 
+               Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+              Right]}, Right]}}, Alignment -> Top]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{628., {246., 253.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1887418797],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+    10.5, $CellContext`material$$ = 1, $CellContext`t$$ = 
+    21., $CellContext`w$$ = 22., Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 1, ""}, {
+      1 -> "rectangle", 2 -> "circle"}}, {{
+       Hold[$CellContext`material$$], 1, ""}, {
+      1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}}, {{
+       Hold[$CellContext`display$$], 2, ""}, {1 -> "graph", 2 -> "fin"}}, {{
+       Hold[$CellContext`length$$], 10.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`w$$], 22., "width (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`t$$], 21., "height (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 1, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Grid[{{"cross section", 
+             Item[
+              Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+             Item[
+              Manipulate`Place[2], Alignment -> Left]}, {"display", 
+             Item[
+              Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+          Column[{
+            Manipulate`Place[4], 
+            PaneSelector[{1 -> Column[{
+                 Manipulate`Place[5], 
+                 Manipulate`Place[6]}], 2 -> 
+              Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+             Right]}, Right]}}, Alignment -> Top]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    510., {171., 179.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$222876$$ = 
+    False, $CellContext`material$222877$$ = 
+    False, $CellContext`display$222878$$ = 
+    False, $CellContext`length$222879$$ = 0, $CellContext`w$222880$$ = 
+    0, $CellContext`t$222881$$ = 0, $CellContext`d$222882$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 1, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+        10.5, $CellContext`material$$ = 1, $CellContext`t$$ = 
+        21., $CellContext`w$$ = 22.}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$222876$$, 
+         False], 
+        Hold[$CellContext`material$$, $CellContext`material$222877$$, False], 
+        Hold[$CellContext`display$$, $CellContext`display$222878$$, False], 
+        Hold[$CellContext`length$$, $CellContext`length$222879$$, 0], 
+        Hold[$CellContext`w$$, $CellContext`w$222880$$, 0], 
+        Hold[$CellContext`t$$, $CellContext`t$222881$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$222882$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`table$, \
+$CellContext`p1$, $CellContext`labels$, $CellContext`cylinder$, \
+$CellContext`rectangle$, $CellContext`finshape$}, $CellContext`h$ = 
+         50; $CellContext`k$ = 
+         Which[$CellContext`material$$ == 1, 400, $CellContext`material$$ == 
+           2, 70, $CellContext`material$$ == 3, 54]; $CellContext`tempInf$ = 
+         25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi ($CellContext`d$$^2/4))/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/
+            1000)]; $CellContext`m$ = ($CellContext`h$ \
+($CellContext`p$/($CellContext`k$ $CellContext`ac$)))^
+          Rational[1, 2]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] = (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) 
+           Tanh[$CellContext`m$ $CellContext`len$], 
+           2]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] = ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[
+              1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) ((
+             Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Cosh[$CellContext`m$ $CellContext`len$])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])), 
+           2]; $CellContext`table$ = Graphics[{
+            Inset[
+             Grid[{{
+                Style["total heat transfer\n", 16]}}, Alignment -> Center], {
+             0, 0}], 
+            Inset[
+             Grid[{{
+                Style[
+                 Row[{"adiabatic ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qAdiabatic$, 3], 16], 
+                Style["W", 16]}, {
+                Style[
+                 Row[{"convection ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qConvection$, 3], 16], 
+                Style["W", 16]}}, Alignment -> "=", 
+              Dividers -> {True, True, False, True}], {
+             0, -0.3}]}]; $CellContext`p1$ = Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, 
+           PlotRange -> {{0, $CellContext`length$$ 1.25}, Automatic}, Frame -> 
+           True, FrameLabel -> {
+            "length down the fin (cm)", "temperature (\[Degree]C)"}, 
+           PlotStyle -> {{Thick, Green}, {Thick, Blue}}, 
+           LabelStyle -> {FontSize -> 16}, ImageSize -> {500, 350}, 
+           ImagePadding -> {{70, 0}, {50, 0}}, Epilog -> 
+           Inset[$CellContext`table$, 
+             Scaled[{0.8, 0.85}]]]; $CellContext`labels$ = Graphics[{
+            Text[
+             Style["adiabatic", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tAdiabatic$[0.9 $CellContext`len$]}, {-3, -0.25}], 
+            Text[
+             Style["convection", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tConvection$[0.9 $CellContext`len$]}, {-2.6, 
+             0.75}]}]; $CellContext`cylinder$ = 
+         Cylinder[{{25, 0, 25}, {
+            25, $CellContext`length$$ 10, 25}}, $CellContext`d$$/
+           2]; $CellContext`rectangle$ = 
+         Cuboid[{0, 0, 
+           0}, {$CellContext`w$$, $CellContext`length$$ 
+            10, $CellContext`t$$}]; $CellContext`finshape$ = Framed[
+           Graphics3D[{
+             
+             Which[$CellContext`material$$ == 1, 
+              Orange, $CellContext`material$$ == 2, 
+              Blue, $CellContext`material$$ == 3, Green], 
+             
+             If[$CellContext`crosssection$$ == 
+              1, $CellContext`rectangle$, $CellContext`cylinder$], Opacity -> 
+             1}, ViewPoint -> {4, 1, 1}, 
+            PlotRange -> {{0, 50}, {0, 200}, {0, 50}}, Boxed -> False, 
+            ImageSize -> {500, 340}, Epilog -> Inset[$CellContext`table$, 
+              Scaled[{0.82, 1.15}]]]]; Which[$CellContext`display$$ == 1, 
+          
+          Show[$CellContext`p1$, $CellContext`labels$], \
+$CellContext`display$$ == 2, $CellContext`finshape$]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 1, ""}, {
+         1 -> "rectangle", 2 -> "circle"}, ControlPlacement -> 
+         1}, {{$CellContext`material$$, 1, ""}, {
+         1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}, 
+         ControlPlacement -> 2}, {{$CellContext`display$$, 2, ""}, {
+         1 -> "graph", 2 -> "fin"}, ControlPlacement -> 
+         3}, {{$CellContext`length$$, 10.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`w$$, 22., "width (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`t$$, 21., "height (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         6}, {{$CellContext`d$$, 50, "diameter (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Grid[{{"cross section", 
+              Item[
+               Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+              Item[
+               Manipulate`Place[2], Alignment -> Left]}, {"display", 
+              Item[
+               Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+           Column[{
+             Manipulate`Place[4], 
+             PaneSelector[{1 -> Column[{
+                  Manipulate`Place[5], 
+                  Manipulate`Place[6]}], 2 -> 
+               Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+              Right]}, Right]}}, Alignment -> Top]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{628., {246., 253.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1366771342],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`crosssection$$ = 2, $CellContext`d$$ = 
+    50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+    10.5, $CellContext`material$$ = 3, $CellContext`t$$ = 
+    21., $CellContext`w$$ = 22., Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`crosssection$$], 2, ""}, {
+      1 -> "rectangle", 2 -> "circle"}}, {{
+       Hold[$CellContext`material$$], 3, ""}, {
+      1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}}, {{
+       Hold[$CellContext`display$$], 2, ""}, {1 -> "graph", 2 -> "fin"}}, {{
+       Hold[$CellContext`length$$], 10.5, "fin length (cm)"}, 0.5, 20, 0.5}, {{
+       Hold[$CellContext`w$$], 22., "width (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`t$$], 21., "height (mm)"}, 1, 50, 0.5}, {{
+       Hold[$CellContext`d$$], 50, "diameter (mm)"}, 1, 50, 0.5}, {
+      Hold[
+       Grid[{{
+          Grid[{{"cross section", 
+             Item[
+              Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+             Item[
+              Manipulate`Place[2], Alignment -> Left]}, {"display", 
+             Item[
+              Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+          Column[{
+            Manipulate`Place[4], 
+            PaneSelector[{1 -> Column[{
+                 Manipulate`Place[5], 
+                 Manipulate`Place[6]}], 2 -> 
+              Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+             Right]}, Right]}}, Alignment -> Top]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    510., {171., 179.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`crosssection$222966$$ = 
+    False, $CellContext`material$222967$$ = 
+    False, $CellContext`display$222968$$ = 
+    False, $CellContext`length$222969$$ = 0, $CellContext`w$222970$$ = 
+    0, $CellContext`t$222971$$ = 0, $CellContext`d$222972$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`crosssection$$ = 2, $CellContext`d$$ = 
+        50, $CellContext`display$$ = 2, $CellContext`length$$ = 
+        10.5, $CellContext`material$$ = 3, $CellContext`t$$ = 
+        21., $CellContext`w$$ = 22.}, "ControllerVariables" :> {
+        Hold[$CellContext`crosssection$$, $CellContext`crosssection$222966$$, 
+         False], 
+        Hold[$CellContext`material$$, $CellContext`material$222967$$, False], 
+        Hold[$CellContext`display$$, $CellContext`display$222968$$, False], 
+        Hold[$CellContext`length$$, $CellContext`length$222969$$, 0], 
+        Hold[$CellContext`w$$, $CellContext`w$222970$$, 0], 
+        Hold[$CellContext`t$$, $CellContext`t$222971$$, 0], 
+        Hold[$CellContext`d$$, $CellContext`d$222972$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`h$, $CellContext`k$, $CellContext`tempInf$, \
+$CellContext`tempBase$, $CellContext`len$, $CellContext`ac$, $CellContext`p$, \
+$CellContext`m$, $CellContext`tAdiabatic$, $CellContext`qAdiabatic$, \
+$CellContext`tConvection$, $CellContext`qConvection$, $CellContext`table$, \
+$CellContext`p1$, $CellContext`labels$, $CellContext`cylinder$, \
+$CellContext`rectangle$, $CellContext`finshape$}, $CellContext`h$ = 
+         50; $CellContext`k$ = 
+         Which[$CellContext`material$$ == 1, 400, $CellContext`material$$ == 
+           2, 70, $CellContext`material$$ == 3, 54]; $CellContext`tempInf$ = 
+         25; $CellContext`tempBase$ = 
+         100; $CellContext`len$ = $CellContext`length$$/100; $CellContext`ac$ = 
+         Switch[$CellContext`crosssection$$, 
+           1, $CellContext`t$$ ($CellContext`w$$/1000000), 
+           2, (Pi ($CellContext`d$$^2/4))/1000000]; $CellContext`p$ = 
+         Switch[$CellContext`crosssection$$, 1, 
+           2 (($CellContext`t$$ + $CellContext`w$$)/1000), 
+           2, $CellContext`d$$ (Pi/
+            1000)]; $CellContext`m$ = ($CellContext`h$ \
+($CellContext`p$/($CellContext`k$ $CellContext`ac$)))^
+          Rational[1, 2]; $CellContext`tAdiabatic$[
+           Pattern[$CellContext`xa$, 
+            Blank[]]] = (
+            Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)]/
+            Cosh[$CellContext`m$ $CellContext`len$]) ($CellContext`tempBase$ - \
+$CellContext`tempInf$) + $CellContext`tempInf$; $CellContext`qAdiabatic$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) 
+           Tanh[$CellContext`m$ $CellContext`len$], 
+           2]; $CellContext`tConvection$[
+           Pattern[$CellContext`xa$, 
+            
+            Blank[]]] = ((
+             Cosh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Sinh[$CellContext`m$ ($CellContext`len$ - $CellContext`xa$)])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])) \
+($CellContext`tempBase$ - $CellContext`tempInf$) + $CellContext`tempInf$; \
+$CellContext`qConvection$ = 
+         N[(((($CellContext`h$ $CellContext`p$) $CellContext`k$) \
+$CellContext`ac$)^
+             Rational[
+              1, 2] ($CellContext`tempBase$ - $CellContext`tempInf$)) ((
+             Sinh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+              Cosh[$CellContext`m$ $CellContext`len$])/(
+            Cosh[$CellContext`m$ $CellContext`len$] + \
+($CellContext`h$/($CellContext`m$ $CellContext`k$)) 
+             Sinh[$CellContext`m$ $CellContext`len$])), 
+           2]; $CellContext`table$ = Graphics[{
+            Inset[
+             Grid[{{
+                Style["total heat transfer\n", 16]}}, Alignment -> Center], {
+             0, 0}], 
+            Inset[
+             Grid[{{
+                Style[
+                 Row[{"adiabatic ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qAdiabatic$, 3], 16], 
+                Style["W", 16]}, {
+                Style[
+                 Row[{"convection ", 
+                   Style["q", Italic], " = "}], 16], 
+                Style[
+                 NumberForm[$CellContext`qConvection$, 3], 16], 
+                Style["W", 16]}}, Alignment -> "=", 
+              Dividers -> {True, True, False, True}], {
+             0, -0.3}]}]; $CellContext`p1$ = Plot[{
+            $CellContext`tAdiabatic$[$CellContext`x/100], 
+            $CellContext`tConvection$[$CellContext`x/100]}, {$CellContext`x, 
+            0, $CellContext`length$$}, 
+           PlotRange -> {{0, $CellContext`length$$ 1.25}, Automatic}, Frame -> 
+           True, FrameLabel -> {
+            "length down the fin (cm)", "temperature (\[Degree]C)"}, 
+           PlotStyle -> {{Thick, Green}, {Thick, Blue}}, 
+           LabelStyle -> {FontSize -> 16}, ImageSize -> {500, 350}, 
+           ImagePadding -> {{70, 0}, {50, 0}}, Epilog -> 
+           Inset[$CellContext`table$, 
+             Scaled[{0.8, 0.85}]]]; $CellContext`labels$ = Graphics[{
+            Text[
+             Style["adiabatic", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tAdiabatic$[0.9 $CellContext`len$]}, {-3, -0.25}], 
+            Text[
+             Style["convection", 14], {0.9 $CellContext`length$$, 
+              $CellContext`tConvection$[0.9 $CellContext`len$]}, {-2.6, 
+             0.75}]}]; $CellContext`cylinder$ = 
+         Cylinder[{{25, 0, 25}, {
+            25, $CellContext`length$$ 10, 25}}, $CellContext`d$$/
+           2]; $CellContext`rectangle$ = 
+         Cuboid[{0, 0, 
+           0}, {$CellContext`w$$, $CellContext`length$$ 
+            10, $CellContext`t$$}]; $CellContext`finshape$ = Framed[
+           Graphics3D[{
+             
+             Which[$CellContext`material$$ == 1, 
+              Orange, $CellContext`material$$ == 2, 
+              Blue, $CellContext`material$$ == 3, Green], 
+             
+             If[$CellContext`crosssection$$ == 
+              1, $CellContext`rectangle$, $CellContext`cylinder$], Opacity -> 
+             1}, ViewPoint -> {4, 1, 1}, 
+            PlotRange -> {{0, 50}, {0, 200}, {0, 50}}, Boxed -> False, 
+            ImageSize -> {500, 340}, Epilog -> Inset[$CellContext`table$, 
+              Scaled[{0.82, 1.15}]]]]; Which[$CellContext`display$$ == 1, 
+          
+          Show[$CellContext`p1$, $CellContext`labels$], \
+$CellContext`display$$ == 2, $CellContext`finshape$]], 
+      "Specifications" :> {{{$CellContext`crosssection$$, 2, ""}, {
+         1 -> "rectangle", 2 -> "circle"}, ControlPlacement -> 
+         1}, {{$CellContext`material$$, 3, ""}, {
+         1 -> "copper", 2 -> "platinum", 3 -> "carbon steel"}, 
+         ControlPlacement -> 2}, {{$CellContext`display$$, 2, ""}, {
+         1 -> "graph", 2 -> "fin"}, ControlPlacement -> 
+         3}, {{$CellContext`length$$, 10.5, "fin length (cm)"}, 0.5, 20, 0.5, 
+         Appearance -> "Labeled", ControlPlacement -> 
+         4}, {{$CellContext`w$$, 22., "width (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         5}, {{$CellContext`t$$, 21., "height (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 
+         6}, {{$CellContext`d$$, 50, "diameter (mm)"}, 1, 50, 0.5, Appearance -> 
+         "Labeled", ControlPlacement -> 7}, 
+        Grid[{{
+           Grid[{{"cross section", 
+              Item[
+               Manipulate`Place[1], Alignment -> Left]}, {"fin material", 
+              Item[
+               Manipulate`Place[2], Alignment -> Left]}, {"display", 
+              Item[
+               Manipulate`Place[3], Alignment -> Left]}}, Alignment -> Left], 
+           Column[{
+             Manipulate`Place[4], 
+             PaneSelector[{1 -> Column[{
+                  Manipulate`Place[5], 
+                  Manipulate`Place[6]}], 2 -> 
+               Manipulate`Place[7]}, $CellContext`crosssection$$, Alignment -> 
+              Right]}, Right]}}, Alignment -> Top]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{628., {246., 253.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1840856682]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[StyleBox["Heat Transfer Constants",
+ FontWeight->"Bold"]], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+  3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+  3.602010124443812*^9}, {3.602010304398141*^9, 3.602010307941923*^9}, {
+  3.602438902119293*^9, 3.602438905573491*^9}, {3.6047483267442293`*^9, 
+  3.604748329506897*^9}},
+ CellID->1983128692],
+
+Cell["tempBase = 100 \[Degree]C, temperature of the base", "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+  3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+  3.6020101288572073`*^9}, {3.602010212118331*^9, 3.602010218004929*^9}, {
+  3.6022764057498364`*^9, 3.602276418483565*^9}, {3.602276537500372*^9, 
+  3.6022765425436606`*^9}, {3.6028713379587097`*^9, 3.602871345580146*^9}, {
+  3.6041710863973827`*^9, 3.604171125082605*^9}},
+ CellID->78834190],
+
+Cell["tempInf = 100 \[Degree]C, temperature of the ambient air", "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+  3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+  3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+  3.6020102940903883`*^9, 3.6020103094310837`*^9}, {3.6022764291591754`*^9, 
+  3.602276432365359*^9}, {3.6028713501854095`*^9, 3.602871357140807*^9}, {
+  3.604171105372072*^9, 3.604171128499278*^9}},
+ CellID->158684570],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"h", "=", 
+    RowBox[{"50", " ", 
+     FractionBox["W", 
+      RowBox[{
+       SuperscriptBox["m", "2"], "K"}]]}]}], TraditionalForm]], "InlineMath"],
+ ", convection heat transfer coefficient"
+}], "DetailNotes",
+ CellChangeTimes->{{3.602010415058743*^9, 3.602010416560964*^9}, {
+  3.6022763837235765`*^9, 3.6022763917820377`*^9}, {3.602851454985007*^9, 
+  3.6028514584763556`*^9}, {3.604171132706699*^9, 3.604171137810348*^9}},
+ CellID->1001267346],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["k", "copper"], "=", 
+    RowBox[{"400", 
+     FractionBox["W", 
+      RowBox[{"m", " ", "K"}]], " "}]}], TraditionalForm]], "InlineMath"],
+ ", thermal conductivity of copper"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.6020104709343653`*^9}, {3.602010555831502*^9, 3.602010630808707*^9}, 
+   3.6022763775792255`*^9, {3.602851473976906*^9, 3.6028514766031685`*^9}, {
+   3.604171142050501*^9, 3.6041711465383*^9}},
+ CellID->1395573588],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["k", "platinum"], "=", 
+    RowBox[{"70", 
+     FractionBox["W", 
+      RowBox[{"m", " ", "K"}]], " "}]}], TraditionalForm]], "InlineMath"],
+ ", thermal conductivity of platinum"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010496332623*^9}, {3.6020105542376738`*^9, 3.60201055450473*^9}, {
+   3.602010616537553*^9, 3.602010626656871*^9}, 3.602276376317153*^9, {
+   3.602851487065214*^9, 3.6028514889624043`*^9}, {3.604171153298092*^9, 
+   3.6041711588018627`*^9}},
+ CellID->1634044749],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["k", 
+     RowBox[{"carbon", " ", "steel"}]], "=", 
+    RowBox[{"54", 
+     FractionBox["W", 
+      RowBox[{"m", " ", "K"}]], " "}]}], TraditionalForm]], "InlineMath"],
+ ", thermal conductivity of carbon steel"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.602276613077695*^9}, {
+   3.6028514954820557`*^9, 3.602851497601268*^9}, {3.604171161378275*^9, 
+   3.6041711663693237`*^9}},
+ CellID->1437194833],
+
+Cell[TextData[StyleBox["Fin Dimensions",
+ FontWeight->"Bold"]], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.6022766214641743`*^9}, 
+   3.604748332435998*^9},
+ CellID->104411531],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"P", "=", 
+    RowBox[{
+     RowBox[{"perimeter", " ", 
+      RowBox[{"(", "m", ")"}]}], "=", 
+     RowBox[{"2", " ", 
+      RowBox[{"(", 
+       RowBox[{"width", "+", "height"}], ")"}]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ " or ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Pi]", "\[Times]", "diameter"}], TraditionalForm]], "InlineMath"]
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.602276729024327*^9}, {
+   3.6022767659304376`*^9, 3.6022767745549307`*^9}, {3.602276848972187*^9, 
+   3.6022768500252476`*^9}, {3.602461670418894*^9, 3.6024616743841205`*^9}, 
+   3.6028515160491123`*^9, {3.604171196986266*^9, 3.604171227890567*^9}},
+ CellID->36826366],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    StyleBox["Ac",
+     FontSlant->"Italic"], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"cross", " ", "sectional", " ", "area", " ", 
+      RowBox[{"(", "m", ")"}]}], " ", "=", " ", 
+     RowBox[{"width", "\[Times]", "height"}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ " or ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Pi]", " ", 
+    FractionBox[
+     SuperscriptBox["diameter", "2"], "4"]}], TraditionalForm]], "InlineMath"]
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.6022767108552876`*^9}, {
+   3.6022767531997094`*^9, 3.6022767614801826`*^9}, {3.602276793575019*^9, 
+   3.602276847043077*^9}, {3.6024616663576612`*^9, 3.6024616667426834`*^9}, {
+   3.604171215961697*^9, 3.60417123874606*^9}},
+ CellID->15517828],
+
+Cell[TextData[{
+ StyleBox["len",
+  FontSlant->"Italic"],
+ ", fin length (m)"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.6022767108552876`*^9}, {
+   3.6022767531997094`*^9, 3.6022767614801826`*^9}, {3.602276793575019*^9, 
+   3.602276854683514*^9}, {3.604171246417057*^9, 3.604171247806756*^9}},
+ CellID->64912232],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox["x", TraditionalForm]], "InlineMath"],
+ ", position down the fin (m)"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, {
+   3.602010013568603*^9, 3.602010015712805*^9}, {3.602010121892494*^9, 
+   3.6020101288572073`*^9}, {3.602010212118331*^9, 3.6020102320037937`*^9}, {
+   3.6020102940903883`*^9, 3.6020103548342733`*^9}, {3.602010422445992*^9, 
+   3.602010548237968*^9}, {3.602010634954383*^9, 3.6020106398400497`*^9}, 
+   3.602276375617113*^9, {3.6022766130676947`*^9, 3.6022767108552876`*^9}, {
+   3.6022767531997094`*^9, 3.6022767614801826`*^9}, {3.602276793575019*^9, 
+   3.602276862796978*^9}, 3.602851521385646*^9, {3.6041712503665237`*^9, 
+   3.604171252182816*^9}},
+ CellID->400614718],
+
+Cell[TextData[StyleBox["Axial Temperature Distribution",
+ FontWeight->"Bold"]], "DetailNotes",
+ CellChangeTimes->{{3.6020099160167093`*^9, 3.602009947325182*^9}, 
+   3.602010013568603*^9, 3.602461152628278*^9, {3.604748334764452*^9, 
+   3.604748336001809*^9}},
+ CellID->1672140368],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "adiabatic"], "=", 
+    RowBox[{
+     RowBox[{
+      FractionBox[
+       RowBox[{"cosh", "[", 
+        RowBox[{
+         SqrtBox[
+          FractionBox[
+           RowBox[{"h", " ", "P"}], 
+           RowBox[{"k", " ", "Ac"}]]], 
+         RowBox[{"(", 
+          RowBox[{"len", "-", "x"}], ")"}]}], "]"}], 
+       RowBox[{"cosh", "[", 
+        RowBox[{
+         SqrtBox[
+          FractionBox[
+           RowBox[{"h", " ", "P"}], 
+           RowBox[{"k", " ", "Ac"}]]], 
+         StyleBox["len",
+          FontSlant->"Italic"]}], "]"}]], " ", 
+      RowBox[{"(", 
+       RowBox[{"tempBase", "-", "tempInf"}], ")"}]}], "+", "tempInf"}]}], 
+   TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.601963752992292*^9, 3.601963777696705*^9}, 
+   3.6019639810703373`*^9, {3.6020096338646584`*^9, 3.6020096496343393`*^9}, 
+   3.6020097464874783`*^9, {3.6020098846758127`*^9, 3.602009907263897*^9}, {
+   3.6020099603325644`*^9, 3.602009960335294*^9}, {3.6022765560204315`*^9, 
+   3.6022765602826753`*^9}, {3.602461639797142*^9, 3.602461654165964*^9}, {
+   3.602851528417349*^9, 3.602851532158723*^9}, {3.60417129364063*^9, 
+   3.6041712958528147`*^9}, {3.60417303216647*^9, 3.604173038554071*^9}},
+ CellID->1544317513],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["T", "convection"], " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      FractionBox[
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"cosh", "[", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], 
+           RowBox[{"(", 
+            RowBox[{"len", "-", "x"}], ")"}]}], "]"}], "+", 
+         RowBox[{
+          RowBox[{"(", 
+           FractionBox["h", 
+            RowBox[{
+             SqrtBox[
+              FractionBox[
+               RowBox[{"h", " ", "P"}], 
+               RowBox[{"k", " ", "Ac"}]]], "k"}]], ")"}], " ", 
+          RowBox[{"sinh", "[", 
+           RowBox[{
+            SqrtBox[
+             FractionBox[
+              RowBox[{"h", " ", "P"}], 
+              RowBox[{"k", " ", "Ac"}]]], 
+            RowBox[{"(", 
+             RowBox[{
+              StyleBox["len",
+               FontSlant->"Italic"], "-", "x"}], ")"}]}], "]"}]}]}], ")"}], 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"cosh", "[", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], 
+           StyleBox["len",
+            FontSlant->"Italic"]}], "]"}], "+", 
+         RowBox[{
+          FractionBox["h", 
+           RowBox[{
+            SqrtBox[
+             FractionBox[
+              RowBox[{"h", " ", "P"}], 
+              RowBox[{"k", " ", "Ac"}]]], "k"}]], " ", 
+          RowBox[{"sinh", "[", 
+           RowBox[{
+            SqrtBox[
+             FractionBox[
+              RowBox[{"h", " ", "P"}], 
+              RowBox[{"k", " ", "Ac"}]]], 
+            StyleBox["len",
+             FontSlant->"Italic"]}], "]"}]}]}], ")"}]], " ", 
+      RowBox[{"(", 
+       RowBox[{"tempBase", "-", "tempInf"}], ")"}]}], "+", "tempInf"}]}], 
+   TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.601963752992292*^9, 3.601963777696705*^9}, 
+   3.6019639810703373`*^9, {3.6020096338646584`*^9, 3.6020096496343393`*^9}, 
+   3.6020097464874783`*^9, {3.6020098846758127`*^9, 3.602009907263897*^9}, {
+   3.6020099603325644`*^9, 3.602009967696744*^9}, {3.602276571019289*^9, 
+   3.602276574200471*^9}, {3.6024615779696054`*^9, 3.6024616352938843`*^9}, {
+   3.6028515380753145`*^9, 3.6028515432718344`*^9}, {3.604171287500905*^9, 
+   3.6041712916211042`*^9}, {3.604173043058326*^9, 3.60417306405369*^9}},
+ CellID->669472949],
+
+Cell[TextData[StyleBox["Total Heat Transfer",
+ FontWeight->"Bold"]], "DetailNotes",
+ CellChangeTimes->{{3.601963752992292*^9, 3.601963777696705*^9}, 
+   3.6019639810703373`*^9, {3.6020096338646584`*^9, 3.6020096496343393`*^9}, 
+   3.6020097464874783`*^9, {3.6020098846758127`*^9, 3.602009907263897*^9}, {
+   3.6020099603325644`*^9, 3.6020099850510607`*^9}, {3.604748341300582*^9, 
+   3.604748342369444*^9}},
+ CellID->2003908771],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["q", "adiabatic"], "=", 
+    RowBox[{
+     SqrtBox[
+      RowBox[{"h", " ", "P", " ", "k", " ", "Ac"}]], " ", 
+     RowBox[{"(", 
+      RowBox[{"tempBase", "-", "tempInf"}], ")"}], " ", 
+     RowBox[{"tanh", "[", 
+      RowBox[{
+       SqrtBox[
+        FractionBox[
+         RowBox[{"h", " ", "P"}], 
+         RowBox[{"k", " ", "Ac"}]]], 
+       StyleBox["len",
+        FontSlant->"Italic"]}], "]"}]}]}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.601963752992292*^9, 3.601963777696705*^9}, 
+   3.6019639810703373`*^9, {3.6020096338646584`*^9, 3.6020096496343393`*^9}, 
+   3.6020097464874783`*^9, {3.6020098846758127`*^9, 3.6020098857005796`*^9}, {
+   3.6020099577082653`*^9, 3.602009958627225*^9}, {3.60227657959478*^9, 
+   3.6022765992069016`*^9}, {3.602461494211815*^9, 3.60246156861207*^9}, {
+   3.6024616966403933`*^9, 3.602461707335005*^9}, {3.6028515508725944`*^9, 
+   3.6028515508725944`*^9}, {3.602851607012208*^9, 3.602851609825489*^9}, {
+   3.604171279560999*^9, 3.604171285181601*^9}, {3.604173069293384*^9, 
+   3.604173069760737*^9}},
+ CellID->1333065534],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["q", "convection"], " ", "=", " ", 
+    RowBox[{
+     SqrtBox[
+      RowBox[{"h", " ", "P", " ", "k", " ", "Ac"}]], " ", 
+     RowBox[{"(", 
+      RowBox[{"tempBase", "-", "tempInf"}], ")"}], " ", 
+     FractionBox[
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"sinh", "[", 
+         RowBox[{
+          SqrtBox[
+           FractionBox[
+            RowBox[{"h", " ", "P"}], 
+            RowBox[{"k", " ", "Ac"}]]], 
+          StyleBox["len",
+           FontSlant->"Italic"]}], "]"}], "+", 
+        RowBox[{
+         FractionBox["h", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], "k"}]], " ", 
+         RowBox[{"cosh", "[", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], 
+           StyleBox["len",
+            FontSlant->"Italic"]}], "]"}]}]}], ")"}], 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"cosh", "[", 
+         RowBox[{
+          SqrtBox[
+           FractionBox[
+            RowBox[{"h", " ", "P"}], 
+            RowBox[{"k", " ", "Ac"}]]], "len"}], "]"}], "+", 
+        RowBox[{
+         FractionBox["h", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], "k"}]], " ", 
+         RowBox[{"sinh", "[", 
+          RowBox[{
+           SqrtBox[
+            FractionBox[
+             RowBox[{"h", " ", "P"}], 
+             RowBox[{"k", " ", "Ac"}]]], " ", "len"}], "]"}]}]}], ")"}]]}]}], 
+   TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.601963752992292*^9, 3.601963777696705*^9}, 
+   3.6019639810703373`*^9, {3.6020096338646584`*^9, 3.6020096496343393`*^9}, 
+   3.6020097464874783`*^9, {3.6020098846758127`*^9, 3.6020098857005796`*^9}, {
+   3.6020099577082653`*^9, 3.602009958627225*^9}, {3.60227657959478*^9, 
+   3.6022765992069016`*^9}, {3.602461494211815*^9, 3.60246156861207*^9}, {
+   3.6024616966403933`*^9, 3.602461707335005*^9}, {3.6028515508725944`*^9, 
+   3.6028515508725944`*^9}, {3.602851607012208*^9, 3.602851612001707*^9}, {
+   3.6041712712302732`*^9, 3.6041712740218*^9}, {3.60417307709391*^9, 
+   3.6041731085099916`*^9}},
+ CellID->55816306]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6019635243682156`*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.60196351168849*^9},
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.601963431398898*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.601963486014022*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.601963490387272*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["fin", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.6019635389690504`*^9}},
+ CellID->69577038],
+
+Cell["extended surface", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.601963544872388*^9}},
+ CellID->264962284],
+
+Cell["heat transfer", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.6019635669556513`*^9}, {
+  3.602007948255578*^9, 3.602007948258039*^9}},
+ CellID->366945822],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.6019635669556513`*^9}, {
+  3.602007948255578*^9, 3.60200795178537*^9}},
+ CellID->2030213272],
+
+Cell["convection", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.601963570741868*^9}, {
+  3.602010269649467*^9, 3.602010272778563*^9}},
+ CellID->2102038567],
+
+Cell["conduction", "SearchTerms",
+ CellChangeTimes->{{3.6019635361058865`*^9, 3.601963570741868*^9}, {
+  3.602010269649467*^9, 3.602010278709386*^9}},
+ CellID->1401369189]
+}, Open  ]],
+
+Cell["", "RelatedLinksSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Benjamin L. Kee ",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Benjamin+L.+\
+Kee"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Benjamin+L.+Kee"]
+}], "Author",
+ CellChangeTimes->{{3.6019636022716713`*^9, 3.601963605126835*^9}, {
+  3.6020079564795427`*^9, 3.6020079837655888`*^9}, {3.602438423639926*^9, 
+  3.602438441927972*^9}, {3.6026018266797204`*^9, 3.6026018266827207`*^9}}],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.6019636022716713`*^9, 3.601963605126835*^9}, {
+   3.6020079564795427`*^9, 3.6020079837655888`*^9}, {3.602438423639926*^9, 
+   3.602438441927972*^9}, 3.6026018266797204`*^9},
+ CellID->19384308]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.4 for Microsoft Windows (64-bit) (April 11, 2016)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[149016, 3214, 355, 9, 29, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[149374, 3225, 718, 17, 29, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[150095, 3244, 340, 11, 29, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[150438, 3257, 637, 15, 29, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[151078, 3274, 885, 22, 29, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[151966, 3298, 393, 10, 29, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[152362, 3310, 1505, 32, 29, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[153870, 3344, 908, 21, 29, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 157152, 3443},
+ {"RotateAndZoomIn3D", 157262, 3446},
+ {"DragLocators", 157373, 3449},
+ {"CreateAndDeleteLocators", 157490, 3452},
+ {"SliderZoom", 157605, 3455},
+ {"GamepadControls", 157712, 3458},
+ {"AutomaticAnimation", 157827, 3461},
+ {"BookmarkAnimation", 157945, 3464}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 140, 1, 74, "DemoTitle"],
+Cell[722, 25, 33, 0, 287, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[780, 29, 29, 0, 192, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[834, 33, 31332, 704, 1625, "Input"],
+Cell[32169, 739, 16801, 292, 533, "Output",
+ CellID->321934511]
+}, Open  ]],
+Cell[48985, 1034, 2307, 61, 110, "Input",
+ CellID->374527730],
+Cell[51295, 1097, 561, 17, 41, "Input",
+ CellID->442922819],
+Cell[CellGroupData[{
+Cell[51881, 1118, 1649, 45, 157, "Input",
+ CellID->135772145],
+Cell[53533, 1165, 697, 16, 43, "Output",
+ CellID->12693939]
+}, Open  ]],
+Cell[54245, 1184, 526, 13, 65, "Input",
+ CellID->114163841],
+Cell[54774, 1199, 508, 14, 44, "Input",
+ CellID->27992002],
+Cell[CellGroupData[{
+Cell[55307, 1217, 759, 21, 44, "Input",
+ CellID->137716208],
+Cell[56069, 1240, 3548, 71, 237, "Output",
+ CellID->564700650]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[59654, 1316, 847, 22, 142, "Input",
+ CellID->380562018],
+Cell[60504, 1340, 4084, 80, 233, "Output",
+ CellID->198671820]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64625, 1425, 811, 21, 142, "Input",
+ CellID->99417873],
+Cell[65439, 1448, 3499, 70, 240, "Output",
+ CellID->757529232]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[68975, 1523, 790, 20, 142, "Input",
+ CellID->14229032],
+Cell[69768, 1545, 4002, 78, 239, "Output",
+ CellID->1131172]
+}, Open  ]],
+Cell[73785, 1626, 723, 19, 142, "Input",
+ CellID->546586086]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74545, 1650, 36, 0, 169, "ManipulateCaptionSection"],
+Cell[74584, 1652, 2522, 39, 98, "ManipulateCaption",
+ CellID->804356174]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[77143, 1696, 28, 0, 173, "ThumbnailSection"],
+Cell[77174, 1698, 10942, 212, 511, "Output",
+ CellID->1266344358]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[88153, 1915, 28, 0, 149, "SnapshotsSection"],
+Cell[88184, 1917, 10946, 212, 509, "Output",
+ CellID->1886683136],
+Cell[99133, 2131, 10946, 212, 509, "Output",
+ CellID->1887418797],
+Cell[110082, 2345, 10954, 212, 509, "Output",
+ CellID->1366771342],
+Cell[121039, 2559, 10954, 212, 509, "Output",
+ CellID->1840856682]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[132030, 2776, 26, 0, 357, "DetailsSection"],
+Cell[132059, 2778, 420, 7, 22, "DetailNotes",
+ CellID->1983128692],
+Cell[132482, 2787, 507, 7, 22, "DetailNotes",
+ CellID->78834190],
+Cell[132992, 2796, 516, 7, 22, "DetailNotes",
+ CellID->158684570],
+Cell[133511, 2805, 502, 13, 31, "DetailNotes",
+ CellID->1001267346],
+Cell[134016, 2820, 780, 17, 30, "DetailNotes",
+ CellID->1395573588],
+Cell[134799, 2839, 834, 18, 30, "DetailNotes",
+ CellID->1634044749],
+Cell[135636, 2859, 869, 19, 30, "DetailNotes",
+ CellID->1437194833],
+Cell[136508, 2880, 570, 9, 22, "DetailNotes",
+ CellID->104411531],
+Cell[137081, 2891, 1106, 25, 22, "DetailNotes",
+ CellID->36826366],
+Cell[138190, 2918, 1167, 27, 34, "DetailNotes",
+ CellID->15517828],
+Cell[139360, 2947, 710, 13, 22, "DetailNotes",
+ CellID->64912232],
+Cell[140073, 2962, 773, 14, 22, "DetailNotes",
+ CellID->400614718],
+Cell[140849, 2978, 281, 5, 22, "DetailNotes",
+ CellID->1672140368],
+Cell[141133, 2985, 1314, 36, 74, "DetailNotes",
+ CellID->1544317513],
+Cell[142450, 3023, 2505, 73, 124, "DetailNotes",
+ CellID->669472949],
+Cell[144958, 3098, 428, 7, 22, "DetailNotes",
+ CellID->2003908771],
+Cell[145389, 3107, 1176, 29, 49, "DetailNotes",
+ CellID->1333065534],
+Cell[146568, 3138, 2371, 69, 124, "DetailNotes",
+ CellID->55816306]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[148976, 3212, 37, 0, 131, "ControlSuggestionsSection"],
+Cell[149016, 3214, 355, 9, 29, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[149374, 3225, 718, 17, 29, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[150095, 3244, 340, 11, 29, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[150438, 3257, 637, 15, 29, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[151078, 3274, 885, 22, 29, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[151966, 3298, 393, 10, 29, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[152362, 3310, 1505, 32, 29, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[153870, 3344, 908, 21, 29, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[154815, 3370, 30, 0, 165, "SearchTermsSection"],
+Cell[154848, 3372, 115, 2, 22, "SearchTerms",
+ CellID->69577038],
+Cell[154966, 3376, 127, 2, 22, "SearchTerms",
+ CellID->264962284],
+Cell[155096, 3380, 175, 3, 22, "SearchTerms",
+ CellID->366945822],
+Cell[155274, 3385, 182, 3, 22, "SearchTerms",
+ CellID->2030213272],
+Cell[155459, 3390, 171, 3, 22, "SearchTerms",
+ CellID->2102038567],
+Cell[155633, 3395, 171, 3, 22, "SearchTerms",
+ CellID->1401369189]
+}, Open  ]],
+Cell[155819, 3401, 31, 0, 149, "RelatedLinksSection"],
+Cell[CellGroupData[{
+Cell[155875, 3405, 25, 0, 136, "AuthorSection"],
+Cell[155903, 3407, 523, 12, 22, "Author"],
+Cell[156429, 3421, 326, 7, 22, "Author",
+ CellID->19384308]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

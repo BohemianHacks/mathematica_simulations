@@ -1,0 +1,3314 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    140764,       3306]
+NotebookOptionsPosition[    134834,       3126]
+NotebookOutlinePosition[    136459,       3177]
+CellTagsIndexPosition[    136123,       3165]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Compressed-Gas Spray", "DemoTitle",
+ CellChangeTimes->{3.6536606948796673`*^9, 3.653760750361004*^9}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "z", ",", "T0", ",", "P0", ",", "R", ",", "Vcan", ",", "Psat0", ",", 
+       "\[CapitalDelta]Hvap", ",", "Cp", ",", "\[Rho]L", ",", "vL0", ",", 
+       "n0", ",", "Psat", ",", "\[Alpha]", ",", "sol", ",", "moles", ",", 
+       "temperature", ",", "pressure", ",", "vL", ",", "vV", ",", "nL", ",", 
+       "nV", ",", "tfinal", ",", "r", ",", "can", ",", "p1", ",", "p2", ",", 
+       "p3", ",", "p4"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"z", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{"set", ",", "z2", ",", "z1"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"T0", "=", "25"}], ";", 
+      RowBox[{"(*", "\[Degree]C", "*)"}], 
+      RowBox[{"P0", "=", "1"}], ";", 
+      RowBox[{"(*", "bar", "*)"}], 
+      RowBox[{"R", "=", "0.08314"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"L", " ", 
+        RowBox[{
+         RowBox[{"bar", "/", "mol"}], "/", "K"}]}], "*)"}], 
+      RowBox[{"Vcan", "=", "0.375"}], ";", 
+      RowBox[{"(*", "L", "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Psat0", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.23406", "-", 
+          RowBox[{"896.171", "/", 
+           RowBox[{"(", 
+            RowBox[{"T0", "+", "238.3"}], ")"}]}]}], ")"}]}]}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"bar", ",", "\[Degree]C"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[CapitalDelta]Hvap", "=", "21.8"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"kJ", "/", "mol"}], "*)"}], 
+      RowBox[{"Cp", "=", "0.0707"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"kJ", "/", "mol"}], "/", "K"}], "*)"}], 
+      RowBox[{"\[Rho]L", "=", "13.57"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{"mol", "/", "L"}], "*)"}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"total", " ", "moles", " ", "at", " ", "T"}], "=", 
+        RowBox[{"300", "k"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"vL0", "=", 
+       RowBox[{"f", "*", "Vcan"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"n0", "=", 
+       RowBox[{
+        RowBox[{"vL0", "*", "\[Rho]L"}], "+", 
+        FractionBox[
+         RowBox[{"Psat0", "*", 
+          RowBox[{"(", 
+           RowBox[{"Vcan", "-", "vL0"}], ")"}]}], 
+         RowBox[{"R", "*", 
+          RowBox[{"(", 
+           RowBox[{"T0", "+", "273"}], ")"}]}]]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Psat", "[", "t_", "]"}], ":=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.23406", "-", 
+          RowBox[{"896.171", "/", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"T", "[", "t", "]"}], "+", "238.3"}], ")"}]}]}], 
+         ")"}]}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\[Alpha]", "=", "6*^-4"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"mol", "/", "bar"}], "/", "time"}], "*)"}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"sol", "=", 
+       RowBox[{"Quiet", "@", 
+        RowBox[{"Flatten", "@", 
+         RowBox[{"NDSolve", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"n", "'"}], "[", "t", "]"}], "\[Equal]", 
+              RowBox[{
+               RowBox[{"-", "\[Alpha]"}], "*", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"Psat", "[", "t", "]"}], "-", "P0"}], ")"}]}]}], ",",
+              "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"T", "'"}], "[", "t", "]"}], "\[Equal]", 
+              RowBox[{"-", 
+               FractionBox[
+                RowBox[{"\[Alpha]", "*", 
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"Psat", "[", "t", "]"}], "-", "P0"}], ")"}], "*", 
+                 "\[CapitalDelta]Hvap"}], 
+                RowBox[{
+                 RowBox[{"n", "[", "t", "]"}], "*", "Cp"}]]}]}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"n", "[", "0", "]"}], "\[Equal]", "n0"}], ",", 
+             RowBox[{
+              RowBox[{"T", "[", "0", "]"}], "\[Equal]", "T0"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"n", ",", "T"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"t", ",", "0", ",", "300"}], "}"}]}], "]"}]}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"moles", "=", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{"n", "/.", "sol"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"temperature", "=", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{"T", "/.", "sol"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"pressure", "[", "t_", "]"}], "=", 
+       RowBox[{"Evaluate", "[", 
+        RowBox[{
+         RowBox[{"Psat", "[", "t", "]"}], "/.", "sol"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"vL", "[", "t_", "]"}], ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"moles", "[", "t", "]"}], "-", 
+         RowBox[{"Vcan", "*", 
+          RowBox[{
+           RowBox[{"pressure", "[", "t", "]"}], "/", 
+           RowBox[{"(", 
+            RowBox[{"R", "*", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"temperature", "[", "t", "]"}], "+", "273"}], ")"}]}], 
+            ")"}]}]}]}], 
+        RowBox[{"\[Rho]L", "-", 
+         RowBox[{
+          RowBox[{"pressure", "[", "t", "]"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"R", "*", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"temperature", "[", "t", "]"}], "+", "273"}], ")"}]}], 
+           ")"}]}]}]]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"vV", "[", "t_", "]"}], ":=", 
+       RowBox[{"Vcan", "-", 
+        RowBox[{"vL", "[", "t", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"nL", "[", "t_", "]"}], ":=", 
+       RowBox[{"\[Rho]L", "*", 
+        RowBox[{"vL", "[", "t", "]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"nV", "[", "t_", "]"}], ":=", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"pressure", "[", "t", "]"}], "*", 
+         RowBox[{"vV", "[", "t", "]"}]}], 
+        RowBox[{"R", "*", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"temperature", "[", "t", "]"}], "+", "273"}], ")"}]}]]}], 
+      ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"tfinal", "=", 
+       RowBox[{"If", "[", 
+        RowBox[{"set", ",", "spraytime", ",", 
+         RowBox[{"tm", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{"FindRoot", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"temperature", "[", "tm", "]"}], "\[Equal]", 
+              RowBox[{"-", "5"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"tm", ",", "0"}], "}"}]}], "]"}]}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"r", "=", "0.08"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"can", "=", 
+       RowBox[{"Show", "[", 
+        RowBox[{
+         RowBox[{"Graphics", "[", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Thickness", "@", "0.04"}], ",", 
+              RowBox[{"Line", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", 
+                   RowBox[{"1.01", "*", "Vcan"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", 
+                   RowBox[{"1.02", "*", "Vcan"}]}], "}"}]}], "}"}], "]"}]}], 
+             "}"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"EdgeForm", "@", "Thick"}], ",", 
+            RowBox[{"FaceForm", "@", "White"}], ",", 
+            RowBox[{"Rectangle", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"-", "r"}], "/", "3"}], ",", 
+                RowBox[{"1.02", "*", "Vcan"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"r", "/", "3"}], ",", 
+                RowBox[{"1.175", "*", "Vcan"}]}], "}"}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Line", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"#", "*", 
+                    RowBox[{"r", "/", "3"}]}], ",", 
+                   RowBox[{"1.02", "*", "Vcan"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"#", "*", 
+                    RowBox[{"r", "/", "3"}]}], ",", 
+                   RowBox[{"1.175", "*", "Vcan"}]}], "}"}]}], "}"}], "]"}], 
+              "&"}], "/@", 
+             RowBox[{"Range", "[", 
+              RowBox[{
+               RowBox[{"-", "1"}], ",", "1", ",", "0.25"}], "]"}]}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Disk", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"r", "/", "6"}], ",", 
+                RowBox[{"1.1", "*", "Vcan"}]}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"0.012", ",", "0.0096"}], "}"}]}], "]"}], ",", 
+            RowBox[{"PointSize", "@", "0.025"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"r", "/", "6"}], ",", 
+               RowBox[{"1.1", "*", "Vcan"}]}], "}"}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Dashed", ",", 
+              RowBox[{"Opacity", "[", 
+               RowBox[{
+                RowBox[{"Rescale", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"vV", "'"}], "[", "z", "]"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"vV", "'"}], "[", "tfinal", "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"vV", "'"}], "[", "0", "]"}]}], "}"}]}], "]"}], 
+                ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0.", ",", "0.84", ",", "0.83"}], "]"}]}], "]"}], 
+              ",", "\[IndentingNewLine]", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"0", "<", "z"}], ",", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Line", "[", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"r", "/", "2"}], ",", 
+                    RowBox[{"1.1", "*", "Vcan"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"1.5", "*", "r"}], ",", 
+                    RowBox[{"Vcan", "*", 
+                    RowBox[{"(", 
+                    RowBox[{"1.1", "+", 
+                    RowBox[{"0.1", "*", "#"}]}], ")"}]}]}], "}"}]}], "}"}], 
+                   "]"}], "&"}], "/@", 
+                 RowBox[{"Range", "[", 
+                  RowBox[{
+                   RowBox[{"-", "1"}], ",", "1", ",", "0.5"}], "]"}]}]}], 
+               "]"}]}], "}"}]}], "\[IndentingNewLine]", "}"}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Plot", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Evaluate", "[", 
+              RowBox[{
+               SqrtBox[
+                RowBox[{
+                 SuperscriptBox["r", "2"], "-", 
+                 SuperscriptBox["x", "2"]}]], "+", "Vcan", "-", "r"}], "]"}], 
+             ",", 
+             RowBox[{"Evaluate", "[", 
+              RowBox[{
+               SqrtBox[
+                RowBox[{
+                 SuperscriptBox["r", "2"], "-", 
+                 SuperscriptBox["x", "2"]}]], "+", "Vcan", "-", "r"}], 
+              "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", 
+             RowBox[{"-", "r"}], ",", "r"}], "}"}], ",", 
+           RowBox[{"PlotStyle", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"{", 
+              RowBox[{"Thick", ",", "Black"}], "}"}], "}"}]}], ",", 
+           RowBox[{"Filling", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", 
+               RowBox[{"{", 
+                RowBox[{"0", ",", 
+                 RowBox[{"RGBColor", "[", 
+                  RowBox[{"0", ",", "0.85", ",", "0.8"}], "]"}]}], "}"}]}], 
+              ",", 
+              RowBox[{"2", "\[Rule]", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"vL", "[", "z", "]"}], ",", "White"}], "}"}]}]}], 
+             "}"}]}]}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Graphics", "[", 
+          RowBox[{"{", 
+           RowBox[{"Thick", ",", 
+            RowBox[{"Line", "[", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"-", "r"}], ",", 
+                 RowBox[{"Vcan", "-", "r"}]}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"-", "r"}], ",", "0"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"r", ",", "0"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"r", ",", 
+                 RowBox[{"Vcan", "-", "r"}]}], "}"}]}], "}"}], "]"}]}], "}"}],
+           "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"150", ",", "375"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "r"}], ",", "0.14"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "0.45"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"PlotRangePadding", "\[Rule]", "0.001"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p1", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"vL", "[", "time", "]"}], ",", 
+           RowBox[{"vV", "[", "time", "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"time", ",", "0", ",", "tfinal"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Orange"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Dashed", ",", "Orange"}], "}"}]}], 
+           "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", "Vcan"}], "}"}]}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<time (s)\>\"", ",", "\"\<volume (L)\>\""}], "}"}]}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Framed", "[", 
+                 RowBox[{
+                  RowBox[{"Style", "[", 
+                   RowBox[{"#1", ",", "18"}], "]"}], ",", 
+                  RowBox[{"Background", "\[Rule]", "White"}], ",", 
+                  RowBox[{"FrameStyle", "\[Rule]", "None"}], ",", 
+                  RowBox[{"FrameMargins", "\[Rule]", "Tiny"}]}], "]"}], ",", 
+                "#2"}], "]"}], "&"}], "@@@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<liquid\>\"", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"0.33", "*", "tfinal"}], ",", 
+                   RowBox[{"vL", "[", 
+                    RowBox[{"0.33", "*", "tfinal"}], "]"}]}], "}"}]}], "}"}], 
+               ",", 
+               RowBox[{"{", 
+                RowBox[{"\"\<vapor\>\"", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"0.666", "*", "tfinal"}], ",", 
+                   RowBox[{"vV", "[", 
+                    RowBox[{"0.666", "*", "tfinal"}], "]"}]}], "}"}]}], 
+                "}"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+            RowBox[{"PointSize", "@", "0.025"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"vL", "[", "z", "]"}]}], "}"}], "]"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"vV", "[", "z", "]"}]}], "}"}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p2", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"nL", "[", "time", "]"}], ",", 
+           RowBox[{"nV", "[", "time", "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"time", ",", "0", ",", "tfinal"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Purple"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Dashed", ",", "Purple"}], "}"}]}], 
+           "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", "n0"}], "}"}]}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<time (s)\>\"", ",", "\"\<moles\>\""}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Framed", "[", 
+                 RowBox[{
+                  RowBox[{"Style", "[", 
+                   RowBox[{"#1", ",", "18"}], "]"}], ",", 
+                  RowBox[{"Background", "\[Rule]", "White"}], ",", 
+                  RowBox[{"FrameStyle", "\[Rule]", "None"}], ",", 
+                  RowBox[{"FrameMargins", "\[Rule]", "Tiny"}]}], "]"}], ",", 
+                "#2"}], "]"}], "&"}], "@@@", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"\"\<liquid\>\"", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"0.33", "*", "tfinal"}], ",", 
+                   RowBox[{"nL", "[", 
+                    RowBox[{"0.33", "*", "tfinal"}], "]"}]}], "}"}]}], "}"}], 
+               ",", 
+               RowBox[{"{", 
+                RowBox[{"\"\<vapor\>\"", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"0.666", "*", "tfinal"}], ",", 
+                   RowBox[{"nV", "[", 
+                    RowBox[{"0.666", "*", "tfinal"}], "]"}]}], "}"}]}], 
+                "}"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+            RowBox[{"PointSize", "@", "0.025"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"nL", "[", "z", "]"}]}], "}"}], "]"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"nV", "[", "z", "]"}]}], "}"}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"p3", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"temperature", "[", "time", "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"time", ",", "0", ",", "tfinal"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"Thick", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"temperature", "[", "tfinal", "]"}], ",", "T0"}], "}"}]}],
+          ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<time (s)\>\"", ",", "\"\<temperature (K)\>\""}], 
+           "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"PointSize", "@", "0.025"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"temperature", "[", "z", "]"}]}], "}"}], "]"}]}], 
+           "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"p4", "=", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"pressure", "[", "time", "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"time", ",", "0", ",", "tfinal"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"Thick", ",", "Blue"}], "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"P0", ",", "Psat0"}], "}"}]}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<time (s)\>\"", ",", "\"\<pressure (bar)\>\""}], 
+           "}"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"PointSize", "@", "0.025"}], ",", 
+            RowBox[{"Point", "[", 
+             RowBox[{"{", 
+              RowBox[{"z", ",", 
+               RowBox[{"pressure", "[", "z", "]"}]}], "}"}], "]"}]}], 
+           "}"}]}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Grid", "@", 
+       RowBox[{"{", 
+        RowBox[{"{", 
+         RowBox[{"can", ",", "\[IndentingNewLine]", 
+          RowBox[{"Show", "[", 
+           RowBox[{
+            RowBox[{"Switch", "[", 
+             RowBox[{
+             "npr", ",", "1", ",", "p1", ",", "2", ",", "p2", ",", "3", ",", 
+              "p3", ",", "4", ",", "p4"}], "]"}], ",", 
+            RowBox[{"Axes", "\[Rule]", "False"}], ",", 
+            RowBox[{"Frame", "\[Rule]", "True"}], ",", 
+            RowBox[{"LabelStyle", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+            RowBox[{"ImagePadding", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"60", ",", "10"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"45", ",", "10"}], "}"}]}], "}"}]}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{"425", ",", "375"}], "}"}]}], ",", 
+            RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+            RowBox[{"PlotRangePadding", "\[Rule]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Scaled", "@", "0.015"}], ",", 
+               RowBox[{"Scaled", "@", "0.05"}]}], "}"}]}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"PlotLabel", "\[Rule]", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{
+                 RowBox[{"Row", "@", 
+                  RowBox[{"{", "\[IndentingNewLine]", 
+                   RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<P\>\"", ",", "Italic"}], "]"}], ",", "#1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"pressure", "[", "#2", "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"2", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< bar\>\"", ",", 
+                    RowBox[{"Spacer", "@", "20"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<T\>\"", ",", "Italic"}], "]"}], ",", "#1"}], 
+                    "]"}], ",", "\"\< = \>\"", ",", 
+                    RowBox[{"NumberForm", "[", 
+                    RowBox[{
+                    RowBox[{"temperature", "[", "#2", "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"3", ",", "1"}], "}"}]}], "]"}], ",", 
+                    "\"\< K\>\""}], "\[IndentingNewLine]", "}"}]}], "&"}], "@@", 
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"z", "\[Equal]", "0"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<i\>\"", ",", "0"}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"\"\<f\>\"", ",", "tfinal"}], "}"}]}], "]"}]}], 
+               ",", "18", ",", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"z", "\[Equal]", "0"}], "\[Or]", 
+                  RowBox[{"z", "\[Equal]", 
+                   RowBox[{"If", "[", 
+                    RowBox[{"set", ",", "spraytime", ",", 
+                    RowBox[{
+                    RowBox[{"264.24", "*", "f"}], "+", "5.4203"}]}], 
+                    "]"}]}]}], ",", "Black", ",", "White"}], "]"}]}], 
+              "]"}]}]}], "\[IndentingNewLine]", "]"}]}], "}"}], "}"}]}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Column", "[", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Row", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"npr", ",", "1", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"1", "\[Rule]", "\"\< volume \>\""}], ",", 
+              RowBox[{"2", "\[Rule]", "\"\< moles \>\""}], ",", 
+              RowBox[{"3", "\[Rule]", "\"\< temperature \>\""}], ",", 
+              RowBox[{"4", "\[Rule]", "\"\< pressure \>\""}]}], "}"}], ",", 
+            "Setter", ",", "\[IndentingNewLine]", 
+            RowBox[{"TrackingFunction", "\[Rule]", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"npr", "=", "#"}], ";", 
+                RowBox[{"z1", "=", "0"}], ";", 
+                RowBox[{"z2", "=", "0"}], ";"}], "&"}], ")"}]}]}], "}"}], 
+          "]"}], ",", 
+         RowBox[{"Spacer", "[", "30", "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"set", ",", "False", ",", "\"\<\>\""}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"False", "\[Rule]", "\"\< stop at -5 \[Degree]C \>\""}],
+               ",", 
+              RowBox[{"True", "\[Rule]", "\"\< adjust stopping time\>\""}]}], 
+             "}"}], ",", "RadioButton"}], "}"}], "]"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Row", "[", 
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Control", "[", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+             "f", ",", "0.75", ",", 
+              "\"\<initial volume fraction of liquid\>\""}], "}"}], ",", 
+            "0.1", ",", "1", ",", "0.01", ",", 
+            RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"TrackingFunction", "\[Rule]", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"f", "=", "#"}], ";", 
+                RowBox[{"z1", "=", "0"}], ";", 
+                RowBox[{"z2", "=", "0"}], ";"}], "&"}], ")"}]}]}], "}"}], 
+          "]"}], ",", 
+         RowBox[{"Spacer", "[", "20", "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"PaneSelector", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"False", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"z1", ",", "0", ",", "\"\<spray gas\>\""}], "}"}], 
+                 ",", "0", ",", 
+                 RowBox[{
+                  RowBox[{"264.24", "*", "f"}], "+", "5.4203"}], ",", 
+                 "Trigger", ",", 
+                 RowBox[{"AnimationRate", "\[Rule]", "30"}]}], "}"}], "]"}]}],
+              ",", "\[IndentingNewLine]", 
+             RowBox[{"True", "\[Rule]", 
+              RowBox[{"Control", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"z2", ",", "0", ",", "\"\<spray gas\>\""}], "}"}], 
+                 ",", "0", ",", "spraytime", ",", "Trigger", ",", 
+                 RowBox[{"AnimationRate", "\[Rule]", "30"}]}], "}"}], 
+               "]"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Dynamic", "@", "set"}]}], "]"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"PaneSelector", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"True", "\[Rule]", 
+          RowBox[{"Control", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+              "spraytime", ",", "204", ",", "\"\<time sprayed (s)\>\""}], 
+              "}"}], ",", "20", ",", "300", ",", "5", ",", 
+             RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"TrackingFunction", "\[Rule]", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"spraytime", "=", "#"}], ";", 
+                 RowBox[{"z2", "=", "0"}], ";"}], "&"}], ")"}]}]}], "}"}], 
+           "]"}]}], "}"}], ",", 
+        RowBox[{"Dynamic", "@", "set"}]}], "]"}]}], "\[IndentingNewLine]", 
+     "}"}], "]"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{
+  3.6536607061453123`*^9, {3.6800282826086087`*^9, 3.680028350287554*^9}, {
+   3.680028801866583*^9, 3.68002884295449*^9}, {3.6800299764789066`*^9, 
+   3.6800302207186604`*^9}, {3.6800306816504774`*^9, 3.680030817527203*^9}, {
+   3.6800308503506956`*^9, 3.6800308646745377`*^9}, {3.680030894715643*^9, 
+   3.680031079917673*^9}, {3.6800311167653904`*^9, 3.6800312287947874`*^9}, {
+   3.6800312621894712`*^9, 3.6800312858181467`*^9}, {3.680031354531698*^9, 
+   3.680031497693486*^9}, {3.6800315386583776`*^9, 3.680031656188036*^9}, {
+   3.680031696909931*^9, 3.680031716649768*^9}, {3.6800317716999073`*^9, 
+   3.6800318253532248`*^9}, {3.680031887013956*^9, 3.6800319075320096`*^9}, {
+   3.6800319437054777`*^9, 3.6800319504422927`*^9}, {3.6800320533917227`*^9, 
+   3.680032339275839*^9}, {3.6800324240036488`*^9, 3.6800324879781713`*^9}, {
+   3.6800325422419205`*^9, 3.6800325469113293`*^9}, {3.680032598332059*^9, 
+   3.6800326068480744`*^9}, 3.6800326970348935`*^9, {3.6800327489308567`*^9, 
+   3.6800327931841564`*^9}, 3.680032828529439*^9, {3.680032889398806*^9, 
+   3.680032961642158*^9}, {3.680033000900302*^9, 3.680033075791689*^9}, 
+   3.6800331171631985`*^9, {3.6810633802839403`*^9, 3.6810634448980303`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 0.75, $CellContext`npr$$ = 
+    1, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+    204, $CellContext`z1$$ = 0., $CellContext`z2$$ = 0, Typeset`show$$ = True,
+     Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`npr$$], 1, ""}, {
+      1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+       " pressure "}}, {{
+       Hold[$CellContext`set$$], False, ""}, {
+      False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"}}, {{
+       Hold[$CellContext`f$$], 0.75, "initial volume fraction of liquid"}, 
+      0.1, 1, 0.01}, {{
+       Hold[$CellContext`z1$$], 0., "spray gas"}, 0, 
+      Dynamic[264.24 $CellContext`f$$ + 5.4203]}, {{
+       Hold[$CellContext`z2$$], 0, "spray gas"}, 0, 
+      Dynamic[$CellContext`spraytime$$]}, {{
+       Hold[$CellContext`spraytime$$], 204, "time sprayed (s)"}, 20, 300, 5}, {
+      Hold[
+       Column[{
+         Row[{
+           Manipulate`Place[1], 
+           Spacer[30], 
+           Manipulate`Place[2]}], 
+         Row[{
+           Manipulate`Place[3], 
+           Spacer[20], 
+           
+           PaneSelector[{
+            False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`set$$]]}], 
+         PaneSelector[{True -> Manipulate`Place[6]}, 
+          Dynamic[$CellContext`set$$]]}]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    583., {184.8544921875, 190.1455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`npr$132724$$ = False, $CellContext`set$132725$$ = 
+    False, $CellContext`f$132726$$ = 0, $CellContext`z1$132727$$ = 
+    0, $CellContext`z2$132728$$ = 0, $CellContext`spraytime$132729$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`f$$ = 0.75, $CellContext`npr$$ = 
+        1, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+        204, $CellContext`z1$$ = 0., $CellContext`z2$$ = 0}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`npr$$, $CellContext`npr$132724$$, False], 
+        Hold[$CellContext`set$$, $CellContext`set$132725$$, False], 
+        Hold[$CellContext`f$$, $CellContext`f$132726$$, 0], 
+        Hold[$CellContext`z1$$, $CellContext`z1$132727$$, 0], 
+        Hold[$CellContext`z2$$, $CellContext`z2$132728$$, 0], 
+        Hold[$CellContext`spraytime$$, $CellContext`spraytime$132729$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`z$, $CellContext`T0$, $CellContext`P0$, \
+$CellContext`R$, $CellContext`Vcan$, $CellContext`Psat0$, $CellContext`\
+\[CapitalDelta]Hvap$, $CellContext`Cp$, $CellContext`\[Rho]L$, \
+$CellContext`vL0$, $CellContext`n0$, $CellContext`Psat$, \
+$CellContext`\[Alpha]$, $CellContext`sol$, $CellContext`moles$, \
+$CellContext`temperature$, $CellContext`pressure$, $CellContext`vL$, \
+$CellContext`vV$, $CellContext`nL$, $CellContext`nV$, $CellContext`tfinal$, \
+$CellContext`r$, $CellContext`can$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$, $CellContext`p4$}, $CellContext`z$ = 
+         If[$CellContext`set$$, $CellContext`z2$$, $CellContext`z1$$]; \
+$CellContext`T0$ = 25; $CellContext`P0$ = 1; $CellContext`R$ = 
+         0.08314; $CellContext`Vcan$ = 0.375; $CellContext`Psat0$ = 
+         10^(4.23406 - 896.171/($CellContext`T0$ + 
+           238.3)); $CellContext`\[CapitalDelta]Hvap$ = 
+         21.8; $CellContext`Cp$ = 0.0707; $CellContext`\[Rho]L$ = 
+         13.57; $CellContext`vL0$ = $CellContext`f$$ $CellContext`Vcan$; \
+$CellContext`n0$ = $CellContext`vL0$ $CellContext`\[Rho]L$ + \
+$CellContext`Psat0$ (($CellContext`Vcan$ - \
+$CellContext`vL0$)/($CellContext`R$ ($CellContext`T0$ + 
+             273))); $CellContext`Psat$[
+           Pattern[$CellContext`t, 
+            Blank[]]] := 
+         10^(4.23406 - 896.171/($CellContext`T[$CellContext`t] + 
+           238.3)); $CellContext`\[Alpha]$ = 
+         Rational[3, 5000]; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`n][$CellContext`t] == \
+(-$CellContext`\[Alpha]$) ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$), 
+              Derivative[
+               1][$CellContext`T][$CellContext`t] == \
+-(($CellContext`\[Alpha]$ ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$)) \
+($CellContext`\[CapitalDelta]Hvap$/($CellContext`n[$CellContext`t] \
+$CellContext`Cp$))), $CellContext`n[0] == $CellContext`n0$, $CellContext`T[
+               0] == $CellContext`T0$}, {$CellContext`n, $CellContext`T}, \
+{$CellContext`t, 0, 300}]]]; $CellContext`moles$ = Evaluate[
+           
+           ReplaceAll[$CellContext`n, $CellContext`sol$]]; \
+$CellContext`temperature$ = Evaluate[
+           
+           ReplaceAll[$CellContext`T, $CellContext`sol$]]; \
+$CellContext`pressure$[
+           Pattern[$CellContext`t$, 
+            Blank[]]] = Evaluate[
+           ReplaceAll[
+            $CellContext`Psat$[$CellContext`t$], $CellContext`sol$]]; \
+$CellContext`vL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := ($CellContext`moles$[$CellContext`t$] - \
+$CellContext`Vcan$ ($CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 
+             273))))/($CellContext`\[Rho]L$ - \
+$CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`vV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`Vcan$ - \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`\[Rho]L$ \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`pressure$[$CellContext`t$] \
+($CellContext`vV$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`tfinal$ = 
+         If[$CellContext`set$$, $CellContext`spraytime$$, 
+           ReplaceAll[$CellContext`tm, 
+            Quiet[
+             
+             FindRoot[$CellContext`temperature$[$CellContext`tm] == -5, \
+{$CellContext`tm, 0}]]]]; $CellContext`r$ = 0.08; $CellContext`can$ = Show[
+           Graphics[{{
+              Thickness[0.04], 
+              
+              Line[{{0, 1.01 $CellContext`Vcan$}, {
+                0, 1.02 $CellContext`Vcan$}}]}, 
+             EdgeForm[Thick], 
+             FaceForm[White], 
+             
+             Rectangle[{(-$CellContext`r$)/3, 
+               1.02 $CellContext`Vcan$}, {$CellContext`r$/3, 
+               1.175 $CellContext`Vcan$}], 
+             Map[
+             Line[{{# ($CellContext`r$/3), 
+                 1.02 $CellContext`Vcan$}, {# ($CellContext`r$/3), 
+                 1.175 $CellContext`Vcan$}}]& , 
+              Range[-1, 1, 0.25]], 
+             
+             Disk[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}, {0.012, 
+              0.0096}], 
+             PointSize[0.025], 
+             Point[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}], {
+             Thick, Dashed, 
+              Opacity[
+               Rescale[
+                Derivative[1][$CellContext`vV$][$CellContext`z$], {
+                 Derivative[1][$CellContext`vV$][$CellContext`tfinal$], 
+                 Derivative[1][$CellContext`vV$][0]}], 
+               RGBColor[0., 0.84, 0.83]], 
+              If[0 < $CellContext`z$, 
+               Map[
+               Line[{{$CellContext`r$/2, 1.1 $CellContext`Vcan$}, {
+                  1.5 $CellContext`r$, $CellContext`Vcan$ (1.1 + 0.1 #)}}]& , 
+                Range[-1, 1, 0.5]]]}}], 
+           Plot[{
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$], 
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$]}, {$CellContext`x, -$CellContext`r$, $CellContext`r$}, 
+            PlotStyle -> {{Thick, Black}}, Filling -> {1 -> {0, 
+                RGBColor[0, 0.85, 0.8]}, 2 -> {
+                $CellContext`vL$[$CellContext`z$], White}}], 
+           Graphics[{Thick, 
+             
+             Line[{{-$CellContext`r$, $CellContext`Vcan$ - $CellContext`r$}, \
+{-$CellContext`r$, 0}, {$CellContext`r$, 
+                0}, {$CellContext`r$, $CellContext`Vcan$ - \
+$CellContext`r$}}]}], ImageSize -> {150, 375}, AspectRatio -> Full, Axes -> 
+           False, PlotRange -> {{-$CellContext`r$, 0.14}, {0, 0.45}}, 
+           PlotRangePadding -> 0.001]; $CellContext`p1$ = Plot[{
+            $CellContext`vL$[$CellContext`time], 
+            $CellContext`vV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Dashed, Orange}}, 
+           PlotRange -> {0, $CellContext`Vcan$}, 
+           FrameLabel -> {"time (s)", "volume (L)"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`vL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`vV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`vL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`vV$[$CellContext`z$]}]}]; $CellContext`p2$ = Plot[{
+            $CellContext`nL$[$CellContext`time], 
+            $CellContext`nV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Purple}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {0, $CellContext`n0$}, 
+           FrameLabel -> {"time (s)", "moles"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`nL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`nV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`nL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`nV$[$CellContext`z$]}]}]; $CellContext`p3$ = Plot[
+           $CellContext`temperature$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Black}, PlotRange -> {
+             $CellContext`temperature$[$CellContext`tfinal$], \
+$CellContext`T0$}, FrameLabel -> {"time (s)", "temperature (K)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`temperature$[$CellContext`z$]}]}]; \
+$CellContext`p4$ = Plot[
+           $CellContext`pressure$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Blue}, 
+           PlotRange -> {$CellContext`P0$, $CellContext`Psat0$}, 
+           FrameLabel -> {"time (s)", "pressure (bar)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`pressure$[$CellContext`z$]}]}]; 
+        Grid[{{$CellContext`can$, 
+            Show[
+             
+             Switch[$CellContext`npr$$, 1, $CellContext`p1$, 
+              2, $CellContext`p2$, 3, $CellContext`p3$, 4, $CellContext`p4$], 
+             Axes -> False, Frame -> True, LabelStyle -> {17, Black}, 
+             ImagePadding -> {{60, 10}, {45, 10}}, ImageSize -> {425, 375}, 
+             AspectRatio -> Full, PlotRangePadding -> {
+               Scaled[0.015], 
+               Scaled[0.05]}, PlotLabel -> Style[
+               Apply[Row[{
+                  Subscript[
+                   Style["P", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`pressure$[#2], {2, 1}], " bar", 
+                  Spacer[20], 
+                  Subscript[
+                   Style["T", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`temperature$[#2], {3, 1}], " K"}]& , 
+                
+                If[$CellContext`z$ == 0, {"i", 0}, {
+                 "f", $CellContext`tfinal$}]], 18, 
+               If[
+                
+                Or[$CellContext`z$ == 0, $CellContext`z$ == 
+                 If[$CellContext`set$$, $CellContext`spraytime$$, 
+                   264.24 $CellContext`f$$ + 5.4203]], Black, White]]]}}]], 
+      "Specifications" :> {{{$CellContext`npr$$, 1, ""}, {
+         1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+          " pressure "}, ControlType -> Setter, TrackingFunction -> 
+         Dynamic[($CellContext`npr$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         1}, {{$CellContext`set$$, False, ""}, {
+         False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"},
+          ControlType -> RadioButton, ControlPlacement -> 
+         2}, {{$CellContext`f$$, 0.75, "initial volume fraction of liquid"}, 
+         0.1, 1, 0.01, Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`f$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         3}, {{$CellContext`z1$$, 0., "spray gas"}, 0, 
+         Dynamic[264.24 $CellContext`f$$ + 5.4203], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         4}, {{$CellContext`z2$$, 0, "spray gas"}, 0, 
+         Dynamic[$CellContext`spraytime$$], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         5}, {{$CellContext`spraytime$$, 204, "time sprayed (s)"}, 20, 300, 5,
+          Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`spraytime$$ = #; $CellContext`z2$$ = 0; 
+           Null)& ], ControlPlacement -> 6}, 
+        Column[{
+          Row[{
+            Manipulate`Place[1], 
+            Spacer[30], 
+            Manipulate`Place[2]}], 
+          Row[{
+            Manipulate`Place[3], 
+            Spacer[20], 
+            
+            PaneSelector[{
+             False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+             Dynamic[$CellContext`set$$]]}], 
+          PaneSelector[{True -> Manipulate`Place[6]}, 
+           Dynamic[$CellContext`set$$]]}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{626., {258., 263.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->200605607]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell["\<\
+Compressed-gas dusters spray a gas such as difluoroethane (DFE) to remove \
+dust from electronics. When gas exits the valve, liquid DFE in the container \
+vaporizes to maintain vapor-liquid equilibrium. The energy to vaporize the \
+liquid is obtained by cooling the remaining liquid; the container is modeled \
+as adiabatic in this Demonstration. Decreasing the liquid temperature \
+decreases its saturation pressure, which lowers the driving force, and thus \
+the gas flow rate decreases. For smaller initial volume fractions of liquid \
+(change with a slider), the liquid cools faster.\
+\>", "ManipulateCaption",
+ CellChangeTimes->{{3.680028896311222*^9, 3.680028897294024*^9}, 
+   3.680029304617183*^9},
+ CellID->60479657],
+
+Cell[TextData[{
+ "Select a plot (volume, moles, temperature or pressure) with buttons to \
+display how that property changes with time. Animate the duster by clicking \
+the play button next to \"spray gas\". Select \"stop at ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", "5"}], " ", "\[Degree]C"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ "\" and the spray will stop once ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"-", "5"}], " ", "\[Degree]C"}], TraditionalForm]], "InlineMath",
+  FormatType->"TraditionalForm"],
+ " is reached; or set the time the spray stops with a slider. In either case, \
+the black dot(s) show the conditions of the duster on the plot. The liquid \
+and vapor DFE are assumed to be in equilibrium at all times. As the spray \
+time increases, the adiabatic approximation becomes less accurate."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.6800288997910285`*^9, 3.68002894061652*^9}, {
+  3.6800293193942113`*^9, 3.680029351129671*^9}, {3.6800294947055655`*^9, 
+  3.680029499206374*^9}, {3.6800295882647753`*^9, 3.6800295895127773`*^9}, {
+  3.681665999129031*^9, 3.681666033991827*^9}},
+ CellID->214934696]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 0.75, $CellContext`npr$$ = 
+    1, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+    204, $CellContext`z1$$ = 0., $CellContext`z2$$ = 0., Typeset`show$$ = 
+    True, Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`npr$$], 1, ""}, {
+      1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+       " pressure "}}, {{
+       Hold[$CellContext`set$$], False, ""}, {
+      False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"}}, {{
+       Hold[$CellContext`f$$], 0.75, "initial volume fraction of liquid"}, 
+      0.1, 1, 0.01}, {{
+       Hold[$CellContext`z1$$], 0., "spray gas"}, 0, 
+      Dynamic[264.24 $CellContext`f$$ + 5.4203]}, {{
+       Hold[$CellContext`z2$$], 0., "spray gas"}, 0, 
+      Dynamic[$CellContext`spraytime$$]}, {{
+       Hold[$CellContext`spraytime$$], 204, "time sprayed (s)"}, 20, 300, 5}, {
+      Hold[
+       Column[{
+         Row[{
+           Manipulate`Place[1], 
+           Spacer[30], 
+           Manipulate`Place[2]}], 
+         Row[{
+           Manipulate`Place[3], 
+           Spacer[20], 
+           
+           PaneSelector[{
+            False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`set$$]]}], 
+         PaneSelector[{True -> Manipulate`Place[6]}, 
+          Dynamic[$CellContext`set$$]]}]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    583., {184.8544921875, 190.1455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`npr$132807$$ = False, $CellContext`set$132808$$ = 
+    False, $CellContext`f$132809$$ = 0, $CellContext`z1$132810$$ = 
+    0, $CellContext`z2$132811$$ = 0, $CellContext`spraytime$132812$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`f$$ = 0.75, $CellContext`npr$$ = 
+        1, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+        204, $CellContext`z1$$ = 0., $CellContext`z2$$ = 0.}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`npr$$, $CellContext`npr$132807$$, False], 
+        Hold[$CellContext`set$$, $CellContext`set$132808$$, False], 
+        Hold[$CellContext`f$$, $CellContext`f$132809$$, 0], 
+        Hold[$CellContext`z1$$, $CellContext`z1$132810$$, 0], 
+        Hold[$CellContext`z2$$, $CellContext`z2$132811$$, 0], 
+        Hold[$CellContext`spraytime$$, $CellContext`spraytime$132812$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`z$, $CellContext`T0$, $CellContext`P0$, \
+$CellContext`R$, $CellContext`Vcan$, $CellContext`Psat0$, $CellContext`\
+\[CapitalDelta]Hvap$, $CellContext`Cp$, $CellContext`\[Rho]L$, \
+$CellContext`vL0$, $CellContext`n0$, $CellContext`Psat$, \
+$CellContext`\[Alpha]$, $CellContext`sol$, $CellContext`moles$, \
+$CellContext`temperature$, $CellContext`pressure$, $CellContext`vL$, \
+$CellContext`vV$, $CellContext`nL$, $CellContext`nV$, $CellContext`tfinal$, \
+$CellContext`r$, $CellContext`can$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$, $CellContext`p4$}, $CellContext`z$ = 
+         If[$CellContext`set$$, $CellContext`z2$$, $CellContext`z1$$]; \
+$CellContext`T0$ = 25; $CellContext`P0$ = 1; $CellContext`R$ = 
+         0.08314; $CellContext`Vcan$ = 0.375; $CellContext`Psat0$ = 
+         10^(4.23406 - 896.171/($CellContext`T0$ + 
+           238.3)); $CellContext`\[CapitalDelta]Hvap$ = 
+         21.8; $CellContext`Cp$ = 0.0707; $CellContext`\[Rho]L$ = 
+         13.57; $CellContext`vL0$ = $CellContext`f$$ $CellContext`Vcan$; \
+$CellContext`n0$ = $CellContext`vL0$ $CellContext`\[Rho]L$ + \
+$CellContext`Psat0$ (($CellContext`Vcan$ - \
+$CellContext`vL0$)/($CellContext`R$ ($CellContext`T0$ + 
+             273))); $CellContext`Psat$[
+           Pattern[$CellContext`t, 
+            Blank[]]] := 
+         10^(4.23406 - 896.171/($CellContext`T[$CellContext`t] + 
+           238.3)); $CellContext`\[Alpha]$ = 
+         Rational[3, 5000]; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`n][$CellContext`t] == \
+(-$CellContext`\[Alpha]$) ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$), 
+              Derivative[
+               1][$CellContext`T][$CellContext`t] == \
+-(($CellContext`\[Alpha]$ ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$)) \
+($CellContext`\[CapitalDelta]Hvap$/($CellContext`n[$CellContext`t] \
+$CellContext`Cp$))), $CellContext`n[0] == $CellContext`n0$, $CellContext`T[
+               0] == $CellContext`T0$}, {$CellContext`n, $CellContext`T}, \
+{$CellContext`t, 0, 300}]]]; $CellContext`moles$ = Evaluate[
+           
+           ReplaceAll[$CellContext`n, $CellContext`sol$]]; \
+$CellContext`temperature$ = Evaluate[
+           
+           ReplaceAll[$CellContext`T, $CellContext`sol$]]; \
+$CellContext`pressure$[
+           Pattern[$CellContext`t$, 
+            Blank[]]] = Evaluate[
+           ReplaceAll[
+            $CellContext`Psat$[$CellContext`t$], $CellContext`sol$]]; \
+$CellContext`vL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := ($CellContext`moles$[$CellContext`t$] - \
+$CellContext`Vcan$ ($CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 
+             273))))/($CellContext`\[Rho]L$ - \
+$CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`vV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`Vcan$ - \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`\[Rho]L$ \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`pressure$[$CellContext`t$] \
+($CellContext`vV$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`tfinal$ = 
+         If[$CellContext`set$$, $CellContext`spraytime$$, 
+           ReplaceAll[$CellContext`tm, 
+            Quiet[
+             
+             FindRoot[$CellContext`temperature$[$CellContext`tm] == -5, \
+{$CellContext`tm, 0}]]]]; $CellContext`r$ = 0.08; $CellContext`can$ = Show[
+           Graphics[{{
+              Thickness[0.04], 
+              
+              Line[{{0, 1.01 $CellContext`Vcan$}, {
+                0, 1.02 $CellContext`Vcan$}}]}, 
+             EdgeForm[Thick], 
+             FaceForm[White], 
+             
+             Rectangle[{(-$CellContext`r$)/3, 
+               1.02 $CellContext`Vcan$}, {$CellContext`r$/3, 
+               1.175 $CellContext`Vcan$}], 
+             Map[
+             Line[{{# ($CellContext`r$/3), 
+                 1.02 $CellContext`Vcan$}, {# ($CellContext`r$/3), 
+                 1.175 $CellContext`Vcan$}}]& , 
+              Range[-1, 1, 0.25]], 
+             
+             Disk[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}, {0.012, 
+              0.0096}], 
+             PointSize[0.025], 
+             Point[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}], {
+             Thick, Dashed, 
+              Opacity[
+               Rescale[
+                Derivative[1][$CellContext`vV$][$CellContext`z$], {
+                 Derivative[1][$CellContext`vV$][$CellContext`tfinal$], 
+                 Derivative[1][$CellContext`vV$][0]}], 
+               RGBColor[0., 0.84, 0.83]], 
+              If[0 < $CellContext`z$, 
+               Map[
+               Line[{{$CellContext`r$/2, 1.1 $CellContext`Vcan$}, {
+                  1.5 $CellContext`r$, $CellContext`Vcan$ (1.1 + 0.1 #)}}]& , 
+                Range[-1, 1, 0.5]]]}}], 
+           Plot[{
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$], 
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$]}, {$CellContext`x, -$CellContext`r$, $CellContext`r$}, 
+            PlotStyle -> {{Thick, Black}}, Filling -> {1 -> {0, 
+                RGBColor[0, 0.85, 0.8]}, 2 -> {
+                $CellContext`vL$[$CellContext`z$], White}}], 
+           Graphics[{Thick, 
+             
+             Line[{{-$CellContext`r$, $CellContext`Vcan$ - $CellContext`r$}, \
+{-$CellContext`r$, 0}, {$CellContext`r$, 
+                0}, {$CellContext`r$, $CellContext`Vcan$ - \
+$CellContext`r$}}]}], ImageSize -> {150, 375}, AspectRatio -> Full, Axes -> 
+           False, PlotRange -> {{-$CellContext`r$, 0.14}, {0, 0.45}}, 
+           PlotRangePadding -> 0.001]; $CellContext`p1$ = Plot[{
+            $CellContext`vL$[$CellContext`time], 
+            $CellContext`vV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Dashed, Orange}}, 
+           PlotRange -> {0, $CellContext`Vcan$}, 
+           FrameLabel -> {"time (s)", "volume (L)"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`vL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`vV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`vL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`vV$[$CellContext`z$]}]}]; $CellContext`p2$ = Plot[{
+            $CellContext`nL$[$CellContext`time], 
+            $CellContext`nV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Purple}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {0, $CellContext`n0$}, 
+           FrameLabel -> {"time (s)", "moles"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`nL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`nV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`nL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`nV$[$CellContext`z$]}]}]; $CellContext`p3$ = Plot[
+           $CellContext`temperature$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Black}, PlotRange -> {
+             $CellContext`temperature$[$CellContext`tfinal$], \
+$CellContext`T0$}, FrameLabel -> {"time (s)", "temperature (K)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`temperature$[$CellContext`z$]}]}]; \
+$CellContext`p4$ = Plot[
+           $CellContext`pressure$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Blue}, 
+           PlotRange -> {$CellContext`P0$, $CellContext`Psat0$}, 
+           FrameLabel -> {"time (s)", "pressure (bar)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`pressure$[$CellContext`z$]}]}]; 
+        Grid[{{$CellContext`can$, 
+            Show[
+             
+             Switch[$CellContext`npr$$, 1, $CellContext`p1$, 
+              2, $CellContext`p2$, 3, $CellContext`p3$, 4, $CellContext`p4$], 
+             Axes -> False, Frame -> True, LabelStyle -> {17, Black}, 
+             ImagePadding -> {{60, 10}, {45, 10}}, ImageSize -> {425, 375}, 
+             AspectRatio -> Full, PlotRangePadding -> {
+               Scaled[0.015], 
+               Scaled[0.05]}, PlotLabel -> Style[
+               Apply[Row[{
+                  Subscript[
+                   Style["P", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`pressure$[#2], {2, 1}], " bar", 
+                  Spacer[20], 
+                  Subscript[
+                   Style["T", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`temperature$[#2], {3, 1}], " K"}]& , 
+                
+                If[$CellContext`z$ == 0, {"i", 0}, {
+                 "f", $CellContext`tfinal$}]], 18, 
+               If[
+                
+                Or[$CellContext`z$ == 0, $CellContext`z$ == 
+                 If[$CellContext`set$$, $CellContext`spraytime$$, 
+                   264.24 $CellContext`f$$ + 5.4203]], Black, White]]]}}]], 
+      "Specifications" :> {{{$CellContext`npr$$, 1, ""}, {
+         1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+          " pressure "}, ControlType -> Setter, TrackingFunction -> 
+         Dynamic[($CellContext`npr$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         1}, {{$CellContext`set$$, False, ""}, {
+         False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"},
+          ControlType -> RadioButton, ControlPlacement -> 
+         2}, {{$CellContext`f$$, 0.75, "initial volume fraction of liquid"}, 
+         0.1, 1, 0.01, Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`f$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         3}, {{$CellContext`z1$$, 0., "spray gas"}, 0, 
+         Dynamic[264.24 $CellContext`f$$ + 5.4203], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         4}, {{$CellContext`z2$$, 0., "spray gas"}, 0, 
+         Dynamic[$CellContext`spraytime$$], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         5}, {{$CellContext`spraytime$$, 204, "time sprayed (s)"}, 20, 300, 5,
+          Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`spraytime$$ = #; $CellContext`z2$$ = 0; 
+           Null)& ], ControlPlacement -> 6}, 
+        Column[{
+          Row[{
+            Manipulate`Place[1], 
+            Spacer[30], 
+            Manipulate`Place[2]}], 
+          Row[{
+            Manipulate`Place[3], 
+            Spacer[20], 
+            
+            PaneSelector[{
+             False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+             Dynamic[$CellContext`set$$]]}], 
+          PaneSelector[{True -> Manipulate`Place[6]}, 
+           Dynamic[$CellContext`set$$]]}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{626., {258., 263.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->262791729]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 0.4, $CellContext`npr$$ = 
+    3, $CellContext`set$$ = True, $CellContext`spraytime$$ = 
+    280, $CellContext`z1$$ = 0., $CellContext`z2$$ = 279.9999999999909, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`npr$$], 3, ""}, {
+      1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+       " pressure "}}, {{
+       Hold[$CellContext`set$$], True, ""}, {
+      False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"}}, {{
+       Hold[$CellContext`f$$], 0.4, "initial volume fraction of liquid"}, 0.1,
+       1, 0.01}, {{
+       Hold[$CellContext`z1$$], 0., "spray gas"}, 0, 
+      Dynamic[264.24 $CellContext`f$$ + 5.4203]}, {{
+       Hold[$CellContext`z2$$], 279.9999999999909, "spray gas"}, 0, 
+      Dynamic[$CellContext`spraytime$$]}, {{
+       Hold[$CellContext`spraytime$$], 280, "time sprayed (s)"}, 20, 300, 5}, {
+      Hold[
+       Column[{
+         Row[{
+           Manipulate`Place[1], 
+           Spacer[30], 
+           Manipulate`Place[2]}], 
+         Row[{
+           Manipulate`Place[3], 
+           Spacer[20], 
+           
+           PaneSelector[{
+            False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`set$$]]}], 
+         PaneSelector[{True -> Manipulate`Place[6]}, 
+          Dynamic[$CellContext`set$$]]}]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    583., {184.8544921875, 190.1455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`npr$132890$$ = False, $CellContext`set$132891$$ = 
+    False, $CellContext`f$132892$$ = 0, $CellContext`z1$132893$$ = 
+    0, $CellContext`z2$132894$$ = 0, $CellContext`spraytime$132895$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`f$$ = 0.4, $CellContext`npr$$ = 
+        3, $CellContext`set$$ = True, $CellContext`spraytime$$ = 
+        280, $CellContext`z1$$ = 0., $CellContext`z2$$ = 279.9999999999909}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`npr$$, $CellContext`npr$132890$$, False], 
+        Hold[$CellContext`set$$, $CellContext`set$132891$$, False], 
+        Hold[$CellContext`f$$, $CellContext`f$132892$$, 0], 
+        Hold[$CellContext`z1$$, $CellContext`z1$132893$$, 0], 
+        Hold[$CellContext`z2$$, $CellContext`z2$132894$$, 0], 
+        Hold[$CellContext`spraytime$$, $CellContext`spraytime$132895$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`z$, $CellContext`T0$, $CellContext`P0$, \
+$CellContext`R$, $CellContext`Vcan$, $CellContext`Psat0$, $CellContext`\
+\[CapitalDelta]Hvap$, $CellContext`Cp$, $CellContext`\[Rho]L$, \
+$CellContext`vL0$, $CellContext`n0$, $CellContext`Psat$, \
+$CellContext`\[Alpha]$, $CellContext`sol$, $CellContext`moles$, \
+$CellContext`temperature$, $CellContext`pressure$, $CellContext`vL$, \
+$CellContext`vV$, $CellContext`nL$, $CellContext`nV$, $CellContext`tfinal$, \
+$CellContext`r$, $CellContext`can$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$, $CellContext`p4$}, $CellContext`z$ = 
+         If[$CellContext`set$$, $CellContext`z2$$, $CellContext`z1$$]; \
+$CellContext`T0$ = 25; $CellContext`P0$ = 1; $CellContext`R$ = 
+         0.08314; $CellContext`Vcan$ = 0.375; $CellContext`Psat0$ = 
+         10^(4.23406 - 896.171/($CellContext`T0$ + 
+           238.3)); $CellContext`\[CapitalDelta]Hvap$ = 
+         21.8; $CellContext`Cp$ = 0.0707; $CellContext`\[Rho]L$ = 
+         13.57; $CellContext`vL0$ = $CellContext`f$$ $CellContext`Vcan$; \
+$CellContext`n0$ = $CellContext`vL0$ $CellContext`\[Rho]L$ + \
+$CellContext`Psat0$ (($CellContext`Vcan$ - \
+$CellContext`vL0$)/($CellContext`R$ ($CellContext`T0$ + 
+             273))); $CellContext`Psat$[
+           Pattern[$CellContext`t, 
+            Blank[]]] := 
+         10^(4.23406 - 896.171/($CellContext`T[$CellContext`t] + 
+           238.3)); $CellContext`\[Alpha]$ = 
+         Rational[3, 5000]; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`n][$CellContext`t] == \
+(-$CellContext`\[Alpha]$) ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$), 
+              Derivative[
+               1][$CellContext`T][$CellContext`t] == \
+-(($CellContext`\[Alpha]$ ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$)) \
+($CellContext`\[CapitalDelta]Hvap$/($CellContext`n[$CellContext`t] \
+$CellContext`Cp$))), $CellContext`n[0] == $CellContext`n0$, $CellContext`T[
+               0] == $CellContext`T0$}, {$CellContext`n, $CellContext`T}, \
+{$CellContext`t, 0, 300}]]]; $CellContext`moles$ = Evaluate[
+           
+           ReplaceAll[$CellContext`n, $CellContext`sol$]]; \
+$CellContext`temperature$ = Evaluate[
+           
+           ReplaceAll[$CellContext`T, $CellContext`sol$]]; \
+$CellContext`pressure$[
+           Pattern[$CellContext`t$, 
+            Blank[]]] = Evaluate[
+           ReplaceAll[
+            $CellContext`Psat$[$CellContext`t$], $CellContext`sol$]]; \
+$CellContext`vL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := ($CellContext`moles$[$CellContext`t$] - \
+$CellContext`Vcan$ ($CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 
+             273))))/($CellContext`\[Rho]L$ - \
+$CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`vV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`Vcan$ - \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`\[Rho]L$ \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`pressure$[$CellContext`t$] \
+($CellContext`vV$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`tfinal$ = 
+         If[$CellContext`set$$, $CellContext`spraytime$$, 
+           ReplaceAll[$CellContext`tm, 
+            Quiet[
+             
+             FindRoot[$CellContext`temperature$[$CellContext`tm] == -5, \
+{$CellContext`tm, 0}]]]]; $CellContext`r$ = 0.08; $CellContext`can$ = Show[
+           Graphics[{{
+              Thickness[0.04], 
+              
+              Line[{{0, 1.01 $CellContext`Vcan$}, {
+                0, 1.02 $CellContext`Vcan$}}]}, 
+             EdgeForm[Thick], 
+             FaceForm[White], 
+             
+             Rectangle[{(-$CellContext`r$)/3, 
+               1.02 $CellContext`Vcan$}, {$CellContext`r$/3, 
+               1.175 $CellContext`Vcan$}], 
+             Map[
+             Line[{{# ($CellContext`r$/3), 
+                 1.02 $CellContext`Vcan$}, {# ($CellContext`r$/3), 
+                 1.175 $CellContext`Vcan$}}]& , 
+              Range[-1, 1, 0.25]], 
+             
+             Disk[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}, {0.012, 
+              0.0096}], 
+             PointSize[0.025], 
+             Point[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}], {
+             Thick, Dashed, 
+              Opacity[
+               Rescale[
+                Derivative[1][$CellContext`vV$][$CellContext`z$], {
+                 Derivative[1][$CellContext`vV$][$CellContext`tfinal$], 
+                 Derivative[1][$CellContext`vV$][0]}], 
+               RGBColor[0., 0.84, 0.83]], 
+              If[0 < $CellContext`z$, 
+               Map[
+               Line[{{$CellContext`r$/2, 1.1 $CellContext`Vcan$}, {
+                  1.5 $CellContext`r$, $CellContext`Vcan$ (1.1 + 0.1 #)}}]& , 
+                Range[-1, 1, 0.5]]]}}], 
+           Plot[{
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$], 
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$]}, {$CellContext`x, -$CellContext`r$, $CellContext`r$}, 
+            PlotStyle -> {{Thick, Black}}, Filling -> {1 -> {0, 
+                RGBColor[0, 0.85, 0.8]}, 2 -> {
+                $CellContext`vL$[$CellContext`z$], White}}], 
+           Graphics[{Thick, 
+             
+             Line[{{-$CellContext`r$, $CellContext`Vcan$ - $CellContext`r$}, \
+{-$CellContext`r$, 0}, {$CellContext`r$, 
+                0}, {$CellContext`r$, $CellContext`Vcan$ - \
+$CellContext`r$}}]}], ImageSize -> {150, 375}, AspectRatio -> Full, Axes -> 
+           False, PlotRange -> {{-$CellContext`r$, 0.14}, {0, 0.45}}, 
+           PlotRangePadding -> 0.001]; $CellContext`p1$ = Plot[{
+            $CellContext`vL$[$CellContext`time], 
+            $CellContext`vV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Dashed, Orange}}, 
+           PlotRange -> {0, $CellContext`Vcan$}, 
+           FrameLabel -> {"time (s)", "volume (L)"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`vL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`vV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`vL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`vV$[$CellContext`z$]}]}]; $CellContext`p2$ = Plot[{
+            $CellContext`nL$[$CellContext`time], 
+            $CellContext`nV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Purple}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {0, $CellContext`n0$}, 
+           FrameLabel -> {"time (s)", "moles"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`nL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`nV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`nL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`nV$[$CellContext`z$]}]}]; $CellContext`p3$ = Plot[
+           $CellContext`temperature$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Black}, PlotRange -> {
+             $CellContext`temperature$[$CellContext`tfinal$], \
+$CellContext`T0$}, FrameLabel -> {"time (s)", "temperature (K)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`temperature$[$CellContext`z$]}]}]; \
+$CellContext`p4$ = Plot[
+           $CellContext`pressure$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Blue}, 
+           PlotRange -> {$CellContext`P0$, $CellContext`Psat0$}, 
+           FrameLabel -> {"time (s)", "pressure (bar)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`pressure$[$CellContext`z$]}]}]; 
+        Grid[{{$CellContext`can$, 
+            Show[
+             
+             Switch[$CellContext`npr$$, 1, $CellContext`p1$, 
+              2, $CellContext`p2$, 3, $CellContext`p3$, 4, $CellContext`p4$], 
+             Axes -> False, Frame -> True, LabelStyle -> {17, Black}, 
+             ImagePadding -> {{60, 10}, {45, 10}}, ImageSize -> {425, 375}, 
+             AspectRatio -> Full, PlotRangePadding -> {
+               Scaled[0.015], 
+               Scaled[0.05]}, PlotLabel -> Style[
+               Apply[Row[{
+                  Subscript[
+                   Style["P", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`pressure$[#2], {2, 1}], " bar", 
+                  Spacer[20], 
+                  Subscript[
+                   Style["T", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`temperature$[#2], {3, 1}], " K"}]& , 
+                
+                If[$CellContext`z$ == 0, {"i", 0}, {
+                 "f", $CellContext`tfinal$}]], 18, 
+               If[
+                
+                Or[$CellContext`z$ == 0, $CellContext`z$ == 
+                 If[$CellContext`set$$, $CellContext`spraytime$$, 
+                   264.24 $CellContext`f$$ + 5.4203]], Black, White]]]}}]], 
+      "Specifications" :> {{{$CellContext`npr$$, 3, ""}, {
+         1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+          " pressure "}, ControlType -> Setter, TrackingFunction -> 
+         Dynamic[($CellContext`npr$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         1}, {{$CellContext`set$$, True, ""}, {
+         False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"},
+          ControlType -> RadioButton, ControlPlacement -> 
+         2}, {{$CellContext`f$$, 0.4, "initial volume fraction of liquid"}, 
+         0.1, 1, 0.01, Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`f$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         3}, {{$CellContext`z1$$, 0., "spray gas"}, 0, 
+         Dynamic[264.24 $CellContext`f$$ + 5.4203], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         4}, {{$CellContext`z2$$, 279.9999999999909, "spray gas"}, 0, 
+         Dynamic[$CellContext`spraytime$$], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         5}, {{$CellContext`spraytime$$, 280, "time sprayed (s)"}, 20, 300, 5,
+          Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`spraytime$$ = #; $CellContext`z2$$ = 0; 
+           Null)& ], ControlPlacement -> 6}, 
+        Column[{
+          Row[{
+            Manipulate`Place[1], 
+            Spacer[30], 
+            Manipulate`Place[2]}], 
+          Row[{
+            Manipulate`Place[3], 
+            Spacer[20], 
+            
+            PaneSelector[{
+             False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+             Dynamic[$CellContext`set$$]]}], 
+          PaneSelector[{True -> Manipulate`Place[6]}, 
+           Dynamic[$CellContext`set$$]]}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{626., {258., 263.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->135769316],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 0.1, $CellContext`npr$$ = 
+    4, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+    105, $CellContext`z1$$ = 0., $CellContext`z2$$ = 9.333333333333334, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`npr$$], 4, ""}, {
+      1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+       " pressure "}}, {{
+       Hold[$CellContext`set$$], False, ""}, {
+      False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"}}, {{
+       Hold[$CellContext`f$$], 0.1, "initial volume fraction of liquid"}, 0.1,
+       1, 0.01}, {{
+       Hold[$CellContext`z1$$], 0., "spray gas"}, 0, 
+      Dynamic[264.24 $CellContext`f$$ + 5.4203]}, {{
+       Hold[$CellContext`z2$$], 9.333333333333334, "spray gas"}, 0, 
+      Dynamic[$CellContext`spraytime$$]}, {{
+       Hold[$CellContext`spraytime$$], 105, "time sprayed (s)"}, 20, 300, 5}, {
+      Hold[
+       Column[{
+         Row[{
+           Manipulate`Place[1], 
+           Spacer[30], 
+           Manipulate`Place[2]}], 
+         Row[{
+           Manipulate`Place[3], 
+           Spacer[20], 
+           
+           PaneSelector[{
+            False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`set$$]]}], 
+         PaneSelector[{True -> Manipulate`Place[6]}, 
+          Dynamic[$CellContext`set$$]]}]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    583., {184.8544921875, 190.1455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`npr$132973$$ = False, $CellContext`set$132974$$ = 
+    False, $CellContext`f$132975$$ = 0, $CellContext`z1$132976$$ = 
+    0, $CellContext`z2$132977$$ = 0, $CellContext`spraytime$132978$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`f$$ = 0.1, $CellContext`npr$$ = 
+        4, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+        105, $CellContext`z1$$ = 0., $CellContext`z2$$ = 9.333333333333334}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`npr$$, $CellContext`npr$132973$$, False], 
+        Hold[$CellContext`set$$, $CellContext`set$132974$$, False], 
+        Hold[$CellContext`f$$, $CellContext`f$132975$$, 0], 
+        Hold[$CellContext`z1$$, $CellContext`z1$132976$$, 0], 
+        Hold[$CellContext`z2$$, $CellContext`z2$132977$$, 0], 
+        Hold[$CellContext`spraytime$$, $CellContext`spraytime$132978$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`z$, $CellContext`T0$, $CellContext`P0$, \
+$CellContext`R$, $CellContext`Vcan$, $CellContext`Psat0$, $CellContext`\
+\[CapitalDelta]Hvap$, $CellContext`Cp$, $CellContext`\[Rho]L$, \
+$CellContext`vL0$, $CellContext`n0$, $CellContext`Psat$, \
+$CellContext`\[Alpha]$, $CellContext`sol$, $CellContext`moles$, \
+$CellContext`temperature$, $CellContext`pressure$, $CellContext`vL$, \
+$CellContext`vV$, $CellContext`nL$, $CellContext`nV$, $CellContext`tfinal$, \
+$CellContext`r$, $CellContext`can$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$, $CellContext`p4$}, $CellContext`z$ = 
+         If[$CellContext`set$$, $CellContext`z2$$, $CellContext`z1$$]; \
+$CellContext`T0$ = 25; $CellContext`P0$ = 1; $CellContext`R$ = 
+         0.08314; $CellContext`Vcan$ = 0.375; $CellContext`Psat0$ = 
+         10^(4.23406 - 896.171/($CellContext`T0$ + 
+           238.3)); $CellContext`\[CapitalDelta]Hvap$ = 
+         21.8; $CellContext`Cp$ = 0.0707; $CellContext`\[Rho]L$ = 
+         13.57; $CellContext`vL0$ = $CellContext`f$$ $CellContext`Vcan$; \
+$CellContext`n0$ = $CellContext`vL0$ $CellContext`\[Rho]L$ + \
+$CellContext`Psat0$ (($CellContext`Vcan$ - \
+$CellContext`vL0$)/($CellContext`R$ ($CellContext`T0$ + 
+             273))); $CellContext`Psat$[
+           Pattern[$CellContext`t, 
+            Blank[]]] := 
+         10^(4.23406 - 896.171/($CellContext`T[$CellContext`t] + 
+           238.3)); $CellContext`\[Alpha]$ = 
+         Rational[3, 5000]; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`n][$CellContext`t] == \
+(-$CellContext`\[Alpha]$) ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$), 
+              Derivative[
+               1][$CellContext`T][$CellContext`t] == \
+-(($CellContext`\[Alpha]$ ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$)) \
+($CellContext`\[CapitalDelta]Hvap$/($CellContext`n[$CellContext`t] \
+$CellContext`Cp$))), $CellContext`n[0] == $CellContext`n0$, $CellContext`T[
+               0] == $CellContext`T0$}, {$CellContext`n, $CellContext`T}, \
+{$CellContext`t, 0, 300}]]]; $CellContext`moles$ = Evaluate[
+           
+           ReplaceAll[$CellContext`n, $CellContext`sol$]]; \
+$CellContext`temperature$ = Evaluate[
+           
+           ReplaceAll[$CellContext`T, $CellContext`sol$]]; \
+$CellContext`pressure$[
+           Pattern[$CellContext`t$, 
+            Blank[]]] = Evaluate[
+           ReplaceAll[
+            $CellContext`Psat$[$CellContext`t$], $CellContext`sol$]]; \
+$CellContext`vL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := ($CellContext`moles$[$CellContext`t$] - \
+$CellContext`Vcan$ ($CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 
+             273))))/($CellContext`\[Rho]L$ - \
+$CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`vV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`Vcan$ - \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`\[Rho]L$ \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`pressure$[$CellContext`t$] \
+($CellContext`vV$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`tfinal$ = 
+         If[$CellContext`set$$, $CellContext`spraytime$$, 
+           ReplaceAll[$CellContext`tm, 
+            Quiet[
+             
+             FindRoot[$CellContext`temperature$[$CellContext`tm] == -5, \
+{$CellContext`tm, 0}]]]]; $CellContext`r$ = 0.08; $CellContext`can$ = Show[
+           Graphics[{{
+              Thickness[0.04], 
+              
+              Line[{{0, 1.01 $CellContext`Vcan$}, {
+                0, 1.02 $CellContext`Vcan$}}]}, 
+             EdgeForm[Thick], 
+             FaceForm[White], 
+             
+             Rectangle[{(-$CellContext`r$)/3, 
+               1.02 $CellContext`Vcan$}, {$CellContext`r$/3, 
+               1.175 $CellContext`Vcan$}], 
+             Map[
+             Line[{{# ($CellContext`r$/3), 
+                 1.02 $CellContext`Vcan$}, {# ($CellContext`r$/3), 
+                 1.175 $CellContext`Vcan$}}]& , 
+              Range[-1, 1, 0.25]], 
+             
+             Disk[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}, {0.012, 
+              0.0096}], 
+             PointSize[0.025], 
+             Point[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}], {
+             Thick, Dashed, 
+              Opacity[
+               Rescale[
+                Derivative[1][$CellContext`vV$][$CellContext`z$], {
+                 Derivative[1][$CellContext`vV$][$CellContext`tfinal$], 
+                 Derivative[1][$CellContext`vV$][0]}], 
+               RGBColor[0., 0.84, 0.83]], 
+              If[0 < $CellContext`z$, 
+               Map[
+               Line[{{$CellContext`r$/2, 1.1 $CellContext`Vcan$}, {
+                  1.5 $CellContext`r$, $CellContext`Vcan$ (1.1 + 0.1 #)}}]& , 
+                Range[-1, 1, 0.5]]]}}], 
+           Plot[{
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$], 
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$]}, {$CellContext`x, -$CellContext`r$, $CellContext`r$}, 
+            PlotStyle -> {{Thick, Black}}, Filling -> {1 -> {0, 
+                RGBColor[0, 0.85, 0.8]}, 2 -> {
+                $CellContext`vL$[$CellContext`z$], White}}], 
+           Graphics[{Thick, 
+             
+             Line[{{-$CellContext`r$, $CellContext`Vcan$ - $CellContext`r$}, \
+{-$CellContext`r$, 0}, {$CellContext`r$, 
+                0}, {$CellContext`r$, $CellContext`Vcan$ - \
+$CellContext`r$}}]}], ImageSize -> {150, 375}, AspectRatio -> Full, Axes -> 
+           False, PlotRange -> {{-$CellContext`r$, 0.14}, {0, 0.45}}, 
+           PlotRangePadding -> 0.001]; $CellContext`p1$ = Plot[{
+            $CellContext`vL$[$CellContext`time], 
+            $CellContext`vV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Dashed, Orange}}, 
+           PlotRange -> {0, $CellContext`Vcan$}, 
+           FrameLabel -> {"time (s)", "volume (L)"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`vL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`vV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`vL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`vV$[$CellContext`z$]}]}]; $CellContext`p2$ = Plot[{
+            $CellContext`nL$[$CellContext`time], 
+            $CellContext`nV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Purple}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {0, $CellContext`n0$}, 
+           FrameLabel -> {"time (s)", "moles"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`nL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`nV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`nL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`nV$[$CellContext`z$]}]}]; $CellContext`p3$ = Plot[
+           $CellContext`temperature$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Black}, PlotRange -> {
+             $CellContext`temperature$[$CellContext`tfinal$], \
+$CellContext`T0$}, FrameLabel -> {"time (s)", "temperature (K)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`temperature$[$CellContext`z$]}]}]; \
+$CellContext`p4$ = Plot[
+           $CellContext`pressure$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Blue}, 
+           PlotRange -> {$CellContext`P0$, $CellContext`Psat0$}, 
+           FrameLabel -> {"time (s)", "pressure (bar)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`pressure$[$CellContext`z$]}]}]; 
+        Grid[{{$CellContext`can$, 
+            Show[
+             
+             Switch[$CellContext`npr$$, 1, $CellContext`p1$, 
+              2, $CellContext`p2$, 3, $CellContext`p3$, 4, $CellContext`p4$], 
+             Axes -> False, Frame -> True, LabelStyle -> {17, Black}, 
+             ImagePadding -> {{60, 10}, {45, 10}}, ImageSize -> {425, 375}, 
+             AspectRatio -> Full, PlotRangePadding -> {
+               Scaled[0.015], 
+               Scaled[0.05]}, PlotLabel -> Style[
+               Apply[Row[{
+                  Subscript[
+                   Style["P", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`pressure$[#2], {2, 1}], " bar", 
+                  Spacer[20], 
+                  Subscript[
+                   Style["T", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`temperature$[#2], {3, 1}], " K"}]& , 
+                
+                If[$CellContext`z$ == 0, {"i", 0}, {
+                 "f", $CellContext`tfinal$}]], 18, 
+               If[
+                
+                Or[$CellContext`z$ == 0, $CellContext`z$ == 
+                 If[$CellContext`set$$, $CellContext`spraytime$$, 
+                   264.24 $CellContext`f$$ + 5.4203]], Black, White]]]}}]], 
+      "Specifications" :> {{{$CellContext`npr$$, 4, ""}, {
+         1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+          " pressure "}, ControlType -> Setter, TrackingFunction -> 
+         Dynamic[($CellContext`npr$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         1}, {{$CellContext`set$$, False, ""}, {
+         False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"},
+          ControlType -> RadioButton, ControlPlacement -> 
+         2}, {{$CellContext`f$$, 0.1, "initial volume fraction of liquid"}, 
+         0.1, 1, 0.01, Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`f$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         3}, {{$CellContext`z1$$, 0., "spray gas"}, 0, 
+         Dynamic[264.24 $CellContext`f$$ + 5.4203], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         4}, {{$CellContext`z2$$, 9.333333333333334, "spray gas"}, 0, 
+         Dynamic[$CellContext`spraytime$$], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         5}, {{$CellContext`spraytime$$, 105, "time sprayed (s)"}, 20, 300, 5,
+          Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`spraytime$$ = #; $CellContext`z2$$ = 0; 
+           Null)& ], ControlPlacement -> 6}, 
+        Column[{
+          Row[{
+            Manipulate`Place[1], 
+            Spacer[30], 
+            Manipulate`Place[2]}], 
+          Row[{
+            Manipulate`Place[3], 
+            Spacer[20], 
+            
+            PaneSelector[{
+             False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+             Dynamic[$CellContext`set$$]]}], 
+          PaneSelector[{True -> Manipulate`Place[6]}, 
+           Dynamic[$CellContext`set$$]]}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{626., {258., 263.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->231826322],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 1., $CellContext`npr$$ = 
+    2, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+    105, $CellContext`z1$$ = 0., $CellContext`z2$$ = 9.333333333333334, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`npr$$], 2, ""}, {
+      1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+       " pressure "}}, {{
+       Hold[$CellContext`set$$], False, ""}, {
+      False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"}}, {{
+       Hold[$CellContext`f$$], 1., "initial volume fraction of liquid"}, 0.1, 
+      1, 0.01}, {{
+       Hold[$CellContext`z1$$], 0., "spray gas"}, 0, 
+      Dynamic[264.24 $CellContext`f$$ + 5.4203]}, {{
+       Hold[$CellContext`z2$$], 9.333333333333334, "spray gas"}, 0, 
+      Dynamic[$CellContext`spraytime$$]}, {{
+       Hold[$CellContext`spraytime$$], 105, "time sprayed (s)"}, 20, 300, 5}, {
+      Hold[
+       Column[{
+         Row[{
+           Manipulate`Place[1], 
+           Spacer[30], 
+           Manipulate`Place[2]}], 
+         Row[{
+           Manipulate`Place[3], 
+           Spacer[20], 
+           
+           PaneSelector[{
+            False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+            Dynamic[$CellContext`set$$]]}], 
+         PaneSelector[{True -> Manipulate`Place[6]}, 
+          Dynamic[$CellContext`set$$]]}]], 
+      Manipulate`Dump`ThisIsNotAControl}}, Typeset`size$$ = {
+    583., {184.8544921875, 190.1455078125}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`npr$133056$$ = False, $CellContext`set$133057$$ = 
+    False, $CellContext`f$133058$$ = 0, $CellContext`z1$133059$$ = 
+    0, $CellContext`z2$133060$$ = 0, $CellContext`spraytime$133061$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`f$$ = 1., $CellContext`npr$$ = 
+        2, $CellContext`set$$ = False, $CellContext`spraytime$$ = 
+        105, $CellContext`z1$$ = 0., $CellContext`z2$$ = 9.333333333333334}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`npr$$, $CellContext`npr$133056$$, False], 
+        Hold[$CellContext`set$$, $CellContext`set$133057$$, False], 
+        Hold[$CellContext`f$$, $CellContext`f$133058$$, 0], 
+        Hold[$CellContext`z1$$, $CellContext`z1$133059$$, 0], 
+        Hold[$CellContext`z2$$, $CellContext`z2$133060$$, 0], 
+        Hold[$CellContext`spraytime$$, $CellContext`spraytime$133061$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`z$, $CellContext`T0$, $CellContext`P0$, \
+$CellContext`R$, $CellContext`Vcan$, $CellContext`Psat0$, $CellContext`\
+\[CapitalDelta]Hvap$, $CellContext`Cp$, $CellContext`\[Rho]L$, \
+$CellContext`vL0$, $CellContext`n0$, $CellContext`Psat$, \
+$CellContext`\[Alpha]$, $CellContext`sol$, $CellContext`moles$, \
+$CellContext`temperature$, $CellContext`pressure$, $CellContext`vL$, \
+$CellContext`vV$, $CellContext`nL$, $CellContext`nV$, $CellContext`tfinal$, \
+$CellContext`r$, $CellContext`can$, $CellContext`p1$, $CellContext`p2$, \
+$CellContext`p3$, $CellContext`p4$}, $CellContext`z$ = 
+         If[$CellContext`set$$, $CellContext`z2$$, $CellContext`z1$$]; \
+$CellContext`T0$ = 25; $CellContext`P0$ = 1; $CellContext`R$ = 
+         0.08314; $CellContext`Vcan$ = 0.375; $CellContext`Psat0$ = 
+         10^(4.23406 - 896.171/($CellContext`T0$ + 
+           238.3)); $CellContext`\[CapitalDelta]Hvap$ = 
+         21.8; $CellContext`Cp$ = 0.0707; $CellContext`\[Rho]L$ = 
+         13.57; $CellContext`vL0$ = $CellContext`f$$ $CellContext`Vcan$; \
+$CellContext`n0$ = $CellContext`vL0$ $CellContext`\[Rho]L$ + \
+$CellContext`Psat0$ (($CellContext`Vcan$ - \
+$CellContext`vL0$)/($CellContext`R$ ($CellContext`T0$ + 
+             273))); $CellContext`Psat$[
+           Pattern[$CellContext`t, 
+            Blank[]]] := 
+         10^(4.23406 - 896.171/($CellContext`T[$CellContext`t] + 
+           238.3)); $CellContext`\[Alpha]$ = 
+         Rational[3, 5000]; $CellContext`sol$ = Quiet[
+           Flatten[
+            
+            NDSolve[{
+             Derivative[
+               1][$CellContext`n][$CellContext`t] == \
+(-$CellContext`\[Alpha]$) ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$), 
+              Derivative[
+               1][$CellContext`T][$CellContext`t] == \
+-(($CellContext`\[Alpha]$ ($CellContext`Psat$[$CellContext`t] - \
+$CellContext`P0$)) \
+($CellContext`\[CapitalDelta]Hvap$/($CellContext`n[$CellContext`t] \
+$CellContext`Cp$))), $CellContext`n[0] == $CellContext`n0$, $CellContext`T[
+               0] == $CellContext`T0$}, {$CellContext`n, $CellContext`T}, \
+{$CellContext`t, 0, 300}]]]; $CellContext`moles$ = Evaluate[
+           
+           ReplaceAll[$CellContext`n, $CellContext`sol$]]; \
+$CellContext`temperature$ = Evaluate[
+           
+           ReplaceAll[$CellContext`T, $CellContext`sol$]]; \
+$CellContext`pressure$[
+           Pattern[$CellContext`t$, 
+            Blank[]]] = Evaluate[
+           ReplaceAll[
+            $CellContext`Psat$[$CellContext`t$], $CellContext`sol$]]; \
+$CellContext`vL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := ($CellContext`moles$[$CellContext`t$] - \
+$CellContext`Vcan$ ($CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 
+             273))))/($CellContext`\[Rho]L$ - \
+$CellContext`pressure$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`vV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`Vcan$ - \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nL$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`\[Rho]L$ \
+$CellContext`vL$[$CellContext`t$]; $CellContext`nV$[
+           Pattern[$CellContext`t$, 
+            
+            Blank[]]] := $CellContext`pressure$[$CellContext`t$] \
+($CellContext`vV$[$CellContext`t$]/($CellContext`R$ \
+($CellContext`temperature$[$CellContext`t$] + 273))); $CellContext`tfinal$ = 
+         If[$CellContext`set$$, $CellContext`spraytime$$, 
+           ReplaceAll[$CellContext`tm, 
+            Quiet[
+             
+             FindRoot[$CellContext`temperature$[$CellContext`tm] == -5, \
+{$CellContext`tm, 0}]]]]; $CellContext`r$ = 0.08; $CellContext`can$ = Show[
+           Graphics[{{
+              Thickness[0.04], 
+              
+              Line[{{0, 1.01 $CellContext`Vcan$}, {
+                0, 1.02 $CellContext`Vcan$}}]}, 
+             EdgeForm[Thick], 
+             FaceForm[White], 
+             
+             Rectangle[{(-$CellContext`r$)/3, 
+               1.02 $CellContext`Vcan$}, {$CellContext`r$/3, 
+               1.175 $CellContext`Vcan$}], 
+             Map[
+             Line[{{# ($CellContext`r$/3), 
+                 1.02 $CellContext`Vcan$}, {# ($CellContext`r$/3), 
+                 1.175 $CellContext`Vcan$}}]& , 
+              Range[-1, 1, 0.25]], 
+             
+             Disk[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}, {0.012, 
+              0.0096}], 
+             PointSize[0.025], 
+             Point[{$CellContext`r$/6, 1.1 $CellContext`Vcan$}], {
+             Thick, Dashed, 
+              Opacity[
+               Rescale[
+                Derivative[1][$CellContext`vV$][$CellContext`z$], {
+                 Derivative[1][$CellContext`vV$][$CellContext`tfinal$], 
+                 Derivative[1][$CellContext`vV$][0]}], 
+               RGBColor[0., 0.84, 0.83]], 
+              If[0 < $CellContext`z$, 
+               Map[
+               Line[{{$CellContext`r$/2, 1.1 $CellContext`Vcan$}, {
+                  1.5 $CellContext`r$, $CellContext`Vcan$ (1.1 + 0.1 #)}}]& , 
+                Range[-1, 1, 0.5]]]}}], 
+           Plot[{
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$], 
+             Evaluate[
+             Sqrt[$CellContext`r$^2 - $CellContext`x^2] + $CellContext`Vcan$ - \
+$CellContext`r$]}, {$CellContext`x, -$CellContext`r$, $CellContext`r$}, 
+            PlotStyle -> {{Thick, Black}}, Filling -> {1 -> {0, 
+                RGBColor[0, 0.85, 0.8]}, 2 -> {
+                $CellContext`vL$[$CellContext`z$], White}}], 
+           Graphics[{Thick, 
+             
+             Line[{{-$CellContext`r$, $CellContext`Vcan$ - $CellContext`r$}, \
+{-$CellContext`r$, 0}, {$CellContext`r$, 
+                0}, {$CellContext`r$, $CellContext`Vcan$ - \
+$CellContext`r$}}]}], ImageSize -> {150, 375}, AspectRatio -> Full, Axes -> 
+           False, PlotRange -> {{-$CellContext`r$, 0.14}, {0, 0.45}}, 
+           PlotRangePadding -> 0.001]; $CellContext`p1$ = Plot[{
+            $CellContext`vL$[$CellContext`time], 
+            $CellContext`vV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Dashed, Orange}}, 
+           PlotRange -> {0, $CellContext`Vcan$}, 
+           FrameLabel -> {"time (s)", "volume (L)"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`vL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`vV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`vL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`vV$[$CellContext`z$]}]}]; $CellContext`p2$ = Plot[{
+            $CellContext`nL$[$CellContext`time], 
+            $CellContext`nV$[$CellContext`time]}, {$CellContext`time, 
+            0, $CellContext`tfinal$}, 
+           PlotStyle -> {{Thick, Purple}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {0, $CellContext`n0$}, 
+           FrameLabel -> {"time (s)", "moles"}, Epilog -> {
+             Apply[Text[
+               Framed[
+                Style[#, 18], Background -> White, FrameStyle -> None, 
+                FrameMargins -> Tiny], #2]& , {{
+               "liquid", {0.33 $CellContext`tfinal$, 
+                 $CellContext`nL$[0.33 $CellContext`tfinal$]}}, {
+               "vapor", {0.666 $CellContext`tfinal$, 
+                 $CellContext`nV$[0.666 $CellContext`tfinal$]}}}, {1}], 
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`nL$[$CellContext`z$]}], 
+             Point[{$CellContext`z$, 
+               $CellContext`nV$[$CellContext`z$]}]}]; $CellContext`p3$ = Plot[
+           $CellContext`temperature$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Black}, PlotRange -> {
+             $CellContext`temperature$[$CellContext`tfinal$], \
+$CellContext`T0$}, FrameLabel -> {"time (s)", "temperature (K)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`temperature$[$CellContext`z$]}]}]; \
+$CellContext`p4$ = Plot[
+           $CellContext`pressure$[$CellContext`time], {$CellContext`time, 
+            0, $CellContext`tfinal$}, PlotStyle -> {Thick, Blue}, 
+           PlotRange -> {$CellContext`P0$, $CellContext`Psat0$}, 
+           FrameLabel -> {"time (s)", "pressure (bar)"}, Epilog -> {
+             PointSize[0.025], 
+             Point[{$CellContext`z$, 
+               $CellContext`pressure$[$CellContext`z$]}]}]; 
+        Grid[{{$CellContext`can$, 
+            Show[
+             
+             Switch[$CellContext`npr$$, 1, $CellContext`p1$, 
+              2, $CellContext`p2$, 3, $CellContext`p3$, 4, $CellContext`p4$], 
+             Axes -> False, Frame -> True, LabelStyle -> {17, Black}, 
+             ImagePadding -> {{60, 10}, {45, 10}}, ImageSize -> {425, 375}, 
+             AspectRatio -> Full, PlotRangePadding -> {
+               Scaled[0.015], 
+               Scaled[0.05]}, PlotLabel -> Style[
+               Apply[Row[{
+                  Subscript[
+                   Style["P", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`pressure$[#2], {2, 1}], " bar", 
+                  Spacer[20], 
+                  Subscript[
+                   Style["T", Italic], #], " = ", 
+                  NumberForm[
+                   $CellContext`temperature$[#2], {3, 1}], " K"}]& , 
+                
+                If[$CellContext`z$ == 0, {"i", 0}, {
+                 "f", $CellContext`tfinal$}]], 18, 
+               If[
+                
+                Or[$CellContext`z$ == 0, $CellContext`z$ == 
+                 If[$CellContext`set$$, $CellContext`spraytime$$, 
+                   264.24 $CellContext`f$$ + 5.4203]], Black, White]]]}}]], 
+      "Specifications" :> {{{$CellContext`npr$$, 2, ""}, {
+         1 -> " volume ", 2 -> " moles ", 3 -> " temperature ", 4 -> 
+          " pressure "}, ControlType -> Setter, TrackingFunction -> 
+         Dynamic[($CellContext`npr$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         1}, {{$CellContext`set$$, False, ""}, {
+         False -> " stop at -5 \[Degree]C ", True -> " adjust stopping time"},
+          ControlType -> RadioButton, ControlPlacement -> 
+         2}, {{$CellContext`f$$, 1., "initial volume fraction of liquid"}, 
+         0.1, 1, 0.01, Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`f$$ = #; $CellContext`z1$$ = 
+            0; $CellContext`z2$$ = 0; Null)& ], ControlPlacement -> 
+         3}, {{$CellContext`z1$$, 0., "spray gas"}, 0, 
+         Dynamic[264.24 $CellContext`f$$ + 5.4203], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         4}, {{$CellContext`z2$$, 9.333333333333334, "spray gas"}, 0, 
+         Dynamic[$CellContext`spraytime$$], ControlType -> Trigger, 
+         AnimationRate -> 30, ControlPlacement -> 
+         5}, {{$CellContext`spraytime$$, 105, "time sprayed (s)"}, 20, 300, 5,
+          Appearance -> "Labeled", TrackingFunction -> 
+         Dynamic[($CellContext`spraytime$$ = #; $CellContext`z2$$ = 0; 
+           Null)& ], ControlPlacement -> 6}, 
+        Column[{
+          Row[{
+            Manipulate`Place[1], 
+            Spacer[30], 
+            Manipulate`Place[2]}], 
+          Row[{
+            Manipulate`Place[3], 
+            Spacer[20], 
+            
+            PaneSelector[{
+             False -> Manipulate`Place[4], True -> Manipulate`Place[5]}, 
+             Dynamic[$CellContext`set$$]]}], 
+          PaneSelector[{True -> Manipulate`Place[6]}, 
+           Dynamic[$CellContext`set$$]]}]}, "Options" :> {}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{626., {258., 263.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->158942067]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ "The total volume of the can ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["V", "can"], TraditionalForm]], "InlineMath"],
+ " is 0.375 L, and the initial volume of liquid in the can ",
+ Cell[BoxData[
+  FormBox[
+   SubsuperscriptBox["V", "0", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " is:"
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515920583499346`*^9}, {
+  3.651592160686788*^9, 3.651592194768738*^9}, {3.651867580310506*^9, 
+  3.651867591908169*^9}, {3.6519492301605434`*^9, 3.6519492843555317`*^9}, {
+  3.651949315203174*^9, 3.6519493256221237`*^9}, {3.6519493670185227`*^9, 
+  3.651949400107519*^9}, {3.6537543291789837`*^9, 3.653754339987647*^9}},
+ CellID->291613031],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubsuperscriptBox["V", "0", 
+     StyleBox["L",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{"f", " ", 
+     SubscriptBox["V", "can"]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515920583499346`*^9}, {
+   3.651592160686788*^9, 3.651592215592929*^9}, 3.653754344602269*^9},
+ CellID->879942446],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["f", TraditionalForm]], "InlineMath"],
+ " is the initial volume fraction of liquid."
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515920583499346`*^9}, {
+  3.651592160686788*^9, 3.6515922538781185`*^9}, {3.651867565671668*^9, 
+  3.6518675701029215`*^9}, {3.6520133577091217`*^9, 3.6520133581331453`*^9}, {
+  3.6534786373809257`*^9, 3.6534786382915688`*^9}},
+ CellID->794859098],
+
+Cell[TextData[{
+ "Initially all contents are at room temperature (300 K), and the pressure \
+inside the can is the saturation pressure ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["P", "sat"], TraditionalForm]], "InlineMath"],
+ " at 300 K.",
+ " ",
+ "The Antoine equation is used to calculate ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["P", "sat"], TraditionalForm]], "InlineMath"],
+ ":"
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515920793541365`*^9}, 
+   3.653478648712965*^9, {3.6537543560739937`*^9, 3.6537543598017607`*^9}, 
+   3.654014386728163*^9},
+ CellID->47002862],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["P", "sat"], "=", 
+    SuperscriptBox["10", 
+     RowBox[{"A", "-", 
+      FractionBox["B", 
+       RowBox[{"T", "+", "C"}]]}]]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515920959450855`*^9}, {
+  3.653754379678884*^9, 3.65375439875251*^9}},
+ CellID->166088824],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["P", "sat"], TraditionalForm]], "InlineMath"],
+ " is in bar, ",
+ Cell[BoxData[
+  FormBox["T", TraditionalForm]], "InlineMath"],
+ " is temperature (K) and ",
+ Cell[BoxData[
+  FormBox["A", TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox["B", TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox["C", TraditionalForm]], "InlineMath"],
+ " are Antoine constants."
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.651592133605239*^9}, {
+   3.654015339912978*^9, 3.6540153433131237`*^9}, 3.680033163415332*^9, {
+   3.68166614792275*^9, 3.681666151015489*^9}},
+ CellID->257919867],
+
+Cell[TextData[{
+ "The total moles ",
+ Cell[BoxData[
+  FormBox["n", TraditionalForm]], "InlineMath"],
+ " are equal to the liquid moles ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["n", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " plus the vapor moles ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["n", 
+    StyleBox["V",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ ":"
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+  3.651592303682967*^9, 3.6515925119328785`*^9}, {3.651593179697072*^9, 
+  3.651593207906686*^9}, {3.6536603199462223`*^9, 3.653660320827273*^9}, {
+  3.653754407392262*^9, 3.653754426911583*^9}, {3.654015373027851*^9, 
+  3.654015373306217*^9}},
+ CellID->41841307],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "=", 
+    RowBox[{
+     SuperscriptBox["n", 
+      StyleBox["L",
+       FontSlant->"Plain"]], "+", 
+     SuperscriptBox["n", 
+      StyleBox["V",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.65159251808123*^9}, 3.653754433471437*^9, {
+   3.654015386251267*^9, 3.654015387273525*^9}},
+ CellID->250525888],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["n", 
+     StyleBox["L",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{
+     SuperscriptBox["\[Rho]", 
+      StyleBox["L",
+       FontSlant->"Plain"]], " ", 
+     SuperscriptBox["V", 
+      StyleBox["L",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.6515925417095814`*^9}, 3.653754439119089*^9},
+ CellID->563793043],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["n", 
+     StyleBox["V",
+      FontSlant->"Plain"]], "=", 
+    FractionBox[
+     RowBox[{
+      SuperscriptBox["V", 
+       StyleBox["V",
+        FontSlant->"Plain"]], " ", 
+      SuperscriptBox["P", "sat"]}], 
+     RowBox[{"R", " ", "T"}]]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.651592568890136*^9}, 3.6536603312768707`*^9, 
+   3.653754441823092*^9},
+ CellID->850406981],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[Rho]", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " is the liquid molar density (mol/L), ",
+ Cell[BoxData[
+  FormBox["R", TraditionalForm]], "InlineMath"],
+ " is the ideal gas constant ([L bar]/[mol K]), and ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["V", 
+    StyleBox["L",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["V", 
+    StyleBox["V",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " are the liquid and vapor volumes at any time."
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.651592627109466*^9}, {3.6515936319309387`*^9, 
+   3.6515936699921155`*^9}, {3.653478731635821*^9, 3.6534787577803817`*^9}, 
+   3.6536603508369894`*^9, 3.654014390372491*^9, {3.6800331800197654`*^9, 
+   3.6800331926136045`*^9}, {3.681666300463571*^9, 3.681666300956601*^9}},
+ CellID->196677009],
+
+Cell["\<\
+The liquid volume is found by rearranging the equation for total moles:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.6515926868978853`*^9}, 3.6518479767232447`*^9},
+ CellID->232008480],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["V", 
+     StyleBox["L",
+      FontSlant->"Plain"]], "=", 
+    FractionBox[
+     RowBox[{"n", "-", 
+      RowBox[{
+       SubscriptBox["V", "can"], " ", 
+       RowBox[{
+        SuperscriptBox["P", "sat"], "/", "R"}], " ", "T"}]}], 
+     RowBox[{
+      SuperscriptBox["\[Rho]", 
+       StyleBox["L",
+        FontSlant->"Plain"]], "-", 
+      RowBox[{
+       RowBox[{
+        SuperscriptBox["P", "sat"], "/", "R"}], " ", "T"}]}]]}], 
+   TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.6515926748101945`*^9, 3.651592727218192*^9}, 
+   3.6519511908510685`*^9, 3.653754475845916*^9, {3.6537608108550386`*^9, 
+   3.653760824625175*^9}},
+ CellID->320680653],
+
+Cell[TextData[{
+ "with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["V", 
+     StyleBox["V",
+      FontSlant->"Plain"]], "=", 
+    RowBox[{
+     SubscriptBox["V", "can"], "-", 
+     SuperscriptBox["V", 
+      StyleBox["L",
+       FontSlant->"Plain"]]}]}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6515926748101945`*^9, 3.6515927697176228`*^9}, {
+   3.6520134622791023`*^9, 3.652013463169153*^9}, {3.653478763620549*^9, 
+   3.6534787645591927`*^9}, 3.653754479109779*^9, {3.6800332106872683`*^9, 
+   3.680033211272871*^9}},
+ CellID->628499920],
+
+Cell["From an unsteady-state mole balance:", "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.6515923229340677`*^9}, 3.6515932173602266`*^9, {
+   3.654015413001842*^9, 3.654015413328487*^9}},
+ CellID->78302062],
+
+Cell[TextData[Cell[BoxData[
+ FormBox[
+  RowBox[{
+   FractionBox[
+    RowBox[{"\[DifferentialD]", "n"}], 
+    RowBox[{"\[DifferentialD]", "t"}]], "=", 
+   RowBox[{
+    RowBox[{"-", "\[Alpha]"}], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      SuperscriptBox["P", "sat"], "-", "1"}], ")"}]}]}], 
+  TraditionalForm]], "InlineMath"]], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+  3.651592303682967*^9, 3.6515923521887417`*^9}, {3.6515932346712165`*^9, 
+  3.6515932346752167`*^9}},
+ CellID->1029651035],
+
+Cell[TextData[{
+ "at ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"t", "=", "0"}], TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"n", "=", 
+    SubscriptBox["n", 
+     RowBox[{"T", "=", "300"}]]}], TraditionalForm]], "InlineMath"],
+ ","
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.6515923521887417`*^9}, {3.6515932346712165`*^9, 
+   3.6515932661030145`*^9}, 3.6537544919574633`*^9, {3.681063307947258*^9, 
+   3.681063340102566*^9}},
+ CellID->358657399],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox["t", TraditionalForm]], "InlineMath"],
+ " is time (s), ",
+ Cell[BoxData[
+  FormBox["\[Alpha]", TraditionalForm]], "InlineMath"],
+ " is a constant (mol/[bar s]) and the air pressure outside of the can is 1 \
+bar."
+}], "DetailNotes",
+ CellChangeTimes->{{3.65159188151482*^9, 3.6515921336012387`*^9}, {
+   3.651592303682967*^9, 3.6515924353084955`*^9}, {3.651593221081439*^9, 
+   3.6515932217894793`*^9}, 3.651847979525405*^9, {3.6800332246275115`*^9, 
+   3.680033227959318*^9}, 3.681666360785108*^9},
+ CellID->217837831],
+
+Cell["From the energy balance:", "DetailNotes",
+ CellChangeTimes->{{3.651593277624673*^9, 3.6515932886263027`*^9}},
+ CellID->71908871],
+
+Cell[TextData[Cell[BoxData[
+ FormBox[
+  RowBox[{
+   FractionBox[
+    RowBox[{"\[DifferentialD]", "T"}], 
+    RowBox[{"\[DifferentialD]", "t"}]], "=", 
+   RowBox[{"-", 
+    FractionBox[
+     RowBox[{"\[Alpha]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox["P", "sat"], "-", "1"}], ")"}], " ", "\[CapitalDelta]",
+       "\[InvisibleSpace]", 
+      SuperscriptBox["H", "vap"]}], 
+     RowBox[{"n", " ", "Cp"}]]}]}], 
+  TraditionalForm]], "InlineMath"]], "DetailNotes",
+ CellChangeTimes->{{3.651593277624673*^9, 3.6515933291606207`*^9}, {
+  3.651593391930211*^9, 3.6515933919332113`*^9}},
+ CellID->436390520],
+
+Cell[TextData[{
+ "at ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"t", "=", "0"}], TraditionalForm]], "InlineMath"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"T", "=", 
+    RowBox[{"300", " ", "K"}]}], TraditionalForm]], "InlineMath"],
+ ", where ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[CapitalDelta]", "\[InvisibleSpace]", 
+    SuperscriptBox["H", "vap"]}], TraditionalForm]], "InlineMath"],
+ " is the heat of vaporization (kJ/mol), and ",
+ Cell[BoxData[
+  FormBox["Cp", TraditionalForm]], "InlineMath"],
+ " is the liquid heat capacity (kJ/[mol K])."
+}], "DetailNotes",
+ CellChangeTimes->{{3.651593277624673*^9, 3.651593387910981*^9}, 
+   3.653754509824958*^9, {3.680033243269346*^9, 3.6800332465815525`*^9}},
+ CellID->163297344],
+
+Cell["\<\
+The screencast video at [1] shows how to use this Demonstration.\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.680033293616779*^9, 3.680033312361244*^9}},
+ CellID->8532041],
+
+Cell["Reference", "DetailNotes",
+ CellChangeTimes->{{3.680033293616779*^9, 3.6800333143736477`*^9}},
+ CellID->63978845],
+
+Cell[TextData[{
+ "[1] ",
+ StyleBox["Compressed-Gas Spray",
+  FontSlant->"Italic"],
+ " [Video]. (Aug 31, 2016) ",
+ ButtonBox["www.colorado.edu/learncheme/thermodynamics/CompressedGasSray.html",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://www.colorado.edu/learncheme/thermodynamics/CompressedGasSray.\
+html"], None},
+  ButtonNote->
+   "http://www.colorado.edu/learncheme/thermodynamics/CompressedGasSray.html"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.680033293616779*^9, 3.68003333924251*^9}, {
+  3.6816663859976187`*^9, 3.681666416427409*^9}},
+ CellID->218111877]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.653660729725661*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6536607311757436`*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.65375451758228*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.653660732021792*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.651866547744446*^9}, {
+  3.6800454525881305`*^9, 3.6800454525881305`*^9}},
+ CellID->437486020],
+
+Cell["mechanical engineering", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.651866547744446*^9}, {
+  3.6800454525881305`*^9, 3.680045457311191*^9}},
+ CellID->250754668],
+
+Cell["thermodynamics", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.6518665510086327`*^9}},
+ CellID->225004512],
+
+Cell["unsteady state energy balance", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.651866562554293*^9}, {
+  3.6534788095090947`*^9, 3.6534788150680413`*^9}, {3.680033376334358*^9, 
+  3.6800333764123583`*^9}},
+ CellID->584930883],
+
+Cell["mass balance", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.6518665715998106`*^9}, {
+  3.653478819435136*^9, 3.6534788207260547`*^9}},
+ CellID->154257091],
+
+Cell["vapor-liquid equilibrium", "SearchTerms",
+ CellChangeTimes->{{3.6518665424351425`*^9, 3.6518665835744953`*^9}},
+ CellID->302627264],
+
+Cell["VLE", "SearchTerms",
+ CellChangeTimes->{{3.6800333647411366`*^9, 3.6800333692555447`*^9}},
+ CellID->44449264],
+
+Cell["unsteady state", "SearchTerms",
+ CellChangeTimes->{{3.6800333647411366`*^9, 3.6800333738967533`*^9}},
+ CellID->444360682]
+}, Open  ]],
+
+Cell["", "RelatedLinksSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"]
+}], "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.609784090103136*^9}, 
+   3.60978412565917*^9, {3.6109793544694567`*^9, 3.6109793544704585`*^9}, {
+   3.6109921182558336`*^9, 3.6109921182578335`*^9}, {3.6325066799655933`*^9, 
+   3.632506689057065*^9}, {3.63258095035064*^9, 3.632580960165201*^9}, {
+   3.632675426689807*^9, 3.6326754405424213`*^9}, {3.6508294982911205`*^9, 
+   3.6508295003882403`*^9}},
+ CellID->9119879],
+
+Cell[TextData[{
+ "Additional contributions by: ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ " "
+}], "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.609784090103136*^9}, 
+   3.60978412565917*^9, {3.6109793544694567`*^9, 3.6109793544704585`*^9}, {
+   3.6109921182558336`*^9, 3.6109921185688515`*^9}, {3.6321448389752903`*^9, 
+   3.632144846238706*^9}, {3.632144877483493*^9, 3.6321448807876825`*^9}, {
+   3.6322490388279934`*^9, 3.6322491007665367`*^9}, {3.632495028348035*^9, 
+   3.632495036484501*^9}, {3.6325066930439334`*^9, 3.6325066935222616`*^9}},
+ CellID->142231542],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{{3.609784090101136*^9, 3.6097841105263042`*^9}, {
+  3.610992060718543*^9, 3.610992060722543*^9}, {3.632580939566023*^9, 
+  3.632580959043137*^9}},
+ CellID->122665613]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{729, 877},
+WindowMargins->{{307, Automatic}, {122, Automatic}},
+FrontEndVersion->"10.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (July 29, \
+2015)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "AutomaticAnimation"->{
+  Cell[129083, 2972, 1505, 32, 29, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[130591, 3006, 908, 21, 29, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]},
+ "CreateAndDeleteLocators"->{
+  Cell[127158, 2919, 637, 15, 29, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "DragLocators"->{
+  Cell[126815, 2906, 340, 11, 29, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "GamepadControls"->{
+  Cell[128688, 2960, 392, 10, 29, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "ResizeImages"->{
+  Cell[125778, 2877, 353, 9, 29, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[126134, 2888, 678, 16, 29, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "SliderZoom"->{
+  Cell[127798, 2936, 887, 22, 29, "ControlSuggestions",
+   CellTags->"SliderZoom"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"AutomaticAnimation", 135221, 3138},
+ {"BookmarkAnimation", 135339, 3141},
+ {"CreateAndDeleteLocators", 135461, 3144},
+ {"DragLocators", 135578, 3147},
+ {"GamepadControls", 135687, 3150},
+ {"ResizeImages", 135796, 3153},
+ {"RotateAndZoomIn3D", 135906, 3156},
+ {"SliderZoom", 136015, 3159}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 107, 1, 76, "DemoTitle"],
+Cell[690, 25, 33, 0, 275, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[748, 29, 29, 0, 201, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[802, 33, 31925, 771, 2201, "Input"],
+Cell[32730, 806, 15579, 317, 533, "Output",
+ CellID->200605607]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[48358, 1129, 36, 0, 181, "ManipulateCaptionSection"],
+Cell[48397, 1131, 735, 12, 103, "ManipulateCaption",
+ CellID->60479657],
+Cell[49135, 1145, 1178, 24, 103, "ManipulateCaption",
+ CellID->214934696]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[50350, 1174, 28, 0, 179, "ThumbnailSection"],
+Cell[50381, 1176, 15583, 317, 533, "Output",
+ CellID->262791729]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66001, 1498, 28, 0, 149, "SnapshotsSection"],
+Cell[66032, 1500, 15635, 317, 533, "Output",
+ CellID->135769316],
+Cell[81670, 1819, 15639, 317, 533, "Output",
+ CellID->231826322],
+Cell[97312, 2138, 15635, 317, 533, "Output",
+ CellID->158942067]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[112984, 2460, 26, 0, 357, "DetailsSection"],
+Cell[113013, 2462, 748, 18, 25, "DetailNotes",
+ CellID->291613031],
+Cell[113764, 2482, 414, 13, 25, "DetailNotes",
+ CellID->879942446],
+Cell[114181, 2497, 447, 10, 23, "DetailNotes",
+ CellID->794859098],
+Cell[114631, 2509, 599, 17, 40, "DetailNotes",
+ CellID->47002862],
+Cell[115233, 2528, 396, 13, 33, "DetailNotes",
+ CellID->166088824],
+Cell[115632, 2543, 690, 22, 24, "DetailNotes",
+ CellID->257919867],
+Cell[116325, 2567, 777, 23, 24, "DetailNotes",
+ CellID->41841307],
+Cell[117105, 2592, 502, 16, 24, "DetailNotes",
+ CellID->250525888],
+Cell[117610, 2610, 528, 18, 24, "DetailNotes",
+ CellID->563793043],
+Cell[118141, 2630, 561, 19, 34, "DetailNotes",
+ CellID->850406981],
+Cell[118705, 2651, 1048, 29, 41, "DetailNotes",
+ CellID->196677009],
+Cell[119756, 2682, 265, 5, 23, "DetailNotes",
+ CellID->232008480],
+Cell[120024, 2689, 756, 26, 45, "DetailNotes",
+ CellID->320680653],
+Cell[120783, 2717, 596, 19, 24, "DetailNotes",
+ CellID->628499920],
+Cell[121382, 2738, 271, 4, 23, "DetailNotes",
+ CellID->78302062],
+Cell[121656, 2744, 533, 15, 31, "DetailNotes",
+ CellID->1029651035],
+Cell[122192, 2761, 549, 17, 23, "DetailNotes",
+ CellID->358657399],
+Cell[122744, 2780, 570, 14, 23, "DetailNotes",
+ CellID->217837831],
+Cell[123317, 2796, 134, 2, 23, "DetailNotes",
+ CellID->71908871],
+Cell[123454, 2800, 624, 18, 41, "DetailNotes",
+ CellID->436390520],
+Cell[124081, 2820, 730, 22, 40, "DetailNotes",
+ CellID->163297344],
+Cell[124814, 2844, 179, 4, 23, "DetailNotes",
+ CellID->8532041],
+Cell[124996, 2850, 119, 2, 23, "DetailNotes",
+ CellID->63978845],
+Cell[125118, 2854, 583, 16, 39, "DetailNotes",
+ CellID->218111877]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[125738, 2875, 37, 0, 131, "ControlSuggestionsSection"],
+Cell[125778, 2877, 353, 9, 29, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[126134, 2888, 678, 16, 29, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[126815, 2906, 340, 11, 29, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[127158, 2919, 637, 15, 29, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[127798, 2936, 887, 22, 29, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[128688, 2960, 392, 10, 29, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[129083, 2972, 1505, 32, 29, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[130591, 3006, 908, 21, 29, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[131536, 3032, 30, 0, 165, "SearchTermsSection"],
+Cell[131569, 3034, 184, 3, 23, "SearchTerms",
+ CellID->437486020],
+Cell[131756, 3039, 184, 3, 23, "SearchTerms",
+ CellID->250754668],
+Cell[131943, 3044, 127, 2, 23, "SearchTerms",
+ CellID->225004512],
+Cell[132073, 3048, 244, 4, 23, "SearchTerms",
+ CellID->584930883],
+Cell[132320, 3054, 176, 3, 23, "SearchTerms",
+ CellID->154257091],
+Cell[132499, 3059, 137, 2, 23, "SearchTerms",
+ CellID->302627264],
+Cell[132639, 3063, 115, 2, 23, "SearchTerms",
+ CellID->44449264],
+Cell[132757, 3067, 127, 2, 23, "SearchTerms",
+ CellID->444360682]
+}, Open  ]],
+Cell[132899, 3072, 31, 0, 149, "RelatedLinksSection"],
+Cell[CellGroupData[{
+Cell[132955, 3076, 25, 0, 137, "AuthorSection"],
+Cell[132983, 3078, 727, 16, 23, "Author",
+ CellID->9119879],
+Cell[133713, 3096, 793, 17, 23, "Author",
+ CellID->142231542],
+Cell[134509, 3115, 297, 7, 23, "Author",
+ CellID->122665613]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

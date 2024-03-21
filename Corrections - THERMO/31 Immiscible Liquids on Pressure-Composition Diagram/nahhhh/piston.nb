@@ -1,0 +1,685 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     28449,        675]
+NotebookOptionsPosition[     28019,        659]
+NotebookOutlinePosition[     28360,        674]
+CellTagsIndexPosition[     28317,        671]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "comp", ",", "T", ",", "Psat1", ",", "Psat2", ",", "P", ",", "xp", ",", 
+       "Py1", ",", "Py2", ",", "phase", ",", "height", ",", "P1", ",", "P2", 
+       ",", "location", ",", "R1", ",", "R2", ",", "R3", ",", "R4", ",", "RA",
+        ",", "RB", ",", "RC", ",", "norm", ",", "yb", ",", "fL1", ",", "fL2", 
+       ",", "fV", ",", "L", ",", "V", ",", "piston"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"comp", "=", "0.3"}], ";", 
+      RowBox[{"T", "=", "122"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Psat1", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"4.72583", "-", 
+          RowBox[{"1660.652", "/", 
+           RowBox[{"(", 
+            RowBox[{"T", "+", "271.5"}], ")"}]}]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Psat2", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"(", 
+         RowBox[{"5.0768", "-", 
+          RowBox[{"1659.793", "/", 
+           RowBox[{"(", 
+            RowBox[{"T", "+", "227.1"}], ")"}]}]}], ")"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"P", "=", 
+       RowBox[{"p", "/.", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Psat1", "/", "p"}], "\[Equal]", 
+           RowBox[{"1", "-", 
+            RowBox[{"Psat2", "/", "p"}]}]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"p", ",", "0.01"}], "}"}]}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"xp", "=", 
+       RowBox[{"Psat1", "/", "P"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py1", "[", "y_", "]"}], ":=", 
+       RowBox[{"Psat1", "/", "y"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Py2", "[", "y_", "]"}], ":=", 
+       RowBox[{"Psat2", "/", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", "y"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"phase", "=", 
+       RowBox[{"Piecewise", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Py2", "[", "comp", "]"}], ",", 
+            RowBox[{"0", "\[LessEqual]", "comp", "\[LessEqual]", "xp"}]}], 
+           "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Py1", "[", "comp", "]"}], ",", 
+            RowBox[{"xp", "<", "comp", "\[LessEqual]", "1"}]}], "}"}]}], 
+         "}"}], "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"control", " ", "y"}], "-", 
+        RowBox[{"location", " ", "of", " ", "point"}]}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"height", "=", 
+       RowBox[{"6", "-", "pistonheight"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"P1", "=", 
+       RowBox[{"height", "+", "1"}]}], ";", 
+      RowBox[{"P2", "=", "height"}], ";", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"P2", "=", 
+         RowBox[{"height", "-", "1"}]}], ";"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"location", "=", 
+       RowBox[{
+        RowBox[{"Sort", "[", 
+         RowBox[{"{", 
+          RowBox[{"P1", ",", 
+           RowBox[{"Which", "[", 
+            RowBox[{
+             RowBox[{"comp", "\[Equal]", "0"}], ",", 
+             RowBox[{"Py2", "[", "0", "]"}], ",", 
+             RowBox[{"comp", "\[Equal]", "1"}], ",", 
+             RowBox[{"Py1", "[", "1", "]"}], ",", 
+             RowBox[{"0", "<", "comp", "<", "1"}], ",", "P"}], "]"}], ",", 
+           "P2"}], "}"}], "]"}], "[", 
+        RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "define", " ", "step", " ", "in", " ", "order", " ", "to", " ", "set", 
+        " ", "control", " ", "boundaries"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"location", ">", "P"}], ",", 
+        RowBox[{"step", "=", "0"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"0", "<", "comp", "<", "1"}], "\[And]", 
+         RowBox[{"location", "\[Equal]", "P"}]}], ",", 
+        RowBox[{"step", "=", "10"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"0", "<", "comp", "<", "1"}], "\[And]", 
+         RowBox[{"phase", "\[LessEqual]", "location", "<", "P"}]}], ",", 
+        RowBox[{"step", "=", "1"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"location", "<", "phase"}], ",", 
+        RowBox[{"step", "=", "2"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"comp", "\[Equal]", "0"}], "\[And]", 
+         RowBox[{
+          RowBox[{"Py2", "[", "0", "]"}], "<", "location", "\[LessEqual]", 
+          "P"}]}], ",", 
+        RowBox[{"step", "=", "3"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"comp", "\[Equal]", "1"}], "\[And]", 
+         RowBox[{
+          RowBox[{"Py1", "[", "1", "]"}], "<", "location", "\[LessEqual]", 
+          "P"}]}], ",", 
+        RowBox[{"step", "=", "4"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"comp", "\[Equal]", "0"}], "\[And]", 
+         RowBox[{"location", "\[Equal]", 
+          RowBox[{"Py2", "[", "0", "]"}]}]}], ",", 
+        RowBox[{"step", "=", "30"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"comp", "\[Equal]", "1"}], "\[And]", 
+         RowBox[{"location", "\[Equal]", 
+          RowBox[{"Py1", "[", "1", "]"}]}]}], ",", 
+        RowBox[{"step", "=", "40"}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", "regions", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"R1", "=", 
+       RowBox[{"P", "<", "location"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R2", "=", 
+       RowBox[{
+        RowBox[{"0", "<", "comp", "\[LessEqual]", "xp"}], "\[And]", 
+        RowBox[{
+         RowBox[{"Py2", "[", "comp", "]"}], "\[LessEqual]", "location", "<", 
+         "P"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R3", "=", 
+       RowBox[{
+        RowBox[{"xp", "<", "comp", "<", "1"}], "\[And]", 
+        RowBox[{
+         RowBox[{"Py1", "[", "comp", "]"}], "\[LessEqual]", "location", "<", 
+         "P"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"R4", "=", 
+       RowBox[{"location", "<", "phase"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RA", "=", 
+       RowBox[{
+        RowBox[{"0", "<", "comp", "<", "1"}], "\[And]", 
+        RowBox[{"location", "\[Equal]", "P"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RB", "=", 
+       RowBox[{
+        RowBox[{"comp", "\[Equal]", "0"}], "\[And]", 
+        RowBox[{
+        "phase", "\[LessEqual]", "location", "\[LessEqual]", "P"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"RC", "=", 
+       RowBox[{
+        RowBox[{"comp", "\[Equal]", "1"}], "\[And]", 
+        RowBox[{
+        "phase", "\[LessEqual]", "location", "\[LessEqual]", "P"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"norm", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"location", "-", "P1"}], ")"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"P2", "-", "P1"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"yb", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{
+         RowBox[{"R4", "\[Or]", "RB", "\[Or]", "RC"}], ",", "comp", ",", "R2",
+          ",", 
+         RowBox[{"y", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{"FindRoot", "[", 
+            RowBox[{
+             RowBox[{"location", "\[Equal]", 
+              RowBox[{"Py2", "[", "y", "]"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "R3", ",", 
+         RowBox[{"y", "/.", 
+          RowBox[{"Quiet", "@", 
+           RowBox[{"FindRoot", "[", 
+            RowBox[{
+             RowBox[{"location", "\[Equal]", 
+              RowBox[{"Py1", "[", "y", "]"}]}], ",", 
+             RowBox[{"{", 
+              RowBox[{"y", ",", "xp"}], "}"}]}], "]"}]}]}], ",", "RA", ",", 
+         "xp"}], "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"fL1", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{"R1", ",", "comp", ",", "R2", ",", "0", ",", "R3", ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"comp", "-", "yb"}], ")"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"1", "-", "yb"}], ")"}]}], ",", "R4", ",", "0", ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", "\[LessEqual]", "xp"}]}], ",", 
+         RowBox[{"comp", "*", "norm"}], ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", ">", "xp"}]}], ",", 
+         RowBox[{"comp", "+", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             FractionBox[
+              RowBox[{"comp", "-", "yb"}], 
+              RowBox[{"1", "-", "yb"}]], "-", "comp"}], ")"}], "*", 
+           RowBox[{"(", 
+            RowBox[{"1", "-", "norm"}], ")"}]}]}], ",", "RB", ",", "0", ",", 
+         "RC", ",", "norm"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"fL2", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{"R1", ",", 
+         RowBox[{"1", "-", "comp"}], ",", "R2", ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"yb", "-", "comp"}], ")"}], "/", "yb"}], ",", "R3", ",", 
+         "0", ",", "R4", ",", "0", ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", "\[LessEqual]", "xp"}]}], ",", 
+         RowBox[{"1", "-", "comp", "+", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             FractionBox[
+              RowBox[{"yb", "-", "comp"}], "yb"], "-", "1", "+", "comp"}], 
+            ")"}], "*", 
+           RowBox[{"(", 
+            RowBox[{"1", "-", "norm"}], ")"}]}]}], ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", ">", "xp"}]}], ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "-", "comp"}], ")"}], "*", "norm"}], ",", "RB", ",", 
+         "norm", ",", "RC", ",", "0"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"fV", "=", 
+       RowBox[{"Which", "[", 
+        RowBox[{"R1", ",", "0", ",", "R2", ",", 
+         RowBox[{"comp", "/", "yb"}], ",", "R3", ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"comp", "-", "1"}], ")"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"yb", "-", "1"}], ")"}]}], ",", "R4", ",", "1", ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", "\[LessEqual]", "xp"}]}], ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "-", "norm"}], ")"}], "*", 
+          RowBox[{"(", 
+           RowBox[{"comp", "/", "yb"}], ")"}]}], ",", 
+         RowBox[{"RA", "\[And]", 
+          RowBox[{"comp", ">", "xp"}]}], ",", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "-", "norm"}], ")"}], "*", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"comp", "-", "1"}], ")"}], "/", 
+           RowBox[{"(", 
+            RowBox[{"yb", "-", "1"}], ")"}]}]}], ",", "RB", ",", 
+         RowBox[{"1", "-", "norm"}], ",", "RC", ",", 
+         RowBox[{"1", "-", "norm"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"L", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"0.25", "+", 
+          RowBox[{"Log10", "[", 
+           RowBox[{"1", "+", "pistonheight"}], "]"}]}], ")"}], "*", 
+        RowBox[{"(", 
+         RowBox[{"fL1", "+", "fL2"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"V", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"1", "-", 
+          FractionBox[
+           RowBox[{"P1", "-", "1"}], "P"]}], ")"}], "*", "fV", "*", 
+        RowBox[{"(", 
+         RowBox[{"5", "-", "L"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"piston", "=", 
+       RowBox[{"Graphics3D", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Opacity", "[", "0.5", "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"L", "+", "V", "+", "0.25"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", "5.5"}], "}"}]}], "}"}], "]"}]}],
+             "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"GrayLevel", "[", "0.3", "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"L", "+", "V"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"L", "+", "V", "+", "0.25"}]}], "}"}]}], "}"}], 
+              "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "0", ",", 
+                   RowBox[{"L", "+", "V", "+", "0.25"}]}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", "0", ",", "6"}], "}"}]}], "}"}], ",", 
+               "0.17"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Opacity", "[", "0.75", "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"Blue", ",", 
+               RowBox[{"Cylinder", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"0", ",", "0", ",", "0"}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"0", ",", "0", ",", 
+                    RowBox[{"fL2", "*", "L"}]}], "}"}]}], "}"}], "]"}]}], 
+              "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"RGBColor", "[", 
+                RowBox[{"1", ",", "0.3", ",", "0"}], "]"}], ",", 
+               RowBox[{"Cylinder", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"0", ",", "0", ",", 
+                    RowBox[{"fL2", "*", "L"}]}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"0", ",", "0", ",", 
+                    RowBox[{"L", "*", 
+                    RowBox[{"(", 
+                    RowBox[{"fL2", "+", "fL1"}], ")"}]}]}], "}"}]}], "}"}], 
+                "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"RGBColor", "[", 
+              RowBox[{"0", ",", "0.6", ",", "0"}], "]"}], ",", 
+             RowBox[{"Cylinder", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"L", "*", 
+                   RowBox[{"(", 
+                    RowBox[{"fL2", "+", "fL1"}], ")"}]}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0", ",", "0", ",", 
+                  RowBox[{"L", "+", "V"}]}], "}"}]}], "}"}], "]"}]}], "}"}], 
+           ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<log volume\>\"", ",", "17"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0", ",", 
+               RowBox[{"-", "1"}], ",", 
+               RowBox[{"-", "0.25"}]}], "}"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "0.5"}], ",", "6"}], "}"}]}], ",", 
+         RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+         RowBox[{"ViewPoint", "\[Rule]", "Front"}], ",", 
+         RowBox[{"Lighting", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"{", 
+            RowBox[{"\"\<Ambient\>\"", ",", "LightGray"}], "}"}], "}"}]}]}], 
+        "]"}]}]}]}], "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Control", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"pistonheight", ",", "0", ",", "\"\<piston height\>\""}], 
+       "}"}], ",", "0", ",", "6", ",", "0.01"}], "}"}], "]"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.7410091437563367`*^9, 3.741009371336457*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"9b70067e-657b-4487-b298-8292d6b2a2c0"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`pistonheight$$ = 0, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`pistonheight$$], 0, "piston height"}, 0, 6, 0.01}}, 
+    Typeset`size$$ = {139., {213., 219.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`pistonheight$138027$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, "Variables" :> {$CellContext`pistonheight$$ = 0}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`pistonheight$$, $CellContext`pistonheight$138027$$, 
+         0]}, "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`comp$, $CellContext`T$, $CellContext`Psat1$, \
+$CellContext`Psat2$, $CellContext`P$, $CellContext`xp$, $CellContext`Py1$, \
+$CellContext`Py2$, $CellContext`phase$, $CellContext`height$, \
+$CellContext`P1$, $CellContext`P2$, $CellContext`location$, $CellContext`R1$, \
+$CellContext`R2$, $CellContext`R3$, $CellContext`R4$, $CellContext`RA$, \
+$CellContext`RB$, $CellContext`RC$, $CellContext`norm$, $CellContext`yb$, \
+$CellContext`fL1$, $CellContext`fL2$, $CellContext`fV$, $CellContext`L$, \
+$CellContext`V$, $CellContext`piston$}, $CellContext`comp$ = 
+         0.3; $CellContext`T$ = 122; $CellContext`Psat1$ = 
+         10^(4.72583 - 1660.652/($CellContext`T$ + 
+           271.5)); $CellContext`Psat2$ = 
+         10^(5.0768 - 1659.793/($CellContext`T$ + 227.1)); $CellContext`P$ = 
+         ReplaceAll[$CellContext`p, 
+           
+           FindRoot[$CellContext`Psat1$/$CellContext`p == 
+            1 - $CellContext`Psat2$/$CellContext`p, {$CellContext`p, 
+             
+             0.01}]]; $CellContext`xp$ = $CellContext`Psat1$/$CellContext`P$; \
+$CellContext`Py1$[
+           Pattern[$CellContext`y$, 
+            
+            Blank[]]] := $CellContext`Psat1$/$CellContext`y$; \
+$CellContext`Py2$[
+           Pattern[$CellContext`y$, 
+            Blank[]]] := $CellContext`Psat2$/(
+          1 - $CellContext`y$); $CellContext`phase$ = Piecewise[{{
+             $CellContext`Py2$[$CellContext`comp$], 
+             0 <= $CellContext`comp$ <= $CellContext`xp$}, {
+             $CellContext`Py1$[$CellContext`comp$], 
+             
+             Inequality[$CellContext`xp$, Less, $CellContext`comp$, LessEqual,
+               1]}}]; $CellContext`height$ = 
+         6 - $CellContext`pistonheight$$; $CellContext`P1$ = \
+$CellContext`height$ + 
+          1; $CellContext`P2$ = $CellContext`height$; $CellContext`location$ = 
+         Part[
+           Sort[{$CellContext`P1$, 
+             Which[$CellContext`comp$ == 0, 
+              $CellContext`Py2$[0], $CellContext`comp$ == 1, 
+              $CellContext`Py1$[1], 0 < $CellContext`comp$ < 
+              1, $CellContext`P$], $CellContext`P2$}], 2]; 
+        If[$CellContext`location$ > $CellContext`P$, $CellContext`step = 0]; 
+        If[
+          And[
+          0 < $CellContext`comp$ < 
+           1, $CellContext`location$ == $CellContext`P$], $CellContext`step = 
+          10]; If[
+          And[0 < $CellContext`comp$ < 1, 
+           
+           Inequality[$CellContext`phase$, LessEqual, $CellContext`location$, 
+            Less, $CellContext`P$]], $CellContext`step = 1]; 
+        If[$CellContext`location$ < $CellContext`phase$, $CellContext`step = 
+          2]; If[
+          And[$CellContext`comp$ == 0, 
+           Inequality[
+            $CellContext`Py2$[0], Less, $CellContext`location$, 
+            LessEqual, $CellContext`P$]], $CellContext`step = 3]; If[
+          And[$CellContext`comp$ == 1, 
+           Inequality[
+            $CellContext`Py1$[1], Less, $CellContext`location$, 
+            LessEqual, $CellContext`P$]], $CellContext`step = 4]; If[
+          
+          And[$CellContext`comp$ == 
+           0, $CellContext`location$ == $CellContext`Py2$[
+            0]], $CellContext`step = 30]; If[
+          
+          And[$CellContext`comp$ == 
+           1, $CellContext`location$ == $CellContext`Py1$[
+            1]], $CellContext`step = 
+          40]; $CellContext`R1$ = $CellContext`P$ < $CellContext`location$; \
+$CellContext`R2$ = And[
+           Inequality[
+           0, Less, $CellContext`comp$, LessEqual, $CellContext`xp$], 
+           Inequality[
+            $CellContext`Py2$[$CellContext`comp$], 
+            LessEqual, $CellContext`location$, 
+            Less, $CellContext`P$]]; $CellContext`R3$ = 
+         And[$CellContext`xp$ < $CellContext`comp$ < 1, 
+           Inequality[
+            $CellContext`Py1$[$CellContext`comp$], 
+            LessEqual, $CellContext`location$, 
+            Less, $CellContext`P$]]; $CellContext`R4$ = \
+$CellContext`location$ < $CellContext`phase$; $CellContext`RA$ = 
+         And[0 < $CellContext`comp$ < 
+           1, $CellContext`location$ == $CellContext`P$]; $CellContext`RB$ = 
+         And[$CellContext`comp$ == 
+           0, $CellContext`phase$ <= $CellContext`location$ <= \
+$CellContext`P$]; $CellContext`RC$ = 
+         And[$CellContext`comp$ == 
+           1, $CellContext`phase$ <= $CellContext`location$ <= \
+$CellContext`P$]; $CellContext`norm$ = ($CellContext`location$ - \
+$CellContext`P1$)/($CellContext`P2$ - $CellContext`P1$); $CellContext`yb$ = 
+         Which[
+           
+           Or[$CellContext`R4$, $CellContext`RB$, $CellContext`RC$], \
+$CellContext`comp$, $CellContext`R2$, 
+           ReplaceAll[$CellContext`y, 
+            Quiet[
+             
+             FindRoot[$CellContext`location$ == \
+$CellContext`Py2$[$CellContext`y], {$CellContext`y, $CellContext`xp$}]]], \
+$CellContext`R3$, 
+           ReplaceAll[$CellContext`y, 
+            Quiet[
+             
+             FindRoot[$CellContext`location$ == \
+$CellContext`Py1$[$CellContext`y], {$CellContext`y, $CellContext`xp$}]]], \
+$CellContext`RA$, $CellContext`xp$]; $CellContext`fL1$ = 
+         Which[$CellContext`R1$, $CellContext`comp$, $CellContext`R2$, 
+           0, $CellContext`R3$, ($CellContext`comp$ - $CellContext`yb$)/(
+           1 - $CellContext`yb$), $CellContext`R4$, 0, 
+           
+           And[$CellContext`RA$, $CellContext`comp$ <= $CellContext`xp$], \
+$CellContext`comp$ $CellContext`norm$, 
+           
+           And[$CellContext`RA$, $CellContext`comp$ > $CellContext`xp$], \
+$CellContext`comp$ + (($CellContext`comp$ - $CellContext`yb$)/(
+              1 - $CellContext`yb$) - $CellContext`comp$) (
+             1 - $CellContext`norm$), $CellContext`RB$, 
+           0, $CellContext`RC$, $CellContext`norm$]; $CellContext`fL2$ = 
+         Which[$CellContext`R1$, 
+           1 - $CellContext`comp$, $CellContext`R2$, ($CellContext`yb$ - \
+$CellContext`comp$)/$CellContext`yb$, $CellContext`R3$, 0, $CellContext`R4$, 
+           0, 
+           And[$CellContext`RA$, $CellContext`comp$ <= $CellContext`xp$], 
+           1 - $CellContext`comp$ + (($CellContext`yb$ - \
+$CellContext`comp$)/$CellContext`yb$ - 1 + $CellContext`comp$) (
+             1 - $CellContext`norm$), 
+           
+           And[$CellContext`RA$, $CellContext`comp$ > $CellContext`xp$], (
+            1 - $CellContext`comp$) $CellContext`norm$, $CellContext`RB$, \
+$CellContext`norm$, $CellContext`RC$, 0]; $CellContext`fV$ = 
+         Which[$CellContext`R1$, 
+           0, $CellContext`R2$, $CellContext`comp$/$CellContext`yb$, \
+$CellContext`R3$, ($CellContext`comp$ - 1)/($CellContext`yb$ - 
+           1), $CellContext`R4$, 1, 
+           
+           And[$CellContext`RA$, $CellContext`comp$ <= $CellContext`xp$], (
+            1 - $CellContext`norm$) ($CellContext`comp$/$CellContext`yb$), 
+           
+           And[$CellContext`RA$, $CellContext`comp$ > $CellContext`xp$], (
+            1 - $CellContext`norm$) (($CellContext`comp$ - 
+             1)/($CellContext`yb$ - 1)), $CellContext`RB$, 
+           1 - $CellContext`norm$, $CellContext`RC$, 
+           1 - $CellContext`norm$]; $CellContext`L$ = (0.25 + 
+           Log10[1 + $CellContext`pistonheight$$]) ($CellContext`fL1$ + \
+$CellContext`fL2$); $CellContext`V$ = (
+           1 - ($CellContext`P1$ - 1)/$CellContext`P$) $CellContext`fV$ (
+           5 - $CellContext`L$); $CellContext`piston$ = Graphics3D[{{
+             Opacity[0.5], 
+             Cylinder[{{0, 0, $CellContext`L$ + $CellContext`V$ + 0.25}, {
+               0, 0, 5.5}}]}, {
+             GrayLevel[0.3], 
+             
+             Cylinder[{{0, 0, $CellContext`L$ + $CellContext`V$}, {
+               0, 0, $CellContext`L$ + $CellContext`V$ + 0.25}}], 
+             
+             Cylinder[{{0, 0, $CellContext`L$ + $CellContext`V$ + 0.25}, {0, 
+               0, 6}}, 0.17]}, {
+             Opacity[0.75], {Blue, 
+              
+              Cylinder[{{0, 0, 0}, {
+                0, 0, $CellContext`fL2$ $CellContext`L$}}]}, {
+              RGBColor[1, 0.3, 0], 
+              
+              Cylinder[{{0, 0, $CellContext`fL2$ $CellContext`L$}, {
+                0, 0, $CellContext`L$ ($CellContext`fL2$ + \
+$CellContext`fL1$)}}]}, 
+             RGBColor[0, 0.6, 0], 
+             
+             Cylinder[{{
+               0, 0, $CellContext`L$ ($CellContext`fL2$ + \
+$CellContext`fL1$)}, {0, 0, $CellContext`L$ + $CellContext`V$}}]}, 
+            Text[
+             Style["log volume", 17], {0, -1, -0.25}]}, 
+           PlotRange -> {-0.5, 6}, Boxed -> False, ViewPoint -> Front, 
+           Lighting -> {{"Ambient", LightGray}}]], 
+      "Specifications" :> {{{$CellContext`pistonheight$$, 0, "piston height"},
+          0, 6, 0.01}}, "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{321., {260., 266.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{{3.7410093354554625`*^9, 3.741009373033059*^9}},
+ CellLabel->"Out[4]=",ExpressionUUID->"d5c6596b-4f86-4418-a35d-20abc526c730"]
+}, Open  ]]
+},
+WindowSize->{681, 676},
+WindowMargins->{{Automatic, -7}, {Automatic, 0}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 16998, 421, 1585, "Input",ExpressionUUID->"9b70067e-657b-4487-b298-8292d6b2a2c0"],
+Cell[17581, 445, 10422, 211, 545, "Output",ExpressionUUID->"d5c6596b-4f86-4418-a35d-20abc526c730"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

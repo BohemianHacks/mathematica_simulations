@@ -1,0 +1,3472 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    160790,       3464]
+NotebookOptionsPosition[    155749,       3312]
+NotebookOutlinePosition[    157362,       3362]
+CellTagsIndexPosition[    157026,       3350]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Pharmacokinetic Modeling", "DemoTitle",
+ CellChangeTimes->{{3.6084260435775213`*^9, 3.6084260536150956`*^9}, 
+   3.608656617231862*^9, 3.6344873289124246`*^9, {3.634492681184557*^9, 
+   3.6344926956493845`*^9}}],
+
+Cell["", "InitializationSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateSection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "V1", ",", "ka", ",", "c1", ",", "r", ",", "ke2", ",", "k12", ",", 
+       "k21", ",", "m", ",", "injectiontimes", ",", "eqns", ",", "bc", ",", 
+       "pw1", ",", "pw2", ",", "plot", ",", "diagram"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"V1", "=", "1"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"ad", "\[Equal]", "1"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ka", "=", "0"}], ",", 
+          RowBox[{
+           SubscriptBox["c1", "0"], "=", 
+           RowBox[{"Din", "/", "V1"}]}], ",", 
+          RowBox[{"r", "=", "0"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ka", "=", "kao"}], ",", 
+          RowBox[{
+           SubscriptBox["c1", "0"], "=", "0"}], ",", 
+          RowBox[{"r", "=", "Din"}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"comp", "\[Equal]", "1"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ke2", "=", "0"}], ",", 
+          RowBox[{"k12", "=", "0"}], ",", 
+          RowBox[{"k21", "=", "0"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ke2", "=", "ke2o"}], ",", 
+          RowBox[{"k12", "=", "k12o"}], ",", 
+          RowBox[{"k21", "=", "k21o"}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"roi", "*", "n"}], "<", "10"}], ",", 
+        RowBox[{"m", "=", "n"}], ",", 
+        RowBox[{"m", "=", 
+         RowBox[{"Ceiling", "[", 
+          RowBox[{"10", "/", "roi"}], "]"}]}]}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"injectiontimes", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"i", "-", "1"}], ")"}], "*", "roi"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"i", ",", "1", ",", "m"}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"eqns", "=", 
+       RowBox[{"Partition", "[", 
+        RowBox[{
+         RowBox[{"Drop", "[", 
+          RowBox[{
+           RowBox[{"Flatten", "[", 
+            RowBox[{"Rest", "[", 
+             RowBox[{"FoldList", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"d", "[", "t", "]"}], ",", 
+                    RowBox[{"c1", "[", "t", "]"}], ",", 
+                    RowBox[{"c2", "[", "t", "]"}]}], "}"}], "/.", 
+                  RowBox[{"First", "@", 
+                   RowBox[{"NDSolve", "[", 
+                    RowBox[{
+                    RowBox[{"{", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"d", "'"}], "[", "t", "]"}], "\[Equal]", 
+                    RowBox[{
+                    RowBox[{"-", "ka"}], "*", 
+                    RowBox[{"d", "[", "t", "]"}]}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"c1", "'"}], "[", "t", "]"}], "\[Equal]", 
+                    RowBox[{
+                    RowBox[{"ka", "*", 
+                    RowBox[{
+                    RowBox[{"d", "[", "t", "]"}], "/", "V1"}]}], "-", 
+                    RowBox[{"(", 
+                    RowBox[{"k12", "*", 
+                    RowBox[{"c1", "[", "t", "]"}]}], ")"}], "-", 
+                    RowBox[{
+                    RowBox[{"(", "ke1", ")"}], 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"c1", "[", "t", "]"}], ")"}], "^", 
+                    RowBox[{"(", "ro", ")"}]}]}], "+", 
+                    RowBox[{"k21", "*", 
+                    RowBox[{"c2", "[", "t", "]"}]}]}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"c2", "'"}], "[", "t", "]"}], "\[Equal]", 
+                    RowBox[{
+                    RowBox[{"k12", "*", 
+                    RowBox[{"c1", "[", "t", "]"}]}], "-", 
+                    RowBox[{"k21", "*", 
+                    RowBox[{"c2", "[", "t", "]"}]}], "-", 
+                    RowBox[{
+                    RowBox[{"(", "ke2", ")"}], 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"c2", "[", "t", "]"}], ")"}], "^", 
+                    RowBox[{"(", "ro", ")"}]}]}]}]}], ",", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"d", "[", "#2", "]"}], "\[Equal]", 
+                    RowBox[{"Chop", "[", 
+                    RowBox[{"r", "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Boole", "[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], ">", 
+                    "0"}], "]"}]}]}], "]"}]}], ",", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"c1", "[", "#2", "]"}], "\[Equal]", 
+                    RowBox[{
+                    RowBox[{"Chop", "[", 
+                    RowBox[{
+                    SubscriptBox["c1", "0"], "+", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Boole", "[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], ">", 
+                    "0"}], "]"}]}]}], "]"}], "/", "V1"}]}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"c2", "[", "#2", "]"}], "\[Equal]", 
+                    RowBox[{"Chop", "[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"Boole", "[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "/.", 
+                    RowBox[{"{", 
+                    RowBox[{"t", "\[Rule]", "#2"}], "}"}]}], ")"}], ">", 
+                    "0"}], "]"}]}], "]"}]}]}], "\[IndentingNewLine]", 
+                    "\[IndentingNewLine]", "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"d", ",", "c1", ",", "c2"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"t", ",", "#2", ",", "10"}], "}"}]}], "]"}]}]}], 
+                 ")"}], "&"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"0", ",", "0", ",", "0"}], "}"}], ",", 
+               "injectiontimes"}], "]"}], "]"}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", 
+             RowBox[{"-", "1"}], ",", "3"}], "}"}]}], "]"}], ",", "2"}], 
+        "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"bc", "=", 
+       RowBox[{"Flatten", "@", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Flatten", "[", 
+           RowBox[{
+            RowBox[{"Table", "[", 
+             RowBox[{
+              RowBox[{"t", "\[LessEqual]", 
+               RowBox[{"i", "*", "roi"}]}], ",", 
+              RowBox[{"{", 
+               RowBox[{"i", ",", "1", ",", 
+                RowBox[{"m", "-", "1"}]}], "}"}]}], "]"}], ",", "2"}], "]"}], 
+          ",", 
+          RowBox[{"t", "\[GreaterEqual]", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"m", "-", "1"}], ")"}], "*", "roi"}]}]}], "}"}]}]}], ";",
+       "\[IndentingNewLine]", 
+      RowBox[{"pw1", "=", 
+       RowBox[{"Partition", "[", 
+        RowBox[{
+         RowBox[{"Riffle", "[", 
+          RowBox[{
+           RowBox[{"Take", "[", 
+            RowBox[{
+             RowBox[{"Flatten", "[", "eqns", "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"1", ",", 
+               RowBox[{"-", "1"}], ",", "2"}], "}"}]}], "]"}], ",", "bc"}], 
+          "]"}], ",", "2"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"pw2", "=", 
+       RowBox[{"Partition", "[", 
+        RowBox[{
+         RowBox[{"Riffle", "[", 
+          RowBox[{
+           RowBox[{"Drop", "[", 
+            RowBox[{
+             RowBox[{"Flatten", "[", "eqns", "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"1", ",", 
+               RowBox[{"-", "1"}], ",", "2"}], "}"}]}], "]"}], ",", "bc"}], 
+          "]"}], ",", "2"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"plot", " ", "=", " ", 
+       RowBox[{"Plot", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Piecewise", "[", "pw1", "]"}], ",", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"comp", "\[Equal]", "2"}], ",", 
+             RowBox[{"Piecewise", "[", "pw2", "]"}]}], "]"}], ",", "1", ",", 
+           "2"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", "0", ",", "10"}], "}"}], ",", 
+         RowBox[{"PlotStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Orange"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Blue"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Dashed", ",", 
+              RowBox[{"RGBColor", "[", 
+               RowBox[{"0", ",", "0.8", ",", "0.2"}], "]"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"Thick", ",", "Dashed", ",", "Purple"}], "}"}]}], 
+           "}"}]}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "10"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "3"}], "}"}]}], "}"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Exclusions", "\[Rule]", "None"}], ",", 
+         RowBox[{"Frame", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"True", ",", "False"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"True", ",", "False"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"FrameLabel", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"\"\<time\>\"", ",", "\"\<concentration (mol/L)\>\""}], 
+           "}"}]}], ",", 
+         RowBox[{"LabelStyle", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"17", ",", "Black"}], "}"}]}], ",", 
+         RowBox[{"PlotRangePadding", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"None", ",", "0.5"}], "}"}], ",", "None"}], "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"480", ",", "300"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"PlotLegends", "\[Rule]", 
+          RowBox[{"Placed", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"\"\<compartment 1\>\"", ",", "\"\<compartment 2\>\""}], 
+             "}"}], ",", "Above"}], "]"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Epilog", "\[Rule]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"Rotate", "[", 
+             RowBox[{
+              RowBox[{"Text", "[", 
+               RowBox[{
+                RowBox[{"Style", "[", 
+                 RowBox[{
+                  RowBox[{"Column", "[", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<therapeutic\>\"", ",", "\"\<window\>\""}], 
+                    "}"}], ",", "Center"}], "]"}], ",", "16.5", ",", 
+                  RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"9.8", ",", "1.5"}], "}"}]}], "]"}], ",", 
+              RowBox[{"3", "*", 
+               RowBox[{"\[Pi]", "/", "2"}]}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Text", "[", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\<toxic dose\>\"", ",", "16", ",", "Purple", ",", 
+                RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"9", ",", "2.15"}], "}"}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Text", "[", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\<effective dose\>\"", ",", "16", ",", 
+                RowBox[{"RGBColor", "[", 
+                 RowBox[{"0", ",", "0.8", ",", "0.2"}], "]"}], ",", 
+                RowBox[{"Background", "\[Rule]", "White"}]}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"8.9", ",", "0.85"}], "}"}]}], "]"}]}], 
+           "\[IndentingNewLine]", "}"}]}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"diagram", "=", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"EdgeForm", "@", "Black"}], ",", 
+             RowBox[{"FaceForm", "@", "None"}], ",", 
+             RowBox[{"Rectangle", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"0", ",", "0"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"1", ",", "3"}], "}"}]}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Arrowheads", "@", "0.16"}], ",", 
+             RowBox[{"Arrow", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"0.5", ",", 
+                  RowBox[{"-", "0.5"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"0.5", ",", "0"}], "}"}]}], "}"}], "]"}]}], "}"}], 
+           ",", "\[IndentingNewLine]", 
+           RowBox[{"Text", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<dose\>\"", ",", "18"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"0.5", ",", 
+               RowBox[{"-", "0.25"}]}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"-", "1.5"}], ",", "0"}], "}"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"comp", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                  "\"\<1\>\"", ",", "18", ",", "Orange", ",", "Bold"}], "]"}],
+                  ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0.5", ",", "1.5"}], "}"}]}], "]"}], ",", 
+               "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"ke1", "\[NotEqual]", "0"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Arrowheads", "@", "0.16"}], ",", 
+                   RowBox[{"Arrow", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "1.5"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"2", ",", "1.5"}], "}"}]}], "}"}], "]"}], ",", 
+                   RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+                    "\"\<e,1\>\""}], "]"}], ",", "18"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "1.5"}], "}"}], ",", 
+                    RowBox[{"1.5", "*", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], ",", 
+                    RowBox[{"-", "1"}]}], "}"}]}]}], "]"}]}], "}"}]}], 
+                "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Line", "[", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"0", ",", "1.5"}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"1", ",", "1.5"}], "}"}]}], "}"}], "]"}], ",", 
+               "\[IndentingNewLine]", 
+               RowBox[{"Arrowheads", "@", "0.16"}], ",", 
+               "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{"#1", "\[NotEqual]", "0"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Arrow", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "#2"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"2", ",", "#2"}], "}"}]}], "}"}], "]"}], ",", 
+                    RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+                    RowBox[{"Row", "@", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<e,\>\"", ",", "#3"}], "}"}]}]}], "]"}], ",", 
+                    "18"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "#2"}], "}"}], ",", 
+                    RowBox[{"1.5", "*", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"-", "1"}], ",", 
+                    RowBox[{"-", "1"}]}], "}"}]}]}], "]"}]}], "}"}]}], "]"}], 
+                 "&"}], "@@@", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"ke1", ",", "0.75", ",", "1"}], "}"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{"ke2", ",", "2.25", ",", "2"}], "}"}]}], "}"}]}], 
+               ",", "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"k12", "\[NotEqual]", "0"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Arrow", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0.25", ",", "1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.25", ",", "2"}], "}"}]}], "}"}], "]"}], ",", 
+                   RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", "12"}], 
+                    "]"}], ",", "18"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.25", ",", "1"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"-", "0.5"}], ",", "1.5"}], "}"}]}], "]"}]}], 
+                  "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"k21", "\[NotEqual]", "0"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"Arrow", "[", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"0.75", ",", "2"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.75", ",", "1"}], "}"}]}], "}"}], "]"}], ",", 
+                   RowBox[{"Text", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{
+                    RowBox[{"Subscript", "[", 
+                    RowBox[{
+                    RowBox[{"Style", "[", 
+                    RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", "21"}], 
+                    "]"}], ",", "18"}], "]"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.75", ",", "2"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"0.5", ",", 
+                    RowBox[{"-", "1.5"}]}], "}"}]}], "]"}]}], "}"}]}], "]"}], 
+               ",", "\[IndentingNewLine]", 
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{
+                  "\"\<1\>\"", ",", "18", ",", "Orange", ",", "Bold"}], "]"}],
+                  ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0.5", ",", "0.5"}], "}"}]}], "]"}], ",", 
+               RowBox[{"Text", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<2\>\"", ",", "18", ",", "Blue", ",", "Bold"}], 
+                  "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"0.5", ",", "2.5"}], "}"}]}], "]"}]}], "}"}]}], 
+            "]"}]}], "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"PlotRange", "\[Rule]", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"0", ",", "2"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "0.5"}], ",", "3"}], "}"}]}], "}"}]}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"100", ",", "330"}], "}"}]}], ",", 
+         RowBox[{"AspectRatio", "\[Rule]", "Full"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Grid", "@", 
+       RowBox[{"{", 
+        RowBox[{"{", 
+         RowBox[{"plot", ",", 
+          RowBox[{"Spacer", "@", "1"}], ",", "diagram"}], "}"}], "}"}]}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Row", "@", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"comp", ",", "2", ",", "\"\<number of compartments\>\""}], 
+          "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"1", "\[Rule]", "\"\< one \>\""}], ",", 
+           RowBox[{"2", "\[Rule]", "\"\< two \>\""}]}], "}"}], ",", 
+         "Setter"}], "}"}], "]"}], ",", 
+      RowBox[{"Spacer", "@", "20"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"ad", ",", "1", ",", "\"\<dosing method\>\""}], "}"}], ",", 
+         
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"1", "\[Rule]", " ", "\"\< injection \>\""}], ",", 
+           RowBox[{"2", "\[Rule]", " ", "\"\< absorption \>\""}]}], "}"}], 
+         ",", "Setter"}], "}"}], "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Row", "@", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Din", ",", "1.5", ",", "\"\<dose mass\>\""}], "}"}], ",", 
+         "0.05", ",", "2", ",", "0.05", ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"n", ",", "5", ",", "\"\<number of doses\>\""}], "}"}], ",",
+          "1", ",", "9", ",", "1", ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"roi", ",", "1.4", ",", "\"\<dose interval\>\""}], "}"}], 
+         ",", "0.2", ",", "4", ",", "0.1", ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}]}], "}"}]}], 
+   ",", "\[IndentingNewLine]", 
+   RowBox[{"PaneSelector", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"2", "\[Rule]", 
+       RowBox[{"Control", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"kao", ",", "2", ",", 
+            RowBox[{"Row", "@", 
+             RowBox[{"{", 
+              RowBox[{"\"\<absorption coefficient \>\"", ",", 
+               RowBox[{"Subscript", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+                 "\"\<a\>\""}], "]"}]}], "}"}]}]}], "}"}], ",", "0", ",", "4",
+           ",", "0.1", ",", 
+          RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+          RowBox[{"ImageSize", "\[Rule]", "Small"}]}], "}"}], "]"}]}], "}"}], 
+     ",", 
+     RowBox[{"Dynamic", "@", "ad"}]}], "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"Row", "@", 
+    RowBox[{"{", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Style", "[", 
+       RowBox[{"\"\<elimination rate constants\>\"", ",", "Bold"}], "]"}], 
+      ",", 
+      RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"ke1", ",", "1", ",", 
+           RowBox[{"Subscript", "[", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+             "\"\<e,1\>\""}], "]"}]}], "}"}], ",", "0", ",", "4", ",", "0.1", 
+         ",", 
+         RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+         RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"PaneSelector", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"2", "\[Rule]", 
+          RowBox[{"Control", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"ke2o", ",", "1", ",", 
+               RowBox[{"Subscript", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", 
+                 "\"\<e,2\>\""}], "]"}]}], "}"}], ",", "0", ",", "4", ",", 
+             "0.1", ",", 
+             RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+             RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}]}], 
+         "}"}], ",", 
+        RowBox[{"Dynamic", "@", "comp"}]}], "]"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"Control", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"ro", ",", "1", ",", "\"\<elimination order\>\""}], "}"}], 
+         ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"0", "\[Rule]", 
+            RowBox[{"Superscript", "[", 
+             RowBox[{"\"\< 0\>\"", ",", "\"\<th\>\""}], "]"}]}], ",", 
+           RowBox[{"1", "\[Rule]", 
+            RowBox[{"Superscript", "[", 
+             RowBox[{"\"\< 1\>\"", ",", "\"\<st\>\""}], "]"}]}], ",", 
+           RowBox[{"2", "\[Rule]", 
+            RowBox[{"Superscript", "[", 
+             RowBox[{"\"\< 2\>\"", ",", "\"\<nd\>\""}], "]"}]}]}], "}"}], ",",
+          "Setter"}], "}"}], "]"}]}], "}"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"PaneSelector", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"2", "\[Rule]", 
+       RowBox[{"Row", "@", 
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"Style", "[", 
+           RowBox[{
+           "\"\<rate constants for transfer between compartments\>\"", ",", 
+            "Bold"}], "]"}], ",", 
+          RowBox[{"Spacer", "@", "10"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"Control", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"k12o", ",", "1", ",", 
+               RowBox[{"Subscript", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", "12"}], 
+                "]"}]}], "}"}], ",", "0", ",", "4", ",", "0.1", ",", 
+             RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+             RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Control", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"k21o", ",", "1", ",", 
+               RowBox[{"Subscript", "[", 
+                RowBox[{
+                 RowBox[{"Style", "[", 
+                  RowBox[{"\"\<k\>\"", ",", "Italic"}], "]"}], ",", "21"}], 
+                "]"}]}], "}"}], ",", "0", ",", "4", ",", "0.1", ",", 
+             RowBox[{"Appearance", "\[Rule]", "\"\<Labeled\>\""}], ",", 
+             RowBox[{"ImageSize", "\[Rule]", "Tiny"}]}], "}"}], "]"}]}], 
+         "}"}]}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Dynamic", "@", "comp"}]}], "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"SynchronousUpdating", "\[Rule]", "False"}], ",", 
+   RowBox[{"TrackedSymbols", "\[Rule]", "True"}], ",", " ", 
+   RowBox[{"AutorunSequencing", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"2", ",", "3"}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.608229656247377*^9, {3.6082298870305767`*^9, 3.6082298888106785`*^9}, {
+   3.6082299277639065`*^9, 3.6082301156336517`*^9}, {3.608230882471513*^9, 
+   3.608230890185954*^9}, {3.6082313258158703`*^9, 3.608231329160062*^9}, {
+   3.608231509401371*^9, 3.6082315135176067`*^9}, 3.6082316068119426`*^9, {
+   3.608231820984193*^9, 3.6082318741172314`*^9}, {3.608304336510186*^9, 
+   3.6083043939804735`*^9}, 3.60830448483967*^9, {3.60839988178531*^9, 
+   3.608399960797829*^9}, {3.6084063347648926`*^9, 3.6084063436394*^9}, {
+   3.608406442404049*^9, 3.608406494852049*^9}, {3.608406541811735*^9, 
+   3.608406546152983*^9}, {3.608406680138647*^9, 3.608406680503668*^9}, {
+   3.608406730646536*^9, 3.608406760922267*^9}, {3.608406818700572*^9, 
+   3.6084068290061617`*^9}, {3.6084068773539267`*^9, 3.608406932875102*^9}, {
+   3.6084069972157826`*^9, 3.6084070221122065`*^9}, {3.608407073683156*^9, 
+   3.608407073971173*^9}, {3.608407492760126*^9, 3.608407504231782*^9}, {
+   3.6084075371176634`*^9, 3.60840754090888*^9}, {3.608407576593921*^9, 
+   3.6084075797631025`*^9}, {3.6084076318340807`*^9, 
+   3.6084076417626486`*^9}, {3.6084078056220207`*^9, 
+   3.6084078363437777`*^9}, {3.6084079389176445`*^9, 3.608407976159775*^9}, {
+   3.608408016391076*^9, 3.608408026844674*^9}, {3.6084081479396*^9, 
+   3.6084081484696302`*^9}, {3.6084082490193815`*^9, 3.608408258344915*^9}, {
+   3.6084082931839075`*^9, 3.608408311109933*^9}, {3.608408703305365*^9, 
+   3.6084087048534536`*^9}, {3.6084089847794647`*^9, 
+   3.6084090008613844`*^9}, {3.6084222831314363`*^9, 3.608422285891594*^9}, {
+   3.6084223787849073`*^9, 3.6084223915666385`*^9}, {3.6084225055211563`*^9, 
+   3.6084225057801714`*^9}, {3.6084225543699503`*^9, 
+   3.6084228898621397`*^9}, {3.608422963950377*^9, 3.6084230074098625`*^9}, {
+   3.608423124303549*^9, 3.608423133886097*^9}, {3.6084234097928777`*^9, 
+   3.608423643395239*^9}, 3.60842687314397*^9, {3.608429077412047*^9, 
+   3.608429098216237*^9}, {3.6084295332391186`*^9, 3.608429546969904*^9}, 
+   3.6084301233538713`*^9, {3.6089180765257006`*^9, 3.608918083808117*^9}, {
+   3.60891817897256*^9, 3.608918188184087*^9}, {3.608918342311902*^9, 
+   3.608918344355019*^9}, 3.6089183930728054`*^9, {3.608920564269991*^9, 
+   3.6089205902744784`*^9}, {3.6089207074311795`*^9, 3.608920745349348*^9}, {
+   3.6089211186286983`*^9, 3.608921121605869*^9}, {3.608924443131303*^9, 
+   3.608924472333675*^9}, 3.6089245241220307`*^9, {3.6097585849585342`*^9, 
+   3.609758593867425*^9}, {3.609854937881049*^9, 3.609854940677796*^9}, {
+   3.609854988241117*^9, 3.609854988409827*^9}, 3.609855063075678*^9, {
+   3.610214718364154*^9, 3.61021471858858*^9}, {3.6344874125152063`*^9, 
+   3.634487550248084*^9}, 3.634487649047735*^9, {3.634487682637656*^9, 
+   3.634487694650344*^9}, {3.634487727407217*^9, 3.6344877906278334`*^9}, {
+   3.6344879874770927`*^9, 3.6344879943874874`*^9}, {3.634488035372832*^9, 
+   3.6344880415151834`*^9}, {3.6344880751291056`*^9, 
+   3.6344880768012013`*^9}, {3.634488108825033*^9, 3.6344881175095296`*^9}, {
+   3.6344882080007057`*^9, 3.634488241980649*^9}, {3.6344882764046183`*^9, 
+   3.634488311600631*^9}, {3.6344883451685514`*^9, 3.6344883667617865`*^9}, {
+   3.6344884697416763`*^9, 3.6344885823631177`*^9}, {3.634488660569591*^9, 
+   3.6344886843969536`*^9}, {3.6344888318823895`*^9, 
+   3.6344888440230837`*^9}, {3.634488945865909*^9, 3.6344891314075212`*^9}, {
+   3.6344891782992034`*^9, 3.634489262704031*^9}, {3.6344893250755987`*^9, 
+   3.6344893414575357`*^9}, 3.63448937213529*^9, {3.634489418707954*^9, 
+   3.634489423080204*^9}, {3.6344894782293587`*^9, 3.6344895317554197`*^9}, {
+   3.6344895727067623`*^9, 3.63448957633097*^9}, {3.634489625270769*^9, 
+   3.634489804347011*^9}, {3.634489845915389*^9, 3.6344900256576695`*^9}, {
+   3.63449010049195*^9, 3.634490242060047*^9}, {3.6344903397376337`*^9, 
+   3.6344903538944435`*^9}, {3.634490433055971*^9, 3.634490469852076*^9}, {
+   3.634490539275047*^9, 3.6344906542696238`*^9}, {3.634490690303685*^9, 
+   3.6344907017813416`*^9}, {3.6344907396635084`*^9, 3.634490775450555*^9}, {
+   3.634491294820262*^9, 3.6344915691139503`*^9}, {3.6344916122764187`*^9, 
+   3.634491635589752*^9}, {3.6344916808183393`*^9, 3.6344916845805545`*^9}, {
+   3.6344917176104436`*^9, 3.6344917188315134`*^9}, {3.634491754854574*^9, 
+   3.634491764092102*^9}, {3.6344918507260575`*^9, 3.63449185758845*^9}, {
+   3.6344918910723653`*^9, 3.63449190496416*^9}, {3.6344921949717474`*^9, 
+   3.634492227166589*^9}, 3.6344923033049436`*^9, {3.6344923429472113`*^9, 
+   3.634492357555046*^9}, {3.6344924356565137`*^9, 3.6344924508063803`*^9}, {
+   3.6344924954909363`*^9, 3.63449250324638*^9}, 3.634492638389109*^9, {
+   3.634492722931945*^9, 3.6344927322994804`*^9}, {3.634492777830085*^9, 
+   3.634492787048612*^9}, {3.6592583953664484`*^9, 3.659258549282832*^9}, {
+   3.6592586001289253`*^9, 3.659258643982607*^9}, {3.676123867027782*^9, 
+   3.6761239000098395`*^9}, {3.676124021546446*^9, 3.676124031299852*^9}, {
+   3.6761241330895653`*^9, 3.6761241904684772`*^9}, {3.676124247404631*^9, 
+   3.6761242476805997`*^9}, {3.676124282928466*^9, 3.6761243383527308`*^9}, {
+   3.6761244552588367`*^9, 3.676124455992965*^9}, {3.676124915820923*^9, 
+   3.6761249367334766`*^9}, {3.676124974094734*^9, 3.6761250153848953`*^9}, {
+   3.676125112295745*^9, 3.676125273206442*^9}, {3.6761253083743134`*^9, 
+   3.676125459161852*^9}, {3.676125500358656*^9, 3.67612559254496*^9}, {
+   3.6768042277865887`*^9, 3.676804504272535*^9}, {3.6768045739072113`*^9, 
+   3.6768046214739156`*^9}, {3.6768046809869595`*^9, 3.67680509149707*^9}, {
+   3.6768051563131905`*^9, 3.676805379350644*^9}, {3.6768055409583497`*^9, 
+   3.6768055416057887`*^9}, {3.6768056292056837`*^9, 3.676805661689766*^9}, {
+   3.676805718168212*^9, 3.676805723993045*^9}, {3.6768057541502714`*^9, 
+   3.676806017477998*^9}, {3.676806129414217*^9, 3.6768061310937347`*^9}, {
+   3.676806163158194*^9, 3.6768062679933596`*^9}, {3.676806323959581*^9, 
+   3.676806609331956*^9}, {3.6773356066369953`*^9, 3.6773356081919756`*^9}, {
+   3.677335682180787*^9, 3.6773356825124464`*^9}, {3.6773357311184974`*^9, 
+   3.6773357830165176`*^9}, {3.6773358353976526`*^9, 3.677335843788649*^9}, {
+   3.677335874299588*^9, 3.6773358804090548`*^9}, {3.6773359180134115`*^9, 
+   3.6773359189799995`*^9}, {3.677335955523815*^9, 3.6773360341354322`*^9}, {
+   3.677336064451194*^9, 3.6773360683727484`*^9}, {3.6773361334498625`*^9, 
+   3.677336137102889*^9}, {3.677336185730749*^9, 3.6773361996204495`*^9}, {
+   3.6773362832472525`*^9, 3.677336287522848*^9}, {3.677336330401786*^9, 
+   3.677336442368546*^9}, {3.6773364750381775`*^9, 3.6773365034402943`*^9}, {
+   3.6773365426238127`*^9, 3.6773366359184947`*^9}, {3.677336713261366*^9, 
+   3.677336897845499*^9}, {3.677337286443293*^9, 3.6773372871113243`*^9}, {
+   3.677337318842597*^9, 3.6773374280113506`*^9}, {3.6773379493979993`*^9, 
+   3.6773379905418887`*^9}, {3.6773382126053143`*^9, 3.677338237943387*^9}, {
+   3.6773383408803883`*^9, 3.6773383817216334`*^9}, {3.677338486757434*^9, 
+   3.6773384988832417`*^9}, 3.6775089802714677`*^9, {3.677861842804737*^9, 
+   3.677861952987668*^9}, {3.6778620066280994`*^9, 3.6778621897524548`*^9}, {
+   3.677862281509033*^9, 3.677862290087894*^9}, {3.6778623346872377`*^9, 
+   3.6778623350378313`*^9}, {3.6778625251305733`*^9, 3.67786307287674*^9}, {
+   3.6778631410258894`*^9, 3.677863144922542*^9}, {3.6778633258029776`*^9, 
+   3.677863363026326*^9}, {3.677863494164119*^9, 3.677863549601147*^9}, {
+   3.6778636450725327`*^9, 3.6778637173048673`*^9}, {3.6778638098135214`*^9, 
+   3.677863963874252*^9}, {3.6778640551157217`*^9, 3.677864060916661*^9}, {
+   3.6778648508596373`*^9, 3.677864914506248*^9}, {3.6778653743768215`*^9, 
+   3.6778654366603765`*^9}, {3.677865566190057*^9, 3.677865573736483*^9}, {
+   3.677866586245708*^9, 3.677866587047696*^9}, {3.677867123703071*^9, 
+   3.6778671491538258`*^9}, {3.6780136572776556`*^9, 3.678013673244191*^9}, {
+   3.6780137842947865`*^9, 3.6780138032778997`*^9}, {3.678014191438823*^9, 
+   3.678014304291703*^9}, {3.6780144115845504`*^9, 3.6780144320058594`*^9}, 
+   3.678014503278764*^9, {3.6780148899730806`*^9, 3.6780149043325815`*^9}, {
+   3.6780151064421115`*^9, 3.6780151901769257`*^9}, {3.678015248252994*^9, 
+   3.6780153550481496`*^9}, {3.678015414355112*^9, 3.678015420254569*^9}, {
+   3.6780154597138023`*^9, 3.6780154646248426`*^9}, {3.678015509388709*^9, 
+   3.6780155098825126`*^9}, {3.6780155482211657`*^9, 
+   3.6780159295148287`*^9}, {3.6780159597229652`*^9, 
+   3.6780160980904064`*^9}, {3.6780161355962048`*^9, 3.678016142395115*^9}, {
+   3.678016214342542*^9, 3.678016263521087*^9}, {3.6780163180859733`*^9, 
+   3.6780163202510056`*^9}, {3.678016361864991*^9, 3.678016491893916*^9}, {
+   3.6780165467588587`*^9, 3.678016568506467*^9}, {3.6780172287735567`*^9, 
+   3.6780173060722227`*^9}, {3.6780190647958884`*^9, 3.678019164024477*^9}, {
+   3.6780192662091165`*^9, 3.6780192993834505`*^9}, {3.6780194122007275`*^9, 
+   3.6780194600223813`*^9}, {3.6780195471967754`*^9, 
+   3.6780195851567497`*^9}, {3.678019679377672*^9, 3.678019702402072*^9}, {
+   3.678019934665304*^9, 3.6780199751090746`*^9}, {3.6780200937350454`*^9, 
+   3.678020178652345*^9}, {3.6780202261784434`*^9, 3.6780202274572325`*^9}, 
+   3.6780203517236395`*^9, {3.678020538195677*^9, 3.6780206623290343`*^9}, {
+   3.6780210886502485`*^9, 3.6780210927576942`*^9}, {3.6780217086898603`*^9, 
+   3.678021786596927*^9}, {3.678021825547881*^9, 3.678021933881505*^9}, {
+   3.6780229775630517`*^9, 3.678022979235344*^9}, {3.6780231162867703`*^9, 
+   3.6780231652975597`*^9}, {3.678023199201558*^9, 3.6780232003575797`*^9}, {
+   3.678023240621953*^9, 3.678023303865477*^9}, {3.6780233528966885`*^9, 
+   3.6780234820480337`*^9}, {3.6780235136380267`*^9, 
+   3.6780236133565006`*^9}, {3.6780236523017435`*^9, 3.678023676071971*^9}, {
+   3.678023715290224*^9, 3.678023860378336*^9}, {3.678024008413825*^9, 
+   3.6780240333697166`*^9}, {3.678024066316558*^9, 3.678024120222311*^9}, {
+   3.6780241529783144`*^9, 3.6780241569151635`*^9}, {3.678024529968603*^9, 
+   3.6780245753546395`*^9}, 3.678024608967515*^9, {3.6780258352674503`*^9, 
+   3.678025879406663*^9}, {3.67802591672659*^9, 3.6780260413869505`*^9}, {
+   3.6780260775910745`*^9, 3.678026092852091*^9}, {3.6780261391603556`*^9, 
+   3.678026140858864*^9}, {3.678027478616076*^9, 3.6780274925249376`*^9}, {
+   3.678027901832401*^9, 3.678027954457575*^9}, {3.678027990312146*^9, 
+   3.6780280076513166`*^9}, {3.678028795247898*^9, 3.67802881594565*^9}, {
+   3.6780288713881893`*^9, 3.678028924825819*^9}, {3.6780290218854537`*^9, 
+   3.6780290504718623`*^9}, {3.678033596340556*^9, 3.678033668732219*^9}, 
+   3.678033747461614*^9, {3.678033881216505*^9, 3.678033928547691*^9}, {
+   3.67803397424294*^9, 3.6780340440031343`*^9}, {3.6780341212937565`*^9, 
+   3.6780341260061827`*^9}, {3.678034456330722*^9, 3.6780346253384185`*^9}, {
+   3.678035391305295*^9, 3.678035398030137*^9}, {3.678041008645039*^9, 
+   3.678041009182216*^9}, 3.678107871059912*^9, {3.6781861069157457`*^9, 
+   3.6781861221929345`*^9}, {3.678186187989086*^9, 3.6781862846103935`*^9}, {
+   3.678186371291907*^9, 3.6781864960062246`*^9}, 3.678186662113719*^9, {
+   3.6781867106751485`*^9, 3.678186744947277*^9}, {3.6781867984025555`*^9, 
+   3.678186813382861*^9}, {3.6781868727792416`*^9, 3.678186877627326*^9}, {
+   3.6781869194957314`*^9, 3.6781869574513273`*^9}, {3.6781869984109106`*^9, 
+   3.6781870040725574`*^9}, {3.6781870662187243`*^9, 
+   3.6781870790053883`*^9}, {3.6781872100352187`*^9, 
+   3.6781872459409447`*^9}, {3.6781872871197624`*^9, 
+   3.6781873060920362`*^9}, {3.67818738085581*^9, 3.678187430603099*^9}, {
+   3.6781879142010965`*^9, 3.6781879184488945`*^9}, {3.6781879737083683`*^9, 
+   3.678187991942281*^9}, {3.6781881008232756`*^9, 3.6781881012063704`*^9}, {
+   3.678188291902812*^9, 3.678188299053774*^9}, {3.678188394830947*^9, 
+   3.6781883957900224`*^9}, {3.678188527463681*^9, 3.6781885275997467`*^9}, {
+   3.67819108750023*^9, 3.678191088268365*^9}, {3.678640104822667*^9, 
+   3.6786401261198425`*^9}, {3.6786401595746126`*^9, 
+   3.6786402098140397`*^9}, {3.678640240526295*^9, 3.67864033463472*^9}, {
+   3.678640432024937*^9, 3.678640444125018*^9}, {3.6786404785718117`*^9, 
+   3.6786406335315557`*^9}, {3.6786406792238693`*^9, 3.678640741575347*^9}, {
+   3.6786408081228523`*^9, 3.678640845650168*^9}, {3.6786409064831753`*^9, 
+   3.678641051842019*^9}, {3.6786410895447893`*^9, 3.678641148339736*^9}, {
+   3.6786435067820077`*^9, 3.678643535213205*^9}, 3.678643771591837*^9, {
+   3.678643805170596*^9, 3.6786438212762165`*^9}, {3.6786438534019585`*^9, 
+   3.678643883586668*^9}, {3.6786443306644926`*^9, 3.678644385447426*^9}, {
+   3.678644436311899*^9, 3.6786444718952236`*^9}, 3.678644537041827*^9, 
+   3.678644649809887*^9, 3.6787258218311753`*^9, {3.6788061470236564`*^9, 
+   3.6788062102224064`*^9}, {3.6788068605262065`*^9, 3.678806885324478*^9}, {
+   3.6788069170083494`*^9, 3.678806948289633*^9}, {3.678809987089507*^9, 
+   3.678810136630288*^9}, {3.678810210367264*^9, 3.6788102483717413`*^9}, {
+   3.68063461080457*^9, 3.6806346325262403`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+    2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+    1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 2, $CellContext`ke1$$ = 
+    1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 5, $CellContext`ro$$ = 
+    1, $CellContext`roi$$ = 1.4, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`comp$$], 2, "number of compartments"}, {
+      1 -> " one ", 2 -> " two "}}, {{
+       Hold[$CellContext`ad$$], 1, "dosing method"}, {
+      1 -> " injection ", 2 -> " absorption "}}, {
+      Hold[
+       Row[{
+         Manipulate`Place[1], 
+         Spacer[20], 
+         Manipulate`Place[2]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Din$$], 1.5, "dose mass"}, 0.05, 2, 0.05}, {{
+       Hold[$CellContext`n$$], 5, "number of doses"}, 1, 9, 1}, {{
+       Hold[$CellContext`roi$$], 1.4, "dose interval"}, 0.2, 4, 0.1}, {
+      Hold[
+       Row[{
+         Manipulate`Place[3], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`kao$$], 2, 
+       Row[{"absorption coefficient ", 
+         Subscript[
+          Style["k", Italic], "a"]}]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Manipulate`Place[6]}, 
+        Dynamic[$CellContext`ad$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`ke1$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,1"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ke2o$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,2"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ro$$], 1, "elimination order"}, {
+      0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+       Superscript[" 2", "nd"]}}, {
+      Hold[
+       Row[{
+         Style["elimination rate constants", Bold], 
+         Spacer[10], 
+         Manipulate`Place[7], 
+         PaneSelector[{2 -> Manipulate`Place[8]}, 
+          Dynamic[$CellContext`comp$$]], 
+         Manipulate`Place[9]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`k12o$$], 1, 
+       Subscript[
+        Style["k", Italic], 12]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`k21o$$], 1, 
+       Subscript[
+        Style["k", Italic], 21]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Row[{
+            Style["rate constants for transfer between compartments", Bold], 
+            Spacer[10], 
+            Manipulate`Place[10], 
+            Manipulate`Place[11]}]}, 
+        Dynamic[$CellContext`comp$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {597., {171., 178.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`comp$114763$$ = False, $CellContext`ad$114764$$ = 
+    False, $CellContext`Din$114765$$ = 0, $CellContext`n$114766$$ = 
+    0, $CellContext`roi$114767$$ = 0, $CellContext`kao$114768$$ = 
+    0, $CellContext`ke1$114769$$ = 0, $CellContext`ke2o$114770$$ = 
+    0, $CellContext`ro$114771$$ = False, $CellContext`k12o$114772$$ = 
+    0, $CellContext`k21o$114773$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+        2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+        1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 
+        2, $CellContext`ke1$$ = 1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 
+        5, $CellContext`ro$$ = 1, $CellContext`roi$$ = 1.4}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`comp$$, $CellContext`comp$114763$$, False], 
+        Hold[$CellContext`ad$$, $CellContext`ad$114764$$, False], 
+        Hold[$CellContext`Din$$, $CellContext`Din$114765$$, 0], 
+        Hold[$CellContext`n$$, $CellContext`n$114766$$, 0], 
+        Hold[$CellContext`roi$$, $CellContext`roi$114767$$, 0], 
+        Hold[$CellContext`kao$$, $CellContext`kao$114768$$, 0], 
+        Hold[$CellContext`ke1$$, $CellContext`ke1$114769$$, 0], 
+        Hold[$CellContext`ke2o$$, $CellContext`ke2o$114770$$, 0], 
+        Hold[$CellContext`ro$$, $CellContext`ro$114771$$, False], 
+        Hold[$CellContext`k12o$$, $CellContext`k12o$114772$$, 0], 
+        Hold[$CellContext`k21o$$, $CellContext`k21o$114773$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`V1$, $CellContext`ka$, $CellContext`c1$, \
+$CellContext`r$, $CellContext`ke2$, $CellContext`k12$, $CellContext`k21$, \
+$CellContext`m$, $CellContext`injectiontimes$, $CellContext`eqns$, \
+$CellContext`bc$, $CellContext`pw1$, $CellContext`pw2$, $CellContext`plot$, \
+$CellContext`diagram$}, $CellContext`V1$ = 1; 
+        If[$CellContext`ad$$ == 
+          1, {$CellContext`ka$ = 0, 
+           Subscript[$CellContext`c1$, 
+             0] = $CellContext`Din$$/$CellContext`V1$, $CellContext`r$ = 
+           0}, {$CellContext`ka$ = $CellContext`kao$$, 
+           Subscript[$CellContext`c1$, 0] = 
+           0, $CellContext`r$ = $CellContext`Din$$}]; 
+        If[$CellContext`comp$$ == 
+          1, {$CellContext`ke2$ = 0, $CellContext`k12$ = 0, $CellContext`k21$ = 
+           0}, {$CellContext`ke2$ = $CellContext`ke2o$$, $CellContext`k12$ = \
+$CellContext`k12o$$, $CellContext`k21$ = $CellContext`k21o$$}]; 
+        If[$CellContext`roi$$ $CellContext`n$$ < 
+          10, $CellContext`m$ = $CellContext`n$$, $CellContext`m$ = 
+          Ceiling[10/$CellContext`roi$$]]; $CellContext`injectiontimes$ = 
+         Table[($CellContext`i - 1) $CellContext`roi$$, {$CellContext`i, 
+            1, $CellContext`m$}]; $CellContext`eqns$ = Partition[
+           Drop[
+            Flatten[
+             Rest[
+              FoldList[ReplaceAll[{
+                 $CellContext`d[$CellContext`t], 
+                 $CellContext`c1$[$CellContext`t], 
+                 $CellContext`c2[$CellContext`t]}, 
+                First[
+                 
+                 NDSolve[{
+                  Derivative[
+                    1][$CellContext`d][$CellContext`t] == (-$CellContext`ka$) \
+$CellContext`d[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c1$][$CellContext`t] == $CellContext`ka$ \
+($CellContext`d[$CellContext`t]/$CellContext`V1$) - $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`ke1$$ \
+$CellContext`c1$[$CellContext`t]^$CellContext`ro$$ + $CellContext`k21$ \
+$CellContext`c2[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c2][$CellContext`t] == $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`k21$ \
+$CellContext`c2[$CellContext`t] - $CellContext`ke2$ \
+$CellContext`c2[$CellContext`t]^$CellContext`ro$$, $CellContext`d[#2] == 
+                   Chop[$CellContext`r$ + ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] > 
+                    0]], $CellContext`c1$[#2] == 
+                   Chop[Subscript[$CellContext`c1$, 0] + ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] > 
+                    0]]/$CellContext`V1$, $CellContext`c2[#2] == 
+                   Chop[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] > 
+                    0]]}, {$CellContext`d, $CellContext`c1$, \
+$CellContext`c2}, {$CellContext`t, #2, 10}]]]& , {0, 0, 
+               0}, $CellContext`injectiontimes$]]], {1, -1, 3}], 
+           2]; $CellContext`bc$ = Flatten[{
+            Flatten[
+             
+             Table[$CellContext`t <= $CellContext`i $CellContext`roi$$, \
+{$CellContext`i, 1, $CellContext`m$ - 1}], 
+             2], $CellContext`t >= ($CellContext`m$ - 
+              1) $CellContext`roi$$}]; $CellContext`pw1$ = Partition[
+           Riffle[
+            Take[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`pw2$ = Partition[
+           Riffle[
+            Drop[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`plot$ = Plot[{
+            Piecewise[$CellContext`pw1$], 
+            If[$CellContext`comp$$ == 2, 
+             Piecewise[$CellContext`pw2$]], 1, 2}, {$CellContext`t, 0, 10}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Blue}, {Thick, Dashed, 
+              RGBColor[0, 0.8, 0.2]}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {{0, 10}, {0, 3}}, Exclusions -> None, 
+           Frame -> {{True, False}, {True, False}}, 
+           FrameLabel -> {"time", "concentration (mol/L)"}, 
+           LabelStyle -> {17, Black}, PlotRangePadding -> {{None, 0.5}, None},
+            ImageSize -> {480, 300}, AspectRatio -> Full, PlotLegends -> 
+           Placed[{"compartment 1", "compartment 2"}, Above], Epilog -> {
+             Rotate[
+              Text[
+               Style[
+                Column[{"therapeutic", "window"}, Center], 16.5, Background -> 
+                White], {9.8, 1.5}], 3 (Pi/2)], 
+             Text[
+              Style["toxic dose", 16, Purple, Background -> White], {
+              9, 2.15}], 
+             Text[
+              Style["effective dose", 16, 
+               RGBColor[0, 0.8, 0.2], Background -> White], {8.9, 
+              0.85}]}]; $CellContext`diagram$ = Graphics[{{
+             EdgeForm[Black], 
+             FaceForm[None], 
+             Rectangle[{0, 0}, {1, 3}]}, {
+             Arrowheads[0.16], 
+             Arrow[{{0.5, -0.5}, {0.5, 0}}]}, 
+            Text[
+             Style["dose", 18], {0.5, -0.25}, {-1.5, 0}], 
+            If[$CellContext`comp$$ == 1, {
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 1.5}], 
+              If[$CellContext`ke1$$ != 0, {
+                Arrowheads[0.16], 
+                Arrow[{{1, 1.5}, {2, 1.5}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], "e,1"], 18], {1, 1.5}, 
+                 1.5 {-1, -1}]}]}, {
+              Line[{{0, 1.5}, {1, 1.5}}], 
+              Arrowheads[0.16], 
+              Apply[If[# != 0, {
+                 Arrow[{{1, #2}, {2, #2}}], 
+                 Text[
+                  Style[
+                   Subscript[
+                    Style["k", Italic], 
+                    Row[{"e,", #3}]], 18], {1, #2}, 
+                  1.5 {-1, -1}]}]& , {{$CellContext`ke1$$, 0.75, 
+                 1}, {$CellContext`ke2$, 2.25, 2}}, {1}], 
+              If[$CellContext`k12$ != 0, {
+                Arrow[{{0.25, 1}, {0.25, 2}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 12], 18], {0.25, 1}, {-0.5, 1.5}]}], 
+              If[$CellContext`k21$ != 0, {
+                Arrow[{{0.75, 2}, {0.75, 1}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 21], 18], {0.75, 2}, {0.5, -1.5}]}], 
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 0.5}], 
+              Text[
+               Style["2", 18, Blue, Bold], {0.5, 2.5}]}]}, 
+           PlotRange -> {{0, 2}, {-0.5, 3}}, ImageSize -> {100, 330}, 
+           AspectRatio -> Full]; Grid[{{$CellContext`plot$, 
+            Spacer[1], $CellContext`diagram$}}]], 
+      "Specifications" :> {{{$CellContext`comp$$, 2, 
+          "number of compartments"}, {1 -> " one ", 2 -> " two "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`ad$$, 1, "dosing method"}, {
+         1 -> " injection ", 2 -> " absorption "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, 
+        Row[{
+          Manipulate`Place[1], 
+          Spacer[20], 
+          Manipulate`Place[2]}], {{$CellContext`Din$$, 1.5, "dose mass"}, 
+         0.05, 2, 0.05, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 3}, {{$CellContext`n$$, 5, "number of doses"}, 1,
+          9, 1, Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`roi$$, 1.4, "dose interval"}, 0.2, 4, 0.1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 5}, 
+        Row[{
+          Manipulate`Place[3], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], {{$CellContext`kao$$, 2, 
+          Row[{"absorption coefficient ", 
+            Subscript[
+             Style["k", Italic], "a"]}]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 6}, 
+        PaneSelector[{2 -> Manipulate`Place[6]}, 
+         Dynamic[$CellContext`ad$$]], {{$CellContext`ke1$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,1"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`ke2o$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,2"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`ro$$, 1, "elimination order"}, {
+         0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+          Superscript[" 2", "nd"]}, ControlType -> Setter, ControlPlacement -> 
+         9}, 
+        Row[{
+          Style["elimination rate constants", Bold], 
+          Spacer[10], 
+          Manipulate`Place[7], 
+          PaneSelector[{2 -> Manipulate`Place[8]}, 
+           Dynamic[$CellContext`comp$$]], 
+          Manipulate`Place[9]}], {{$CellContext`k12o$$, 1, 
+          Subscript[
+           Style["k", Italic], 12]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 10}, {{$CellContext`k21o$$, 1, 
+          Subscript[
+           Style["k", Italic], 21]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 11}, 
+        PaneSelector[{2 -> Row[{
+             Style["rate constants for transfer between compartments", Bold], 
+             
+             Spacer[10], 
+             Manipulate`Place[10], 
+             Manipulate`Place[11]}]}, 
+         Dynamic[$CellContext`comp$$]]}, 
+      "Options" :> {
+       SynchronousUpdating -> False, TrackedSymbols -> True, 
+        AutorunSequencing -> {2, 3}}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{659., {260., 267.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->233935458]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ManipulateCaptionSection"],
+
+Cell[TextData[{
+ "One- and two-compartment pharmacokinetic models calculate the concentration \
+of a drug in the body as a function of time for a given dosing scheme. There \
+are two options for administering the drug: injection into the first \
+compartment (e.g., inject into the blood stream with a needle) or absorption \
+into the first compartment from another compartment (e.g., drug in stomach \
+absorbed into blood stream). Select the mass of the dose, number of doses, \
+and intervals between doses with sliders. The objective is to select a dosing \
+scheme so that as much of the drug as possible has a concentration between \
+the effective dose and the toxic dose (the therapeutic window). The drug can \
+be eliminated from the first compartment (set rate constant ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", 
+    RowBox[{
+     StyleBox["e",
+      FontSlant->"Plain"], ",", "1"}]], TraditionalForm]], "InlineMath"],
+ " with a slider) or transferred to the second compartment (slider ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "12"], TraditionalForm]], "InlineMath"],
+ "). Similarly, in the second compartment the drug can be eliminated (slider ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", 
+    RowBox[{
+     StyleBox["e",
+      FontSlant->"Plain"], ",", "2"}]], TraditionalForm]], "InlineMath"],
+ ") or transferred back to compartment one (slider ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "21"], TraditionalForm]], "InlineMath"],
+ "). Change the reaction order of the drug elimination kinetics with buttons. \
+The areas under the curves correspond to the total exposure to the drug."
+}], "ManipulateCaption",
+ CellChangeTimes->{{3.6761246316782694`*^9, 3.676124694493975*^9}, {
+  3.678033093990575*^9, 3.6780331740608*^9}, {3.67803322094151*^9, 
+  3.678033231921958*^9}, {3.678033498816948*^9, 3.6780335080022793`*^9}, {
+  3.6780410891875553`*^9, 3.6780410977722216`*^9}, {3.6786439028168893`*^9, 
+  3.6786440180477953`*^9}, {3.6806347081297836`*^9, 3.6806347160233974`*^9}, {
+  3.6806347753407536`*^9, 3.6806347927202063`*^9}},
+ CellID->733055073]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ThumbnailSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+    2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+    1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 2, $CellContext`ke1$$ = 
+    1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 5, $CellContext`ro$$ = 
+    1, $CellContext`roi$$ = 1.4, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`comp$$], 2, "number of compartments"}, {
+      1 -> " one ", 2 -> " two "}}, {{
+       Hold[$CellContext`ad$$], 1, "dosing method"}, {
+      1 -> " injection ", 2 -> " absorption "}}, {
+      Hold[
+       Row[{
+         Manipulate`Place[1], 
+         Spacer[20], 
+         Manipulate`Place[2]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Din$$], 1.5, "dose mass"}, 0.05, 2, 0.05}, {{
+       Hold[$CellContext`n$$], 5, "number of doses"}, 1, 9, 1}, {{
+       Hold[$CellContext`roi$$], 1.4, "dose interval"}, 0.2, 4, 0.1}, {
+      Hold[
+       Row[{
+         Manipulate`Place[3], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`kao$$], 2, 
+       Row[{"absorption coefficient ", 
+         Subscript[
+          Style["k", Italic], "a"]}]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Manipulate`Place[6]}, 
+        Dynamic[$CellContext`ad$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`ke1$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,1"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ke2o$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,2"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ro$$], 1, "elimination order"}, {
+      0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+       Superscript[" 2", "nd"]}}, {
+      Hold[
+       Row[{
+         Style["elimination rate constants", Bold], 
+         Spacer[10], 
+         Manipulate`Place[7], 
+         PaneSelector[{2 -> Manipulate`Place[8]}, 
+          Dynamic[$CellContext`comp$$]], 
+         Manipulate`Place[9]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`k12o$$], 1, 
+       Subscript[
+        Style["k", Italic], 12]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`k21o$$], 1, 
+       Subscript[
+        Style["k", Italic], 21]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Row[{
+            Style["rate constants for transfer between compartments", Bold], 
+            Spacer[10], 
+            Manipulate`Place[10], 
+            Manipulate`Place[11]}]}, 
+        Dynamic[$CellContext`comp$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {597., {171., 178.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`comp$114881$$ = False, $CellContext`ad$114882$$ = 
+    False, $CellContext`Din$114883$$ = 0, $CellContext`n$114884$$ = 
+    0, $CellContext`roi$114885$$ = 0, $CellContext`kao$114886$$ = 
+    0, $CellContext`ke1$114887$$ = 0, $CellContext`ke2o$114888$$ = 
+    0, $CellContext`ro$114889$$ = False, $CellContext`k12o$114890$$ = 
+    0, $CellContext`k21o$114891$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+        2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+        1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 
+        2, $CellContext`ke1$$ = 1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 
+        5, $CellContext`ro$$ = 1, $CellContext`roi$$ = 1.4}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`comp$$, $CellContext`comp$114881$$, False], 
+        Hold[$CellContext`ad$$, $CellContext`ad$114882$$, False], 
+        Hold[$CellContext`Din$$, $CellContext`Din$114883$$, 0], 
+        Hold[$CellContext`n$$, $CellContext`n$114884$$, 0], 
+        Hold[$CellContext`roi$$, $CellContext`roi$114885$$, 0], 
+        Hold[$CellContext`kao$$, $CellContext`kao$114886$$, 0], 
+        Hold[$CellContext`ke1$$, $CellContext`ke1$114887$$, 0], 
+        Hold[$CellContext`ke2o$$, $CellContext`ke2o$114888$$, 0], 
+        Hold[$CellContext`ro$$, $CellContext`ro$114889$$, False], 
+        Hold[$CellContext`k12o$$, $CellContext`k12o$114890$$, 0], 
+        Hold[$CellContext`k21o$$, $CellContext`k21o$114891$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`V1$, $CellContext`ka$, $CellContext`c1$, \
+$CellContext`r$, $CellContext`ke2$, $CellContext`k12$, $CellContext`k21$, \
+$CellContext`m$, $CellContext`injectiontimes$, $CellContext`eqns$, \
+$CellContext`bc$, $CellContext`pw1$, $CellContext`pw2$, $CellContext`plot$, \
+$CellContext`diagram$}, $CellContext`V1$ = 1; 
+        If[$CellContext`ad$$ == 
+          1, {$CellContext`ka$ = 0, 
+           Subscript[$CellContext`c1$, 
+             0] = $CellContext`Din$$/$CellContext`V1$, $CellContext`r$ = 
+           0}, {$CellContext`ka$ = $CellContext`kao$$, 
+           Subscript[$CellContext`c1$, 0] = 
+           0, $CellContext`r$ = $CellContext`Din$$}]; 
+        If[$CellContext`comp$$ == 
+          1, {$CellContext`ke2$ = 0, $CellContext`k12$ = 0, $CellContext`k21$ = 
+           0}, {$CellContext`ke2$ = $CellContext`ke2o$$, $CellContext`k12$ = \
+$CellContext`k12o$$, $CellContext`k21$ = $CellContext`k21o$$}]; 
+        If[$CellContext`roi$$ $CellContext`n$$ < 
+          10, $CellContext`m$ = $CellContext`n$$, $CellContext`m$ = 
+          Ceiling[10/$CellContext`roi$$]]; $CellContext`injectiontimes$ = 
+         Table[($CellContext`i - 1) $CellContext`roi$$, {$CellContext`i, 
+            1, $CellContext`m$}]; $CellContext`eqns$ = Partition[
+           Drop[
+            Flatten[
+             Rest[
+              FoldList[ReplaceAll[{
+                 $CellContext`d[$CellContext`t], 
+                 $CellContext`c1$[$CellContext`t], 
+                 $CellContext`c2[$CellContext`t]}, 
+                First[
+                 
+                 NDSolve[{
+                  Derivative[
+                    1][$CellContext`d][$CellContext`t] == (-$CellContext`ka$) \
+$CellContext`d[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c1$][$CellContext`t] == $CellContext`ka$ \
+($CellContext`d[$CellContext`t]/$CellContext`V1$) - $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`ke1$$ \
+$CellContext`c1$[$CellContext`t]^$CellContext`ro$$ + $CellContext`k21$ \
+$CellContext`c2[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c2][$CellContext`t] == $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`k21$ \
+$CellContext`c2[$CellContext`t] - $CellContext`ke2$ \
+$CellContext`c2[$CellContext`t]^$CellContext`ro$$, $CellContext`d[#2] == 
+                   Chop[$CellContext`r$ + ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] > 
+                    0]], $CellContext`c1$[#2] == 
+                   Chop[Subscript[$CellContext`c1$, 0] + ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] > 
+                    0]]/$CellContext`V1$, $CellContext`c2[#2] == 
+                   Chop[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] > 
+                    0]]}, {$CellContext`d, $CellContext`c1$, \
+$CellContext`c2}, {$CellContext`t, #2, 10}]]]& , {0, 0, 
+               0}, $CellContext`injectiontimes$]]], {1, -1, 3}], 
+           2]; $CellContext`bc$ = Flatten[{
+            Flatten[
+             
+             Table[$CellContext`t <= $CellContext`i $CellContext`roi$$, \
+{$CellContext`i, 1, $CellContext`m$ - 1}], 
+             2], $CellContext`t >= ($CellContext`m$ - 
+              1) $CellContext`roi$$}]; $CellContext`pw1$ = Partition[
+           Riffle[
+            Take[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`pw2$ = Partition[
+           Riffle[
+            Drop[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`plot$ = Plot[{
+            Piecewise[$CellContext`pw1$], 
+            If[$CellContext`comp$$ == 2, 
+             Piecewise[$CellContext`pw2$]], 1, 2}, {$CellContext`t, 0, 10}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Blue}, {Thick, Dashed, 
+              RGBColor[0, 0.8, 0.2]}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {{0, 10}, {0, 3}}, Exclusions -> None, 
+           Frame -> {{True, False}, {True, False}}, 
+           FrameLabel -> {"time", "concentration (mol/L)"}, 
+           LabelStyle -> {17, Black}, PlotRangePadding -> {{None, 0.5}, None},
+            ImageSize -> {480, 300}, AspectRatio -> Full, PlotLegends -> 
+           Placed[{"compartment 1", "compartment 2"}, Above], Epilog -> {
+             Rotate[
+              Text[
+               Style[
+                Column[{"therapeutic", "window"}, Center], 16.5, Background -> 
+                White], {9.8, 1.5}], 3 (Pi/2)], 
+             Text[
+              Style["toxic dose", 16, Purple, Background -> White], {
+              9, 2.15}], 
+             Text[
+              Style["effective dose", 16, 
+               RGBColor[0, 0.8, 0.2], Background -> White], {8.9, 
+              0.85}]}]; $CellContext`diagram$ = Graphics[{{
+             EdgeForm[Black], 
+             FaceForm[None], 
+             Rectangle[{0, 0}, {1, 3}]}, {
+             Arrowheads[0.16], 
+             Arrow[{{0.5, -0.5}, {0.5, 0}}]}, 
+            Text[
+             Style["dose", 18], {0.5, -0.25}, {-1.5, 0}], 
+            If[$CellContext`comp$$ == 1, {
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 1.5}], 
+              If[$CellContext`ke1$$ != 0, {
+                Arrowheads[0.16], 
+                Arrow[{{1, 1.5}, {2, 1.5}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], "e,1"], 18], {1, 1.5}, 
+                 1.5 {-1, -1}]}]}, {
+              Line[{{0, 1.5}, {1, 1.5}}], 
+              Arrowheads[0.16], 
+              Apply[If[# != 0, {
+                 Arrow[{{1, #2}, {2, #2}}], 
+                 Text[
+                  Style[
+                   Subscript[
+                    Style["k", Italic], 
+                    Row[{"e,", #3}]], 18], {1, #2}, 
+                  1.5 {-1, -1}]}]& , {{$CellContext`ke1$$, 0.75, 
+                 1}, {$CellContext`ke2$, 2.25, 2}}, {1}], 
+              If[$CellContext`k12$ != 0, {
+                Arrow[{{0.25, 1}, {0.25, 2}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 12], 18], {0.25, 1}, {-0.5, 1.5}]}], 
+              If[$CellContext`k21$ != 0, {
+                Arrow[{{0.75, 2}, {0.75, 1}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 21], 18], {0.75, 2}, {0.5, -1.5}]}], 
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 0.5}], 
+              Text[
+               Style["2", 18, Blue, Bold], {0.5, 2.5}]}]}, 
+           PlotRange -> {{0, 2}, {-0.5, 3}}, ImageSize -> {100, 330}, 
+           AspectRatio -> Full]; Grid[{{$CellContext`plot$, 
+            Spacer[1], $CellContext`diagram$}}]], 
+      "Specifications" :> {{{$CellContext`comp$$, 2, 
+          "number of compartments"}, {1 -> " one ", 2 -> " two "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`ad$$, 1, "dosing method"}, {
+         1 -> " injection ", 2 -> " absorption "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, 
+        Row[{
+          Manipulate`Place[1], 
+          Spacer[20], 
+          Manipulate`Place[2]}], {{$CellContext`Din$$, 1.5, "dose mass"}, 
+         0.05, 2, 0.05, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 3}, {{$CellContext`n$$, 5, "number of doses"}, 1,
+          9, 1, Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`roi$$, 1.4, "dose interval"}, 0.2, 4, 0.1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 5}, 
+        Row[{
+          Manipulate`Place[3], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], {{$CellContext`kao$$, 2, 
+          Row[{"absorption coefficient ", 
+            Subscript[
+             Style["k", Italic], "a"]}]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 6}, 
+        PaneSelector[{2 -> Manipulate`Place[6]}, 
+         Dynamic[$CellContext`ad$$]], {{$CellContext`ke1$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,1"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`ke2o$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,2"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`ro$$, 1, "elimination order"}, {
+         0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+          Superscript[" 2", "nd"]}, ControlType -> Setter, ControlPlacement -> 
+         9}, 
+        Row[{
+          Style["elimination rate constants", Bold], 
+          Spacer[10], 
+          Manipulate`Place[7], 
+          PaneSelector[{2 -> Manipulate`Place[8]}, 
+           Dynamic[$CellContext`comp$$]], 
+          Manipulate`Place[9]}], {{$CellContext`k12o$$, 1, 
+          Subscript[
+           Style["k", Italic], 12]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 10}, {{$CellContext`k21o$$, 1, 
+          Subscript[
+           Style["k", Italic], 21]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 11}, 
+        PaneSelector[{2 -> Row[{
+             Style["rate constants for transfer between compartments", Bold], 
+             
+             Spacer[10], 
+             Manipulate`Place[10], 
+             Manipulate`Place[11]}]}, 
+         Dynamic[$CellContext`comp$$]]}, 
+      "Options" :> {
+       SynchronousUpdating -> False, TrackedSymbols -> True, 
+        AutorunSequencing -> {2, 3}}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{659., {260., 267.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->644408654]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SnapshotsSection"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ad$$ = 2, $CellContext`comp$$ = 
+    1, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+    1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 2, $CellContext`ke1$$ = 
+    1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 5, $CellContext`ro$$ = 
+    2, $CellContext`roi$$ = 1.4, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`comp$$], 1, "number of compartments"}, {
+      1 -> " one ", 2 -> " two "}}, {{
+       Hold[$CellContext`ad$$], 2, "dosing method"}, {
+      1 -> " injection ", 2 -> " absorption "}}, {
+      Hold[
+       Row[{
+         Manipulate`Place[1], 
+         Spacer[20], 
+         Manipulate`Place[2]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Din$$], 1.5, "dose mass"}, 0.05, 2, 0.05}, {{
+       Hold[$CellContext`n$$], 5, "number of doses"}, 1, 9, 1}, {{
+       Hold[$CellContext`roi$$], 1.4, "dose interval"}, 0.2, 4, 0.1}, {
+      Hold[
+       Row[{
+         Manipulate`Place[3], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`kao$$], 2, 
+       Row[{"absorption coefficient ", 
+         Subscript[
+          Style["k", Italic], "a"]}]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Manipulate`Place[6]}, 
+        Dynamic[$CellContext`ad$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`ke1$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,1"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ke2o$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,2"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ro$$], 2, "elimination order"}, {
+      0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+       Superscript[" 2", "nd"]}}, {
+      Hold[
+       Row[{
+         Style["elimination rate constants", Bold], 
+         Spacer[10], 
+         Manipulate`Place[7], 
+         PaneSelector[{2 -> Manipulate`Place[8]}, 
+          Dynamic[$CellContext`comp$$]], 
+         Manipulate`Place[9]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`k12o$$], 1, 
+       Subscript[
+        Style["k", Italic], 12]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`k21o$$], 1, 
+       Subscript[
+        Style["k", Italic], 21]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Row[{
+            Style["rate constants for transfer between compartments", Bold], 
+            Spacer[10], 
+            Manipulate`Place[10], 
+            Manipulate`Place[11]}]}, 
+        Dynamic[$CellContext`comp$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {597., {171., 178.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`comp$114999$$ = False, $CellContext`ad$115000$$ = 
+    False, $CellContext`Din$115001$$ = 0, $CellContext`n$115002$$ = 
+    0, $CellContext`roi$115003$$ = 0, $CellContext`kao$115004$$ = 
+    0, $CellContext`ke1$115005$$ = 0, $CellContext`ke2o$115006$$ = 
+    0, $CellContext`ro$115007$$ = False, $CellContext`k12o$115008$$ = 
+    0, $CellContext`k21o$115009$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`ad$$ = 2, $CellContext`comp$$ = 
+        1, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+        1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 
+        2, $CellContext`ke1$$ = 1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 
+        5, $CellContext`ro$$ = 2, $CellContext`roi$$ = 1.4}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`comp$$, $CellContext`comp$114999$$, False], 
+        Hold[$CellContext`ad$$, $CellContext`ad$115000$$, False], 
+        Hold[$CellContext`Din$$, $CellContext`Din$115001$$, 0], 
+        Hold[$CellContext`n$$, $CellContext`n$115002$$, 0], 
+        Hold[$CellContext`roi$$, $CellContext`roi$115003$$, 0], 
+        Hold[$CellContext`kao$$, $CellContext`kao$115004$$, 0], 
+        Hold[$CellContext`ke1$$, $CellContext`ke1$115005$$, 0], 
+        Hold[$CellContext`ke2o$$, $CellContext`ke2o$115006$$, 0], 
+        Hold[$CellContext`ro$$, $CellContext`ro$115007$$, False], 
+        Hold[$CellContext`k12o$$, $CellContext`k12o$115008$$, 0], 
+        Hold[$CellContext`k21o$$, $CellContext`k21o$115009$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`V1$, $CellContext`ka$, $CellContext`c1$, \
+$CellContext`r$, $CellContext`ke2$, $CellContext`k12$, $CellContext`k21$, \
+$CellContext`m$, $CellContext`injectiontimes$, $CellContext`eqns$, \
+$CellContext`bc$, $CellContext`pw1$, $CellContext`pw2$, $CellContext`plot$, \
+$CellContext`diagram$}, $CellContext`V1$ = 1; 
+        If[$CellContext`ad$$ == 
+          1, {$CellContext`ka$ = 0, 
+           Subscript[$CellContext`c1$, 
+             0] = $CellContext`Din$$/$CellContext`V1$, $CellContext`r$ = 
+           0}, {$CellContext`ka$ = $CellContext`kao$$, 
+           Subscript[$CellContext`c1$, 0] = 
+           0, $CellContext`r$ = $CellContext`Din$$}]; 
+        If[$CellContext`comp$$ == 
+          1, {$CellContext`ke2$ = 0, $CellContext`k12$ = 0, $CellContext`k21$ = 
+           0}, {$CellContext`ke2$ = $CellContext`ke2o$$, $CellContext`k12$ = \
+$CellContext`k12o$$, $CellContext`k21$ = $CellContext`k21o$$}]; 
+        If[$CellContext`roi$$ $CellContext`n$$ < 
+          10, $CellContext`m$ = $CellContext`n$$, $CellContext`m$ = 
+          Ceiling[10/$CellContext`roi$$]]; $CellContext`injectiontimes$ = 
+         Table[($CellContext`i - 1) $CellContext`roi$$, {$CellContext`i, 
+            1, $CellContext`m$}]; $CellContext`eqns$ = Partition[
+           Drop[
+            Flatten[
+             Rest[
+              FoldList[ReplaceAll[{
+                 $CellContext`d[$CellContext`t], 
+                 $CellContext`c1$[$CellContext`t], 
+                 $CellContext`c2[$CellContext`t]}, 
+                First[
+                 
+                 NDSolve[{
+                  Derivative[
+                    1][$CellContext`d][$CellContext`t] == (-$CellContext`ka$) \
+$CellContext`d[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c1$][$CellContext`t] == $CellContext`ka$ \
+($CellContext`d[$CellContext`t]/$CellContext`V1$) - $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`ke1$$ \
+$CellContext`c1$[$CellContext`t]^$CellContext`ro$$ + $CellContext`k21$ \
+$CellContext`c2[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c2][$CellContext`t] == $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`k21$ \
+$CellContext`c2[$CellContext`t] - $CellContext`ke2$ \
+$CellContext`c2[$CellContext`t]^$CellContext`ro$$, $CellContext`d[#2] == 
+                   Chop[$CellContext`r$ + ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] > 
+                    0]], $CellContext`c1$[#2] == 
+                   Chop[Subscript[$CellContext`c1$, 0] + ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] > 
+                    0]]/$CellContext`V1$, $CellContext`c2[#2] == 
+                   Chop[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] > 
+                    0]]}, {$CellContext`d, $CellContext`c1$, \
+$CellContext`c2}, {$CellContext`t, #2, 10}]]]& , {0, 0, 
+               0}, $CellContext`injectiontimes$]]], {1, -1, 3}], 
+           2]; $CellContext`bc$ = Flatten[{
+            Flatten[
+             
+             Table[$CellContext`t <= $CellContext`i $CellContext`roi$$, \
+{$CellContext`i, 1, $CellContext`m$ - 1}], 
+             2], $CellContext`t >= ($CellContext`m$ - 
+              1) $CellContext`roi$$}]; $CellContext`pw1$ = Partition[
+           Riffle[
+            Take[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`pw2$ = Partition[
+           Riffle[
+            Drop[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`plot$ = Plot[{
+            Piecewise[$CellContext`pw1$], 
+            If[$CellContext`comp$$ == 2, 
+             Piecewise[$CellContext`pw2$]], 1, 2}, {$CellContext`t, 0, 10}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Blue}, {Thick, Dashed, 
+              RGBColor[0, 0.8, 0.2]}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {{0, 10}, {0, 3}}, Exclusions -> None, 
+           Frame -> {{True, False}, {True, False}}, 
+           FrameLabel -> {"time", "concentration (mol/L)"}, 
+           LabelStyle -> {17, Black}, PlotRangePadding -> {{None, 0.5}, None},
+            ImageSize -> {480, 300}, AspectRatio -> Full, PlotLegends -> 
+           Placed[{"compartment 1", "compartment 2"}, Above], Epilog -> {
+             Rotate[
+              Text[
+               Style[
+                Column[{"therapeutic", "window"}, Center], 16.5, Background -> 
+                White], {9.8, 1.5}], 3 (Pi/2)], 
+             Text[
+              Style["toxic dose", 16, Purple, Background -> White], {
+              9, 2.15}], 
+             Text[
+              Style["effective dose", 16, 
+               RGBColor[0, 0.8, 0.2], Background -> White], {8.9, 
+              0.85}]}]; $CellContext`diagram$ = Graphics[{{
+             EdgeForm[Black], 
+             FaceForm[None], 
+             Rectangle[{0, 0}, {1, 3}]}, {
+             Arrowheads[0.16], 
+             Arrow[{{0.5, -0.5}, {0.5, 0}}]}, 
+            Text[
+             Style["dose", 18], {0.5, -0.25}, {-1.5, 0}], 
+            If[$CellContext`comp$$ == 1, {
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 1.5}], 
+              If[$CellContext`ke1$$ != 0, {
+                Arrowheads[0.16], 
+                Arrow[{{1, 1.5}, {2, 1.5}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], "e,1"], 18], {1, 1.5}, 
+                 1.5 {-1, -1}]}]}, {
+              Line[{{0, 1.5}, {1, 1.5}}], 
+              Arrowheads[0.16], 
+              Apply[If[# != 0, {
+                 Arrow[{{1, #2}, {2, #2}}], 
+                 Text[
+                  Style[
+                   Subscript[
+                    Style["k", Italic], 
+                    Row[{"e,", #3}]], 18], {1, #2}, 
+                  1.5 {-1, -1}]}]& , {{$CellContext`ke1$$, 0.75, 
+                 1}, {$CellContext`ke2$, 2.25, 2}}, {1}], 
+              If[$CellContext`k12$ != 0, {
+                Arrow[{{0.25, 1}, {0.25, 2}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 12], 18], {0.25, 1}, {-0.5, 1.5}]}], 
+              If[$CellContext`k21$ != 0, {
+                Arrow[{{0.75, 2}, {0.75, 1}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 21], 18], {0.75, 2}, {0.5, -1.5}]}], 
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 0.5}], 
+              Text[
+               Style["2", 18, Blue, Bold], {0.5, 2.5}]}]}, 
+           PlotRange -> {{0, 2}, {-0.5, 3}}, ImageSize -> {100, 330}, 
+           AspectRatio -> Full]; Grid[{{$CellContext`plot$, 
+            Spacer[1], $CellContext`diagram$}}]], 
+      "Specifications" :> {{{$CellContext`comp$$, 1, 
+          "number of compartments"}, {1 -> " one ", 2 -> " two "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`ad$$, 2, "dosing method"}, {
+         1 -> " injection ", 2 -> " absorption "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, 
+        Row[{
+          Manipulate`Place[1], 
+          Spacer[20], 
+          Manipulate`Place[2]}], {{$CellContext`Din$$, 1.5, "dose mass"}, 
+         0.05, 2, 0.05, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 3}, {{$CellContext`n$$, 5, "number of doses"}, 1,
+          9, 1, Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`roi$$, 1.4, "dose interval"}, 0.2, 4, 0.1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 5}, 
+        Row[{
+          Manipulate`Place[3], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], {{$CellContext`kao$$, 2, 
+          Row[{"absorption coefficient ", 
+            Subscript[
+             Style["k", Italic], "a"]}]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 6}, 
+        PaneSelector[{2 -> Manipulate`Place[6]}, 
+         Dynamic[$CellContext`ad$$]], {{$CellContext`ke1$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,1"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`ke2o$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,2"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`ro$$, 2, "elimination order"}, {
+         0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+          Superscript[" 2", "nd"]}, ControlType -> Setter, ControlPlacement -> 
+         9}, 
+        Row[{
+          Style["elimination rate constants", Bold], 
+          Spacer[10], 
+          Manipulate`Place[7], 
+          PaneSelector[{2 -> Manipulate`Place[8]}, 
+           Dynamic[$CellContext`comp$$]], 
+          Manipulate`Place[9]}], {{$CellContext`k12o$$, 1, 
+          Subscript[
+           Style["k", Italic], 12]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 10}, {{$CellContext`k21o$$, 1, 
+          Subscript[
+           Style["k", Italic], 21]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 11}, 
+        PaneSelector[{2 -> Row[{
+             Style["rate constants for transfer between compartments", Bold], 
+             
+             Spacer[10], 
+             Manipulate`Place[10], 
+             Manipulate`Place[11]}]}, 
+         Dynamic[$CellContext`comp$$]]}, 
+      "Options" :> {
+       SynchronousUpdating -> False, TrackedSymbols -> True, 
+        AutorunSequencing -> {2, 3}}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{659., {260., 267.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->766532020],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+    2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+    1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 2, $CellContext`ke1$$ = 
+    1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 3, $CellContext`ro$$ = 
+    0, $CellContext`roi$$ = 3.2, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`comp$$], 2, "number of compartments"}, {
+      1 -> " one ", 2 -> " two "}}, {{
+       Hold[$CellContext`ad$$], 1, "dosing method"}, {
+      1 -> " injection ", 2 -> " absorption "}}, {
+      Hold[
+       Row[{
+         Manipulate`Place[1], 
+         Spacer[20], 
+         Manipulate`Place[2]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Din$$], 1.5, "dose mass"}, 0.05, 2, 0.05}, {{
+       Hold[$CellContext`n$$], 3, "number of doses"}, 1, 9, 1}, {{
+       Hold[$CellContext`roi$$], 3.2, "dose interval"}, 0.2, 4, 0.1}, {
+      Hold[
+       Row[{
+         Manipulate`Place[3], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`kao$$], 2, 
+       Row[{"absorption coefficient ", 
+         Subscript[
+          Style["k", Italic], "a"]}]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Manipulate`Place[6]}, 
+        Dynamic[$CellContext`ad$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`ke1$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,1"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ke2o$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,2"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ro$$], 0, "elimination order"}, {
+      0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+       Superscript[" 2", "nd"]}}, {
+      Hold[
+       Row[{
+         Style["elimination rate constants", Bold], 
+         Spacer[10], 
+         Manipulate`Place[7], 
+         PaneSelector[{2 -> Manipulate`Place[8]}, 
+          Dynamic[$CellContext`comp$$]], 
+         Manipulate`Place[9]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`k12o$$], 1, 
+       Subscript[
+        Style["k", Italic], 12]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`k21o$$], 1, 
+       Subscript[
+        Style["k", Italic], 21]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Row[{
+            Style["rate constants for transfer between compartments", Bold], 
+            Spacer[10], 
+            Manipulate`Place[10], 
+            Manipulate`Place[11]}]}, 
+        Dynamic[$CellContext`comp$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {597., {171., 178.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`comp$115117$$ = False, $CellContext`ad$115118$$ = 
+    False, $CellContext`Din$115119$$ = 0, $CellContext`n$115120$$ = 
+    0, $CellContext`roi$115121$$ = 0, $CellContext`kao$115122$$ = 
+    0, $CellContext`ke1$115123$$ = 0, $CellContext`ke2o$115124$$ = 
+    0, $CellContext`ro$115125$$ = False, $CellContext`k12o$115126$$ = 
+    0, $CellContext`k21o$115127$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+        2, $CellContext`Din$$ = 1.5, $CellContext`k12o$$ = 
+        1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 
+        2, $CellContext`ke1$$ = 1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 
+        3, $CellContext`ro$$ = 0, $CellContext`roi$$ = 3.2}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`comp$$, $CellContext`comp$115117$$, False], 
+        Hold[$CellContext`ad$$, $CellContext`ad$115118$$, False], 
+        Hold[$CellContext`Din$$, $CellContext`Din$115119$$, 0], 
+        Hold[$CellContext`n$$, $CellContext`n$115120$$, 0], 
+        Hold[$CellContext`roi$$, $CellContext`roi$115121$$, 0], 
+        Hold[$CellContext`kao$$, $CellContext`kao$115122$$, 0], 
+        Hold[$CellContext`ke1$$, $CellContext`ke1$115123$$, 0], 
+        Hold[$CellContext`ke2o$$, $CellContext`ke2o$115124$$, 0], 
+        Hold[$CellContext`ro$$, $CellContext`ro$115125$$, False], 
+        Hold[$CellContext`k12o$$, $CellContext`k12o$115126$$, 0], 
+        Hold[$CellContext`k21o$$, $CellContext`k21o$115127$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`V1$, $CellContext`ka$, $CellContext`c1$, \
+$CellContext`r$, $CellContext`ke2$, $CellContext`k12$, $CellContext`k21$, \
+$CellContext`m$, $CellContext`injectiontimes$, $CellContext`eqns$, \
+$CellContext`bc$, $CellContext`pw1$, $CellContext`pw2$, $CellContext`plot$, \
+$CellContext`diagram$}, $CellContext`V1$ = 1; 
+        If[$CellContext`ad$$ == 
+          1, {$CellContext`ka$ = 0, 
+           Subscript[$CellContext`c1$, 
+             0] = $CellContext`Din$$/$CellContext`V1$, $CellContext`r$ = 
+           0}, {$CellContext`ka$ = $CellContext`kao$$, 
+           Subscript[$CellContext`c1$, 0] = 
+           0, $CellContext`r$ = $CellContext`Din$$}]; 
+        If[$CellContext`comp$$ == 
+          1, {$CellContext`ke2$ = 0, $CellContext`k12$ = 0, $CellContext`k21$ = 
+           0}, {$CellContext`ke2$ = $CellContext`ke2o$$, $CellContext`k12$ = \
+$CellContext`k12o$$, $CellContext`k21$ = $CellContext`k21o$$}]; 
+        If[$CellContext`roi$$ $CellContext`n$$ < 
+          10, $CellContext`m$ = $CellContext`n$$, $CellContext`m$ = 
+          Ceiling[10/$CellContext`roi$$]]; $CellContext`injectiontimes$ = 
+         Table[($CellContext`i - 1) $CellContext`roi$$, {$CellContext`i, 
+            1, $CellContext`m$}]; $CellContext`eqns$ = Partition[
+           Drop[
+            Flatten[
+             Rest[
+              FoldList[ReplaceAll[{
+                 $CellContext`d[$CellContext`t], 
+                 $CellContext`c1$[$CellContext`t], 
+                 $CellContext`c2[$CellContext`t]}, 
+                First[
+                 
+                 NDSolve[{
+                  Derivative[
+                    1][$CellContext`d][$CellContext`t] == (-$CellContext`ka$) \
+$CellContext`d[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c1$][$CellContext`t] == $CellContext`ka$ \
+($CellContext`d[$CellContext`t]/$CellContext`V1$) - $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`ke1$$ \
+$CellContext`c1$[$CellContext`t]^$CellContext`ro$$ + $CellContext`k21$ \
+$CellContext`c2[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c2][$CellContext`t] == $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`k21$ \
+$CellContext`c2[$CellContext`t] - $CellContext`ke2$ \
+$CellContext`c2[$CellContext`t]^$CellContext`ro$$, $CellContext`d[#2] == 
+                   Chop[$CellContext`r$ + ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] > 
+                    0]], $CellContext`c1$[#2] == 
+                   Chop[Subscript[$CellContext`c1$, 0] + ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] > 
+                    0]]/$CellContext`V1$, $CellContext`c2[#2] == 
+                   Chop[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] > 
+                    0]]}, {$CellContext`d, $CellContext`c1$, \
+$CellContext`c2}, {$CellContext`t, #2, 10}]]]& , {0, 0, 
+               0}, $CellContext`injectiontimes$]]], {1, -1, 3}], 
+           2]; $CellContext`bc$ = Flatten[{
+            Flatten[
+             
+             Table[$CellContext`t <= $CellContext`i $CellContext`roi$$, \
+{$CellContext`i, 1, $CellContext`m$ - 1}], 
+             2], $CellContext`t >= ($CellContext`m$ - 
+              1) $CellContext`roi$$}]; $CellContext`pw1$ = Partition[
+           Riffle[
+            Take[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`pw2$ = Partition[
+           Riffle[
+            Drop[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`plot$ = Plot[{
+            Piecewise[$CellContext`pw1$], 
+            If[$CellContext`comp$$ == 2, 
+             Piecewise[$CellContext`pw2$]], 1, 2}, {$CellContext`t, 0, 10}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Blue}, {Thick, Dashed, 
+              RGBColor[0, 0.8, 0.2]}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {{0, 10}, {0, 3}}, Exclusions -> None, 
+           Frame -> {{True, False}, {True, False}}, 
+           FrameLabel -> {"time", "concentration (mol/L)"}, 
+           LabelStyle -> {17, Black}, PlotRangePadding -> {{None, 0.5}, None},
+            ImageSize -> {480, 300}, AspectRatio -> Full, PlotLegends -> 
+           Placed[{"compartment 1", "compartment 2"}, Above], Epilog -> {
+             Rotate[
+              Text[
+               Style[
+                Column[{"therapeutic", "window"}, Center], 16.5, Background -> 
+                White], {9.8, 1.5}], 3 (Pi/2)], 
+             Text[
+              Style["toxic dose", 16, Purple, Background -> White], {
+              9, 2.15}], 
+             Text[
+              Style["effective dose", 16, 
+               RGBColor[0, 0.8, 0.2], Background -> White], {8.9, 
+              0.85}]}]; $CellContext`diagram$ = Graphics[{{
+             EdgeForm[Black], 
+             FaceForm[None], 
+             Rectangle[{0, 0}, {1, 3}]}, {
+             Arrowheads[0.16], 
+             Arrow[{{0.5, -0.5}, {0.5, 0}}]}, 
+            Text[
+             Style["dose", 18], {0.5, -0.25}, {-1.5, 0}], 
+            If[$CellContext`comp$$ == 1, {
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 1.5}], 
+              If[$CellContext`ke1$$ != 0, {
+                Arrowheads[0.16], 
+                Arrow[{{1, 1.5}, {2, 1.5}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], "e,1"], 18], {1, 1.5}, 
+                 1.5 {-1, -1}]}]}, {
+              Line[{{0, 1.5}, {1, 1.5}}], 
+              Arrowheads[0.16], 
+              Apply[If[# != 0, {
+                 Arrow[{{1, #2}, {2, #2}}], 
+                 Text[
+                  Style[
+                   Subscript[
+                    Style["k", Italic], 
+                    Row[{"e,", #3}]], 18], {1, #2}, 
+                  1.5 {-1, -1}]}]& , {{$CellContext`ke1$$, 0.75, 
+                 1}, {$CellContext`ke2$, 2.25, 2}}, {1}], 
+              If[$CellContext`k12$ != 0, {
+                Arrow[{{0.25, 1}, {0.25, 2}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 12], 18], {0.25, 1}, {-0.5, 1.5}]}], 
+              If[$CellContext`k21$ != 0, {
+                Arrow[{{0.75, 2}, {0.75, 1}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 21], 18], {0.75, 2}, {0.5, -1.5}]}], 
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 0.5}], 
+              Text[
+               Style["2", 18, Blue, Bold], {0.5, 2.5}]}]}, 
+           PlotRange -> {{0, 2}, {-0.5, 3}}, ImageSize -> {100, 330}, 
+           AspectRatio -> Full]; Grid[{{$CellContext`plot$, 
+            Spacer[1], $CellContext`diagram$}}]], 
+      "Specifications" :> {{{$CellContext`comp$$, 2, 
+          "number of compartments"}, {1 -> " one ", 2 -> " two "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`ad$$, 1, "dosing method"}, {
+         1 -> " injection ", 2 -> " absorption "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, 
+        Row[{
+          Manipulate`Place[1], 
+          Spacer[20], 
+          Manipulate`Place[2]}], {{$CellContext`Din$$, 1.5, "dose mass"}, 
+         0.05, 2, 0.05, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 3}, {{$CellContext`n$$, 3, "number of doses"}, 1,
+          9, 1, Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`roi$$, 3.2, "dose interval"}, 0.2, 4, 0.1, 
+         Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 5}, 
+        Row[{
+          Manipulate`Place[3], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], {{$CellContext`kao$$, 2, 
+          Row[{"absorption coefficient ", 
+            Subscript[
+             Style["k", Italic], "a"]}]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 6}, 
+        PaneSelector[{2 -> Manipulate`Place[6]}, 
+         Dynamic[$CellContext`ad$$]], {{$CellContext`ke1$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,1"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`ke2o$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,2"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`ro$$, 0, "elimination order"}, {
+         0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+          Superscript[" 2", "nd"]}, ControlType -> Setter, ControlPlacement -> 
+         9}, 
+        Row[{
+          Style["elimination rate constants", Bold], 
+          Spacer[10], 
+          Manipulate`Place[7], 
+          PaneSelector[{2 -> Manipulate`Place[8]}, 
+           Dynamic[$CellContext`comp$$]], 
+          Manipulate`Place[9]}], {{$CellContext`k12o$$, 1, 
+          Subscript[
+           Style["k", Italic], 12]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 10}, {{$CellContext`k21o$$, 1, 
+          Subscript[
+           Style["k", Italic], 21]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 11}, 
+        PaneSelector[{2 -> Row[{
+             Style["rate constants for transfer between compartments", Bold], 
+             
+             Spacer[10], 
+             Manipulate`Place[10], 
+             Manipulate`Place[11]}]}, 
+         Dynamic[$CellContext`comp$$]]}, 
+      "Options" :> {
+       SynchronousUpdating -> False, TrackedSymbols -> True, 
+        AutorunSequencing -> {2, 3}}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{659., {260., 267.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->761375519],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+    2, $CellContext`Din$$ = 0.4, $CellContext`k12o$$ = 
+    1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 2, $CellContext`ke1$$ = 
+    1.1, $CellContext`ke2o$$ = 1, $CellContext`n$$ = 7, $CellContext`ro$$ = 
+    1, $CellContext`roi$$ = 1.9000000000000001`, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`comp$$], 2, "number of compartments"}, {
+      1 -> " one ", 2 -> " two "}}, {{
+       Hold[$CellContext`ad$$], 1, "dosing method"}, {
+      1 -> " injection ", 2 -> " absorption "}}, {
+      Hold[
+       Row[{
+         Manipulate`Place[1], 
+         Spacer[20], 
+         Manipulate`Place[2]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`Din$$], 0.4, "dose mass"}, 0.05, 2, 0.05}, {{
+       Hold[$CellContext`n$$], 7, "number of doses"}, 1, 9, 1}, {{
+       Hold[$CellContext`roi$$], 1.9000000000000001`, "dose interval"}, 0.2, 
+      4, 0.1}, {
+      Hold[
+       Row[{
+         Manipulate`Place[3], 
+         Manipulate`Place[4], 
+         Manipulate`Place[5]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`kao$$], 2, 
+       Row[{"absorption coefficient ", 
+         Subscript[
+          Style["k", Italic], "a"]}]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Manipulate`Place[6]}, 
+        Dynamic[$CellContext`ad$$]]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`ke1$$], 1.1, 
+       Subscript[
+        Style["k", Italic], "e,1"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ke2o$$], 1, 
+       Subscript[
+        Style["k", Italic], "e,2"]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`ro$$], 1, "elimination order"}, {
+      0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+       Superscript[" 2", "nd"]}}, {
+      Hold[
+       Row[{
+         Style["elimination rate constants", Bold], 
+         Spacer[10], 
+         Manipulate`Place[7], 
+         PaneSelector[{2 -> Manipulate`Place[8]}, 
+          Dynamic[$CellContext`comp$$]], 
+         Manipulate`Place[9]}]], Manipulate`Dump`ThisIsNotAControl}, {{
+       Hold[$CellContext`k12o$$], 1, 
+       Subscript[
+        Style["k", Italic], 12]}, 0, 4, 0.1}, {{
+       Hold[$CellContext`k21o$$], 1, 
+       Subscript[
+        Style["k", Italic], 21]}, 0, 4, 0.1}, {
+      Hold[
+       PaneSelector[{2 -> Row[{
+            Style["rate constants for transfer between compartments", Bold], 
+            Spacer[10], 
+            Manipulate`Place[10], 
+            Manipulate`Place[11]}]}, 
+        Dynamic[$CellContext`comp$$]]], Manipulate`Dump`ThisIsNotAControl}}, 
+    Typeset`size$$ = {597., {171., 178.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`comp$115235$$ = False, $CellContext`ad$115236$$ = 
+    False, $CellContext`Din$115237$$ = 0, $CellContext`n$115238$$ = 
+    0, $CellContext`roi$115239$$ = 0, $CellContext`kao$115240$$ = 
+    0, $CellContext`ke1$115241$$ = 0, $CellContext`ke2o$115242$$ = 
+    0, $CellContext`ro$115243$$ = False, $CellContext`k12o$115244$$ = 
+    0, $CellContext`k21o$115245$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     2, StandardForm, 
+      "Variables" :> {$CellContext`ad$$ = 1, $CellContext`comp$$ = 
+        2, $CellContext`Din$$ = 0.4, $CellContext`k12o$$ = 
+        1, $CellContext`k21o$$ = 1, $CellContext`kao$$ = 
+        2, $CellContext`ke1$$ = 1.1, $CellContext`ke2o$$ = 
+        1, $CellContext`n$$ = 7, $CellContext`ro$$ = 1, $CellContext`roi$$ = 
+        1.9000000000000001`}, "ControllerVariables" :> {
+        Hold[$CellContext`comp$$, $CellContext`comp$115235$$, False], 
+        Hold[$CellContext`ad$$, $CellContext`ad$115236$$, False], 
+        Hold[$CellContext`Din$$, $CellContext`Din$115237$$, 0], 
+        Hold[$CellContext`n$$, $CellContext`n$115238$$, 0], 
+        Hold[$CellContext`roi$$, $CellContext`roi$115239$$, 0], 
+        Hold[$CellContext`kao$$, $CellContext`kao$115240$$, 0], 
+        Hold[$CellContext`ke1$$, $CellContext`ke1$115241$$, 0], 
+        Hold[$CellContext`ke2o$$, $CellContext`ke2o$115242$$, 0], 
+        Hold[$CellContext`ro$$, $CellContext`ro$115243$$, False], 
+        Hold[$CellContext`k12o$$, $CellContext`k12o$115244$$, 0], 
+        Hold[$CellContext`k21o$$, $CellContext`k21o$115245$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Module[{$CellContext`V1$, $CellContext`ka$, $CellContext`c1$, \
+$CellContext`r$, $CellContext`ke2$, $CellContext`k12$, $CellContext`k21$, \
+$CellContext`m$, $CellContext`injectiontimes$, $CellContext`eqns$, \
+$CellContext`bc$, $CellContext`pw1$, $CellContext`pw2$, $CellContext`plot$, \
+$CellContext`diagram$}, $CellContext`V1$ = 1; 
+        If[$CellContext`ad$$ == 
+          1, {$CellContext`ka$ = 0, 
+           Subscript[$CellContext`c1$, 
+             0] = $CellContext`Din$$/$CellContext`V1$, $CellContext`r$ = 
+           0}, {$CellContext`ka$ = $CellContext`kao$$, 
+           Subscript[$CellContext`c1$, 0] = 
+           0, $CellContext`r$ = $CellContext`Din$$}]; 
+        If[$CellContext`comp$$ == 
+          1, {$CellContext`ke2$ = 0, $CellContext`k12$ = 0, $CellContext`k21$ = 
+           0}, {$CellContext`ke2$ = $CellContext`ke2o$$, $CellContext`k12$ = \
+$CellContext`k12o$$, $CellContext`k21$ = $CellContext`k21o$$}]; 
+        If[$CellContext`roi$$ $CellContext`n$$ < 
+          10, $CellContext`m$ = $CellContext`n$$, $CellContext`m$ = 
+          Ceiling[10/$CellContext`roi$$]]; $CellContext`injectiontimes$ = 
+         Table[($CellContext`i - 1) $CellContext`roi$$, {$CellContext`i, 
+            1, $CellContext`m$}]; $CellContext`eqns$ = Partition[
+           Drop[
+            Flatten[
+             Rest[
+              FoldList[ReplaceAll[{
+                 $CellContext`d[$CellContext`t], 
+                 $CellContext`c1$[$CellContext`t], 
+                 $CellContext`c2[$CellContext`t]}, 
+                First[
+                 
+                 NDSolve[{
+                  Derivative[
+                    1][$CellContext`d][$CellContext`t] == (-$CellContext`ka$) \
+$CellContext`d[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c1$][$CellContext`t] == $CellContext`ka$ \
+($CellContext`d[$CellContext`t]/$CellContext`V1$) - $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`ke1$$ \
+$CellContext`c1$[$CellContext`t]^$CellContext`ro$$ + $CellContext`k21$ \
+$CellContext`c2[$CellContext`t], 
+                   Derivative[
+                    1][$CellContext`c2][$CellContext`t] == $CellContext`k12$ \
+$CellContext`c1$[$CellContext`t] - $CellContext`k21$ \
+$CellContext`c2[$CellContext`t] - $CellContext`ke2$ \
+$CellContext`c2[$CellContext`t]^$CellContext`ro$$, $CellContext`d[#2] == 
+                   Chop[$CellContext`r$ + ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 1], {$CellContext`t -> #2}] > 
+                    0]], $CellContext`c1$[#2] == 
+                   Chop[Subscript[$CellContext`c1$, 0] + ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 2], {$CellContext`t -> #2}] > 
+                    0]]/$CellContext`V1$, $CellContext`c2[#2] == 
+                   Chop[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] Boole[ReplaceAll[
+                    Part[#, 3], {$CellContext`t -> #2}] > 
+                    0]]}, {$CellContext`d, $CellContext`c1$, \
+$CellContext`c2}, {$CellContext`t, #2, 10}]]]& , {0, 0, 
+               0}, $CellContext`injectiontimes$]]], {1, -1, 3}], 
+           2]; $CellContext`bc$ = Flatten[{
+            Flatten[
+             
+             Table[$CellContext`t <= $CellContext`i $CellContext`roi$$, \
+{$CellContext`i, 1, $CellContext`m$ - 1}], 
+             2], $CellContext`t >= ($CellContext`m$ - 
+              1) $CellContext`roi$$}]; $CellContext`pw1$ = Partition[
+           Riffle[
+            Take[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`pw2$ = Partition[
+           Riffle[
+            Drop[
+             Flatten[$CellContext`eqns$], {1, -1, 2}], $CellContext`bc$], 
+           2]; $CellContext`plot$ = Plot[{
+            Piecewise[$CellContext`pw1$], 
+            If[$CellContext`comp$$ == 2, 
+             Piecewise[$CellContext`pw2$]], 1, 2}, {$CellContext`t, 0, 10}, 
+           PlotStyle -> {{Thick, Orange}, {Thick, Blue}, {Thick, Dashed, 
+              RGBColor[0, 0.8, 0.2]}, {Thick, Dashed, Purple}}, 
+           PlotRange -> {{0, 10}, {0, 3}}, Exclusions -> None, 
+           Frame -> {{True, False}, {True, False}}, 
+           FrameLabel -> {"time", "concentration (mol/L)"}, 
+           LabelStyle -> {17, Black}, PlotRangePadding -> {{None, 0.5}, None},
+            ImageSize -> {480, 300}, AspectRatio -> Full, PlotLegends -> 
+           Placed[{"compartment 1", "compartment 2"}, Above], Epilog -> {
+             Rotate[
+              Text[
+               Style[
+                Column[{"therapeutic", "window"}, Center], 16.5, Background -> 
+                White], {9.8, 1.5}], 3 (Pi/2)], 
+             Text[
+              Style["toxic dose", 16, Purple, Background -> White], {
+              9, 2.15}], 
+             Text[
+              Style["effective dose", 16, 
+               RGBColor[0, 0.8, 0.2], Background -> White], {8.9, 
+              0.85}]}]; $CellContext`diagram$ = Graphics[{{
+             EdgeForm[Black], 
+             FaceForm[None], 
+             Rectangle[{0, 0}, {1, 3}]}, {
+             Arrowheads[0.16], 
+             Arrow[{{0.5, -0.5}, {0.5, 0}}]}, 
+            Text[
+             Style["dose", 18], {0.5, -0.25}, {-1.5, 0}], 
+            If[$CellContext`comp$$ == 1, {
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 1.5}], 
+              If[$CellContext`ke1$$ != 0, {
+                Arrowheads[0.16], 
+                Arrow[{{1, 1.5}, {2, 1.5}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], "e,1"], 18], {1, 1.5}, 
+                 1.5 {-1, -1}]}]}, {
+              Line[{{0, 1.5}, {1, 1.5}}], 
+              Arrowheads[0.16], 
+              Apply[If[# != 0, {
+                 Arrow[{{1, #2}, {2, #2}}], 
+                 Text[
+                  Style[
+                   Subscript[
+                    Style["k", Italic], 
+                    Row[{"e,", #3}]], 18], {1, #2}, 
+                  1.5 {-1, -1}]}]& , {{$CellContext`ke1$$, 0.75, 
+                 1}, {$CellContext`ke2$, 2.25, 2}}, {1}], 
+              If[$CellContext`k12$ != 0, {
+                Arrow[{{0.25, 1}, {0.25, 2}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 12], 18], {0.25, 1}, {-0.5, 1.5}]}], 
+              If[$CellContext`k21$ != 0, {
+                Arrow[{{0.75, 2}, {0.75, 1}}], 
+                Text[
+                 Style[
+                  Subscript[
+                   Style["k", Italic], 21], 18], {0.75, 2}, {0.5, -1.5}]}], 
+              Text[
+               Style["1", 18, Orange, Bold], {0.5, 0.5}], 
+              Text[
+               Style["2", 18, Blue, Bold], {0.5, 2.5}]}]}, 
+           PlotRange -> {{0, 2}, {-0.5, 3}}, ImageSize -> {100, 330}, 
+           AspectRatio -> Full]; Grid[{{$CellContext`plot$, 
+            Spacer[1], $CellContext`diagram$}}]], 
+      "Specifications" :> {{{$CellContext`comp$$, 2, 
+          "number of compartments"}, {1 -> " one ", 2 -> " two "}, 
+         ControlType -> Setter, ControlPlacement -> 
+         1}, {{$CellContext`ad$$, 1, "dosing method"}, {
+         1 -> " injection ", 2 -> " absorption "}, ControlType -> Setter, 
+         ControlPlacement -> 2}, 
+        Row[{
+          Manipulate`Place[1], 
+          Spacer[20], 
+          Manipulate`Place[2]}], {{$CellContext`Din$$, 0.4, "dose mass"}, 
+         0.05, 2, 0.05, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 3}, {{$CellContext`n$$, 7, "number of doses"}, 1,
+          9, 1, Appearance -> "Labeled", ImageSize -> Tiny, ControlPlacement -> 
+         4}, {{$CellContext`roi$$, 1.9000000000000001`, "dose interval"}, 0.2,
+          4, 0.1, Appearance -> "Labeled", ImageSize -> Tiny, 
+         ControlPlacement -> 5}, 
+        Row[{
+          Manipulate`Place[3], 
+          Manipulate`Place[4], 
+          Manipulate`Place[5]}], {{$CellContext`kao$$, 2, 
+          Row[{"absorption coefficient ", 
+            Subscript[
+             Style["k", Italic], "a"]}]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Small, ControlPlacement -> 6}, 
+        PaneSelector[{2 -> Manipulate`Place[6]}, 
+         Dynamic[$CellContext`ad$$]], {{$CellContext`ke1$$, 1.1, 
+          Subscript[
+           Style["k", Italic], "e,1"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         7}, {{$CellContext`ke2o$$, 1, 
+          Subscript[
+           Style["k", Italic], "e,2"]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 
+         8}, {{$CellContext`ro$$, 1, "elimination order"}, {
+         0 -> Superscript[" 0", "th"], 1 -> Superscript[" 1", "st"], 2 -> 
+          Superscript[" 2", "nd"]}, ControlType -> Setter, ControlPlacement -> 
+         9}, 
+        Row[{
+          Style["elimination rate constants", Bold], 
+          Spacer[10], 
+          Manipulate`Place[7], 
+          PaneSelector[{2 -> Manipulate`Place[8]}, 
+           Dynamic[$CellContext`comp$$]], 
+          Manipulate`Place[9]}], {{$CellContext`k12o$$, 1, 
+          Subscript[
+           Style["k", Italic], 12]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 10}, {{$CellContext`k21o$$, 1, 
+          Subscript[
+           Style["k", Italic], 21]}, 0, 4, 0.1, Appearance -> "Labeled", 
+         ImageSize -> Tiny, ControlPlacement -> 11}, 
+        PaneSelector[{2 -> Row[{
+             Style["rate constants for transfer between compartments", Bold], 
+             
+             Spacer[10], 
+             Manipulate`Place[10], 
+             Manipulate`Place[11]}]}, 
+         Dynamic[$CellContext`comp$$]]}, 
+      "Options" :> {
+       SynchronousUpdating -> False, TrackedSymbols -> True, 
+        AutorunSequencing -> {2, 3}}, 
+      "DefaultOptions" :> {ControllerLinking -> True}],
+     ImageSizeCache->{659., {260., 267.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellID->1911867]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "DetailsSection"],
+
+Cell[TextData[{
+ "The two compartments are well mixed. The drug is either administered as a \
+rapid dose (i.e., bolus injection) or it absorbs into compartment 1. The \
+constants ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "12"], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", "21"], TraditionalForm]], "InlineMath"],
+ " represent the rate transfer coefficients from compartment 1 to compartment \
+2 and vice versa, assuming a first-order transfer between them. Each \
+compartment has its own elimination rate ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", 
+    RowBox[{
+     StyleBox["e",
+      FontSlant->"Plain"], ",", "1"}]], TraditionalForm]], "InlineMath"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", 
+    RowBox[{
+     StyleBox["e",
+      FontSlant->"Plain"], ",", "2"}]], TraditionalForm]], "InlineMath"],
+ ". The absorption coefficient ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["k", 
+    StyleBox["a",
+     FontSlant->"Plain"]], TraditionalForm]], "InlineMath"],
+ " determines the rate at which the drug absorbs into the first compartment, \
+and it assumes absorption is first order in the amount of the dose. The \
+concentrations and time are intentionally left unit-less, but the system is \
+dimensionally consistent. The drug elimination reaction order is ",
+ Cell[BoxData[
+  FormBox["ro", TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699272845512*^9}, {3.6097005864538727`*^9, 
+   3.609700616167572*^9}, 3.609700689090743*^9, {3.6097030835039086`*^9, 
+   3.6097031135490403`*^9}, {3.609703149422068*^9, 3.6097031500704966`*^9}, {
+   3.609703359780992*^9, 3.609703410067685*^9}, {3.6097584769748325`*^9, 
+   3.6097584874628325`*^9}, {3.6098551606395807`*^9, 3.609855161100309*^9}, {
+   3.609855208520698*^9, 3.609855281073381*^9}, 3.609855312949431*^9, {
+   3.6098593157200203`*^9, 3.609859319645019*^9}, {3.609859349819593*^9, 
+   3.60985943722371*^9}, 3.610214782525917*^9, {3.6102148221478643`*^9, 
+   3.610214829666552*^9}, 3.6344926701889277`*^9, {3.677952179459361*^9, 
+   3.6779521964088926`*^9}, 3.677952240722636*^9, {3.678041168075987*^9, 
+   3.678041204764253*^9}, {3.678191236676292*^9, 3.6781912707312913`*^9}, {
+   3.678644046581008*^9, 3.678644055303052*^9}},
+ CellID->844898134],
+
+Cell["\<\
+When the dose absorbs into compartment 1, then the amount changes with time:\
+\>", "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699272845512*^9}, {3.6097005864538727`*^9, 
+   3.609700616167572*^9}, 3.609700689090743*^9, {3.6097030835039086`*^9, 
+   3.6097031135490403`*^9}, {3.609703149422068*^9, 3.6097031500704966`*^9}, {
+   3.609703359780992*^9, 3.609703410067685*^9}, {3.6097584769748325`*^9, 
+   3.6097584874628325`*^9}, {3.6098551606395807`*^9, 3.609855161100309*^9}, {
+   3.609855208520698*^9, 3.609855281073381*^9}, 3.609855312949431*^9, {
+   3.6098593157200203`*^9, 3.609859319645019*^9}, {3.609859349819593*^9, 
+   3.60985943722371*^9}, 3.610214782525917*^9, {3.6102148221478643`*^9, 
+   3.610214826913808*^9}, {3.6780412801144085`*^9, 3.678041347067377*^9}, {
+   3.678191290041558*^9, 3.6781912906490564`*^9}},
+ CellID->2012289996],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      RowBox[{"(", "\[InvisibleSpace]", "dose", ")"}]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{
+     RowBox[{"-", 
+      SubscriptBox["k", 
+       StyleBox["a",
+        FontSlant->"Plain"]]}], " ", "dose"}]}], TraditionalForm]], 
+  "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097003303742256`*^9}, {
+   3.6097006736338587`*^9, 3.6097006850415115`*^9}, {3.609703173461171*^9, 
+   3.609703247402708*^9}, {3.6097034196601057`*^9, 3.6097034205737247`*^9}, 
+   3.609703451213255*^9, 3.609758426796833*^9, {3.609855321005863*^9, 
+   3.6098553545474243`*^9}, {3.6098553972996607`*^9, 3.609855410065539*^9}, {
+   3.6779523607197094`*^9, 3.6779523787072563`*^9}, {3.677952444807836*^9, 
+   3.677952450534436*^9}, {3.677953218258006*^9, 3.677953235342241*^9}, {
+   3.6786442835231543`*^9, 3.6786442882256985`*^9}},
+ CellID->151878723],
+
+Cell["\<\
+If there is no absorption and the dose is directly injected, then the dose \
+amount is distributed within the first compartment at the injection time. The \
+first dose is at time zero, and the same mass is then injected for each \
+subsequent dose. \
+\>", "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097003303742256`*^9}, {
+   3.6097006736338587`*^9, 3.6097006850415115`*^9}, {3.609703173461171*^9, 
+   3.609703247402708*^9}, {3.6097034196601057`*^9, 3.6097034205737247`*^9}, 
+   3.609703451213255*^9, 3.609758426796833*^9, {3.609855321005863*^9, 
+   3.6098553545474243`*^9}, {3.6098553972996607`*^9, 
+   3.6098554064995327`*^9}, {3.6780413670899954`*^9, 3.678041467995606*^9}},
+ CellID->2017017122],
+
+Cell["Compartment 1:", "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097003303742256`*^9}, {
+   3.6097006736338587`*^9, 3.6097006850415115`*^9}, {3.609703173461171*^9, 
+   3.609703247402708*^9}, {3.6097034196601057`*^9, 3.6097034205737247`*^9}, 
+   3.609703451213255*^9, 3.609758426796833*^9, {3.609855321005863*^9, 
+   3.6098553545474243`*^9}, 3.6098553972996607`*^9, 3.6779522819765234`*^9},
+ CellID->1226314774],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", 
+      SubscriptBox["C", "1"]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["k", 
+       StyleBox["a",
+        FontSlant->"Plain"]], " ", 
+      FractionBox["dose", "V"]}], "-", 
+     RowBox[{
+      SubscriptBox["k", "12"], " ", 
+      SubscriptBox["C", "1"]}], "+", 
+     RowBox[{
+      SubscriptBox["k", "21"], " ", 
+      SubscriptBox["C", "2"]}], "-", 
+     RowBox[{
+      SubscriptBox["k", 
+       RowBox[{
+        StyleBox["e",
+         FontSlant->"Plain"], ",", "1"}]], " ", 
+      SubsuperscriptBox["C", "1", "ro"]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.609855388858508*^9}, {3.67795238318478*^9, 
+   3.677952412001787*^9}, {3.677953192729347*^9, 3.677953210431876*^9}, {
+   3.6779533686679688`*^9, 3.677953384681413*^9}, {3.6779537063289375`*^9, 
+   3.677953712208378*^9}, {3.6779543634676085`*^9, 3.677954364361272*^9}, {
+   3.6779544646408515`*^9, 3.677954474582182*^9}, {3.678644085284769*^9, 
+   3.678644098640885*^9}, {3.678644290723728*^9, 3.6786442945142536`*^9}},
+ CellID->249173880],
+
+Cell[TextData[{
+ "where ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "1"], TraditionalForm]], "InlineMath"],
+ " is the drug concentration in compartment 1, ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["C", "2"], TraditionalForm]], "InlineMath"],
+ " is the drug concentration in compartment 2, and ",
+ Cell[BoxData[
+  FormBox["V", TraditionalForm]], "InlineMath"],
+ " is the volume of compartments 1 and 2."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.609855388858508*^9}, {3.67795238318478*^9, 
+   3.677952412001787*^9}, {3.677953192729347*^9, 3.677953210431876*^9}, {
+   3.6779533686679688`*^9, 3.677953384681413*^9}, {3.6779537063289375`*^9, 
+   3.677953749528864*^9}, {3.6779538747701836`*^9, 3.677953929791357*^9}, {
+   3.6779543692729335`*^9, 3.6779543821690817`*^9}, 3.6786441086234694`*^9, 
+   3.6786443201754227`*^9},
+ CellID->533353081],
+
+Cell["Initial condition for compartment 1:", "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.60985538470702*^9}, {3.6098554162506027`*^9, 
+   3.609855422025784*^9}, 3.609855517446745*^9, 3.6779522855275717`*^9, 
+   3.6779534890656357`*^9, {3.677953524382976*^9, 3.67795355667251*^9}, {
+   3.6779538307283974`*^9, 3.677953838145263*^9}},
+ CellID->1274850284],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", "1"], "=", "0"}], TraditionalForm]], "InlineMath"],
+ "  when absorption occurs"
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.60985538470702*^9}, {3.6098554162506027`*^9, 
+   3.609855422025784*^9}, 3.609855517446745*^9, 3.6779522855275717`*^9, 
+   3.6779534890656357`*^9, {3.677953524382976*^9, 3.6779536035123262`*^9}, {
+   3.6779536790717497`*^9, 3.677953679751969*^9}, 3.678644117763539*^9},
+ CellID->123712829],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", "1"], "=", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"mass", " ", "of", " ", "dose"}], ")"}], "/", "V"}]}], 
+   TraditionalForm]], "InlineMath"],
+ " when absorption does not occur."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.60985538470702*^9}, {3.6098554162506027`*^9, 
+   3.609855422025784*^9}, 3.609855517446745*^9, 3.6779522855275717`*^9, 
+   3.6779534890656357`*^9, {3.677953524382976*^9, 3.677953582728887*^9}, {
+   3.677953616448889*^9, 3.677953691260194*^9}, {3.677954428521302*^9, 
+   3.6779544290406427`*^9}, {3.6786441265341234`*^9, 3.6786441371827035`*^9}},
+ 
+ CellID->274994474],
+
+Cell["Compartment 2:", "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.6097004970767603`*^9}, {3.609700551184855*^9, 
+   3.6097005515818777`*^9}, 3.609700694881074*^9, {3.609703261487144*^9, 
+   3.6097033220076866`*^9}, 3.6097034415247564`*^9, 3.609758430499833*^9, {
+   3.609855365824738*^9, 3.60985538470702*^9}, 3.6098554162506027`*^9, 
+   3.6779523029435883`*^9},
+ CellID->1878564788],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    FractionBox[
+     RowBox[{"\[DifferentialD]", "\[InvisibleSpace]", 
+      SubscriptBox["C", "2"]}], 
+     RowBox[{"\[DifferentialD]", "t"}]], "=", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["k", "12"], " ", 
+      SubscriptBox["C", "1"]}], "-", 
+     RowBox[{
+      SubscriptBox["k", "21"], " ", 
+      SubscriptBox["C", "2"]}], "-", 
+     RowBox[{
+      SubscriptBox["k", 
+       RowBox[{
+        StyleBox["e",
+         FontSlant->"Plain"], ",", "2"}]], " ", 
+      SubsuperscriptBox["C", "2", "ro"]}]}]}], TraditionalForm]], 
+  "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.609700549545761*^9}, {3.6097033275173845`*^9, 
+   3.609703339797608*^9}, 3.6097034368136053`*^9, {3.609855463950993*^9, 
+   3.6098554876278887`*^9}, {3.67795241453217*^9, 3.677952418395513*^9}, {
+   3.677953171447848*^9, 3.6779531866916127`*^9}, {3.6779533910988226`*^9, 
+   3.6779534164987283`*^9}, {3.6786441444702625`*^9, 3.678644154947356*^9}, {
+   3.678644298304285*^9, 3.6786443051483326`*^9}},
+ CellID->286990574],
+
+Cell[TextData[{
+ "Initial condition for compartment 2: ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["C", "2"], "=", "0"}], TraditionalForm]], "InlineMath"],
+ "."
+}], "DetailNotes",
+ CellChangeTimes->{{3.6084296801675224`*^9, 3.6084297464483137`*^9}, {
+   3.608429777931114*^9, 3.6084298694923515`*^9}, 3.6084302294589405`*^9, {
+   3.6084303058623104`*^9, 3.608430343067438*^9}, {3.608430565941186*^9, 
+   3.608430595413872*^9}, {3.608430626659659*^9, 3.6084306775745707`*^9}, {
+   3.6086568435309877`*^9, 3.6086569638437986`*^9}, {3.6089246973279333`*^9, 
+   3.608924704639782*^9}, {3.609696931559031*^9, 3.6096969526872396`*^9}, {
+   3.609697180360262*^9, 3.609697262088936*^9}, {3.6096973293227816`*^9, 
+   3.6096973681220007`*^9}, {3.6096975351385536`*^9, 3.609697692230539*^9}, {
+   3.609698648731248*^9, 3.6096986487402477`*^9}, {3.609698679788024*^9, 
+   3.609698813098649*^9}, {3.609698857068164*^9, 3.6096989379207883`*^9}, {
+   3.609699272832511*^9, 3.609699305586385*^9}, {3.6096993605245266`*^9, 
+   3.609699372797229*^9}, {3.609700330365225*^9, 3.6097004151560745`*^9}, {
+   3.6097004826559353`*^9, 3.609700549545761*^9}, {3.6097033275173845`*^9, 
+   3.609703339797608*^9}, 3.6097034368136053`*^9, {3.609855463950993*^9, 
+   3.609855502011745*^9}, {3.6779537694743595`*^9, 3.677953807732853*^9}, 
+   3.677953859648961*^9, {3.6786441634084272`*^9, 3.678644177044545*^9}},
+ CellID->1176238425]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "ControlSuggestionsSection"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Resize Images"]}],
+  "\"Click inside an image to reveal its orange resize frame.\\nDrag any of \
+the orange resize handles to resize the image.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.60842800030044*^9},
+ FontFamily->"Verdana",
+ CellTags->"ResizeImages"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Rotate and Zoom in 3D"]}],
+  RowBox[{
+   "\"Drag a 3D graphic to rotate it. Starting the drag near the center \
+tumbles\\nthe graphic; starting near a corner turns it parallel to the plane \
+of the screen.\\nHold down \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" (or \"", 
+    FrameBox[
+    "Cmd", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" on Mac) and drag up and down to zoom.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"RotateAndZoomIn3D"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Drag Locators"]}],
+  RowBox[{"\"Drag any locator (\"", 
+    GraphicsBox[
+     LocatorBox[
+      Scaled[{0.5, 0.5}]], ImageSize -> 20], 
+    "\", etc.) to move it around.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"DragLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Create and Delete Locators"]}],
+  RowBox[{"\"Insert a new locator in the graphic by holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key\\nand clicking where you want it to be. Delete a locator by \
+clicking it\\nwhile holding down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" key.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"CreateAndDeleteLocators"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Slider Zoom"]}],
+  RowBox[{"\"Hold down the \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], 
+    "\" key while moving a slider to make fine adjustments in the slider \
+value.\\nHold \"", 
+    FrameBox[
+    "Ctrl", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" and/or \"", 
+    FrameBox[
+    "Shift", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" at the same time as \"", 
+    FrameBox[
+    "Alt", Background -> GrayLevel[0.9], FrameMargins -> 2, FrameStyle -> 
+     GrayLevel[0.9]], "\" to make ever finer adjustments.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6084281215083723`*^9},
+ FontFamily->"Verdana",
+ CellTags->"SliderZoom"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Gamepad Controls"]}],
+  "\"Control this Demonstration with a gamepad or other\\nhuman interface \
+device connected to your computer.\"",
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.35696210375764*^9, 3.3895522232313623`*^9, 
+  3.608428121900395*^9},
+ FontFamily->"Verdana",
+ CellTags->"GamepadControls"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[True], Cell[" Automatic Animation"]}],
+  RowBox[{"\"Animate a slider in this Demonstration by clicking the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJzzTSzJSM1NLMlMTlRwL0osyMhMLlZwyy8CCjEzMjAwcIKwAgOI/R/IhBKc\n\
+/4EAyGAG0f+nTZsGwgysIJIRKsWKLAXGIHFmEpUgLADxWUAkI24jZs+eTaEt\n\
+IG+wQKRmzJgBlYf5lhEA30OqWA=="], "Graphics", ImageSize -> {9, 9}, ImageMargins -> 
+      0, CellBaseline -> Baseline], BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"button\\nnext to the slider, and then clicking the play button that \
+appears.\\nAnimate all controls by selecting \"", 
+    StyleBox["Autorun", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ CellChangeTimes->{3.6084281223724217`*^9},
+ FontFamily->"Verdana",
+ CellTags->"AutomaticAnimation"],
+
+Cell[BoxData[
+ TooltipBox[
+  RowBox[{
+   CheckboxBox[False], Cell[" Bookmark Animation"]}],
+  RowBox[{
+   "\"See a prepared animation of this Demonstration by selecting\\n\"", 
+    StyleBox["Animate Bookmarks", FontWeight -> "Bold"], "\" from the\"", 
+    AdjustmentBox[
+     Cell[
+      GraphicsData[
+      "CompressedBitmap", 
+       "eJyNULENwyAQfEySIlMwTVJlCGRFsosokeNtqBmDBagoaZjAI1C8/8GUUUC6\n\
+57h7cQ8PvU7Pl17nUav7oj/TPH7V7b2QJAUAXBkKmCPRowxICy64bRvGGNF7\n\
+X8CctGoDSN4xhIDGGDhzFXwUh3/ClBKrDQPmnGXtI6u0OOd+tZBVUqy1xSaH\n\
+UqiK6pPe4XdEdAz6563tx/gejuORGMxJaz8mdpJn7hc="], "Graphics", 
+      ImageSize -> {10, 10}, ImageMargins -> 0, CellBaseline -> Baseline], 
+     BoxBaselineShift -> 0.1839080459770115, 
+     BoxMargins -> {{0., 0.}, {-0.1839080459770115, 0.1839080459770115}}], 
+    "\"menu.\""}],
+  TooltipDelay->0.35]], "ControlSuggestions",
+ FontFamily->"Verdana",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["", "SearchTermsSection"],
+
+Cell["chemical engineering", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.6084281408274775`*^9}},
+ CellID->67926656],
+
+Cell["pharmacokinetics", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.608428145192727*^9}},
+ CellID->259287395],
+
+Cell["compartment model", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.608428155394311*^9}},
+ CellID->118036060],
+
+Cell["drug concentration", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.608428185482032*^9}, {
+  3.60843036791486*^9, 3.6084303679178596`*^9}, {3.60970299749533*^9, 
+  3.60970299749728*^9}},
+ CellID->10457980],
+
+Cell["kinetics", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.608428185482032*^9}, {
+  3.60843036791486*^9, 3.6084303679178596`*^9}, {3.60970299749533*^9, 
+  3.609703000519305*^9}, {3.6779521540981073`*^9, 3.6779521541259108`*^9}},
+ CellID->391099422],
+
+Cell["biokinetics", "SearchTerms",
+ CellChangeTimes->{{3.6084281319509697`*^9, 3.608428185482032*^9}, {
+   3.60843036791486*^9, 3.6084303679178596`*^9}, {3.60970299749533*^9, 
+   3.6097030005173144`*^9}, 3.6786442124633837`*^9},
+ CellID->719026785],
+
+Cell["biological engineering", "SearchTerms",
+ CellChangeTimes->{{3.680634857262946*^9, 3.680634874970594*^9}},
+ CellID->164665866]
+}, Open  ]],
+
+Cell["", "RelatedLinksSection"],
+
+Cell[CellGroupData[{
+
+Cell["", "AuthorSection"],
+
+Cell[TextData[{
+ "Contributed by: ",
+ ButtonBox["Nicholas R. Larson",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Nicholas+R.+\
+Larson"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Nicholas+R.+Larson"]
+}], "Author",
+ CellChangeTimes->{
+  3.6084282008699117`*^9, {3.609504476722556*^9, 3.6095044943155622`*^9}, 
+   3.6098548073998137`*^9}],
+
+Cell[TextData[{
+ "With additional contributions by: ",
+ ButtonBox["Rachael L. Baumann",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=Rachael+L.+\
+Baumann"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=Rachael+L.+Baumann"],\
+
+ ", ",
+ ButtonBox["John L. Falconer",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ ", and Nick",
+ ButtonBox[" ",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://demonstrations.wolfram.com/author.html?author=John+L.+\
+Falconer"], None},
+  ButtonNote->
+   "http://demonstrations.wolfram.com/author.html?author=John+L.+Falconer"],
+ "Bongiardina"
+}], "Author",
+ CellChangeTimes->{
+  3.6084282008699117`*^9, {3.609504476722556*^9, 3.6095044943155622`*^9}, {
+   3.6098548073998137`*^9, 3.609854812327482*^9}, {3.65925830079603*^9, 
+   3.6592583091952457`*^9}, {3.678191142024806*^9, 3.6781911515294714`*^9}, 
+   3.6781912050433607`*^9, {3.6786442380097017`*^9, 3.678644264047021*^9}},
+ CellID->656061828],
+
+Cell["\<\
+(University of Colorado Boulder, Department of Chemical and Biological \
+Engineering)\
+\>", "Author",
+ CellChangeTimes->{
+  3.6084282008699117`*^9, {3.609504476722556*^9, 3.6095044943155622`*^9}, {
+   3.6098548073998137`*^9, 3.609854812327482*^9}, {3.6786442327031703`*^9, 
+   3.67864425561146*^9}},
+ CellID->1250099498]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1366, 686},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.4 for Microsoft Windows (64-bit) (April 11, 2016)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "Demonstration.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ResizeImages"->{
+  Cell[146575, 3053, 352, 9, 22, "ControlSuggestions",
+   CellTags->"ResizeImages"]},
+ "RotateAndZoomIn3D"->{
+  Cell[146930, 3064, 678, 16, 22, "ControlSuggestions",
+   CellTags->"RotateAndZoomIn3D"]},
+ "DragLocators"->{
+  Cell[147611, 3082, 340, 11, 22, "ControlSuggestions",
+   CellTags->"DragLocators"]},
+ "CreateAndDeleteLocators"->{
+  Cell[147954, 3095, 637, 15, 22, "ControlSuggestions",
+   CellTags->"CreateAndDeleteLocators"]},
+ "SliderZoom"->{
+  Cell[148594, 3112, 887, 22, 22, "ControlSuggestions",
+   CellTags->"SliderZoom"]},
+ "GamepadControls"->{
+  Cell[149484, 3136, 393, 10, 22, "ControlSuggestions",
+   CellTags->"GamepadControls"]},
+ "AutomaticAnimation"->{
+  Cell[149880, 3148, 1507, 32, 22, "ControlSuggestions",
+   CellTags->"AutomaticAnimation"]},
+ "BookmarkAnimation"->{
+  Cell[151390, 3182, 908, 21, 22, "ControlSuggestions",
+   CellTags->"BookmarkAnimation"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ResizeImages", 156118, 3323},
+ {"RotateAndZoomIn3D", 156228, 3326},
+ {"DragLocators", 156339, 3329},
+ {"CreateAndDeleteLocators", 156456, 3332},
+ {"SliderZoom", 156571, 3335},
+ {"GamepadControls", 156678, 3338},
+ {"AutomaticAnimation", 156793, 3341},
+ {"BookmarkAnimation", 156911, 3344}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 217, 3, 74, "DemoTitle"],
+Cell[800, 27, 33, 0, 287, "InitializationSection"],
+Cell[CellGroupData[{
+Cell[858, 31, 29, 0, 192, "ManipulateSection"],
+Cell[CellGroupData[{
+Cell[912, 35, 44361, 936, 1508, "Input"],
+Cell[45276, 973, 15097, 313, 539, "Output",
+ CellID->233935458]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[60422, 1292, 36, 0, 169, "ManipulateCaptionSection"],
+Cell[60461, 1294, 2084, 41, 103, "ManipulateCaption",
+ CellID->733055073]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[62582, 1340, 28, 0, 173, "ThumbnailSection"],
+Cell[62613, 1342, 15097, 313, 539, "Output",
+ CellID->644408654]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[77747, 1660, 28, 0, 143, "SnapshotsSection"],
+Cell[77778, 1662, 15097, 313, 539, "Output",
+ CellID->766532020],
+Cell[92878, 1977, 15097, 313, 539, "Output",
+ CellID->761375519],
+Cell[107978, 2292, 15186, 315, 539, "Output",
+ CellID->1911867]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[123201, 2612, 26, 0, 336, "DetailsSection"],
+Cell[123230, 2614, 3072, 63, 73, "DetailNotes",
+ CellID->844898134],
+Cell[126305, 2679, 1605, 23, 22, "DetailNotes",
+ CellID->2012289996],
+Cell[127913, 2704, 1825, 35, 33, "DetailNotes",
+ CellID->151878723],
+Cell[129741, 2741, 1558, 23, 37, "DetailNotes",
+ CellID->2017017122],
+Cell[131302, 2766, 1262, 17, 22, "DetailNotes",
+ CellID->1226314774],
+Cell[132567, 2785, 2340, 50, 34, "DetailNotes",
+ CellID->249173880],
+Cell[134910, 2837, 1981, 35, 23, "DetailNotes",
+ CellID->533353081],
+Cell[136894, 2874, 1480, 20, 22, "DetailNotes",
+ CellID->1274850284],
+Cell[138377, 2896, 1619, 26, 23, "DetailNotes",
+ CellID->123712829],
+Cell[139999, 2924, 1804, 32, 23, "DetailNotes",
+ CellID->274994474],
+Cell[141806, 2958, 1287, 18, 22, "DetailNotes",
+ CellID->1878564788],
+Cell[143096, 2978, 1983, 42, 34, "DetailNotes",
+ CellID->286990574],
+Cell[145082, 3022, 1416, 24, 23, "DetailNotes",
+ CellID->1176238425]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[146535, 3051, 37, 0, 126, "ControlSuggestionsSection"],
+Cell[146575, 3053, 352, 9, 22, "ControlSuggestions",
+ CellTags->"ResizeImages"],
+Cell[146930, 3064, 678, 16, 22, "ControlSuggestions",
+ CellTags->"RotateAndZoomIn3D"],
+Cell[147611, 3082, 340, 11, 22, "ControlSuggestions",
+ CellTags->"DragLocators"],
+Cell[147954, 3095, 637, 15, 22, "ControlSuggestions",
+ CellTags->"CreateAndDeleteLocators"],
+Cell[148594, 3112, 887, 22, 22, "ControlSuggestions",
+ CellTags->"SliderZoom"],
+Cell[149484, 3136, 393, 10, 22, "ControlSuggestions",
+ CellTags->"GamepadControls"],
+Cell[149880, 3148, 1507, 32, 22, "ControlSuggestions",
+ CellTags->"AutomaticAnimation"],
+Cell[151390, 3182, 908, 21, 22, "ControlSuggestions",
+ CellTags->"BookmarkAnimation"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[152335, 3208, 30, 0, 155, "SearchTermsSection"],
+Cell[152368, 3210, 132, 2, 22, "SearchTerms",
+ CellID->67926656],
+Cell[152503, 3214, 127, 2, 22, "SearchTerms",
+ CellID->259287395],
+Cell[152633, 3218, 128, 2, 22, "SearchTerms",
+ CellID->118036060],
+Cell[152764, 3222, 225, 4, 22, "SearchTerms",
+ CellID->10457980],
+Cell[152992, 3228, 267, 4, 22, "SearchTerms",
+ CellID->391099422],
+Cell[153262, 3234, 248, 4, 22, "SearchTerms",
+ CellID->719026785],
+Cell[153513, 3240, 131, 2, 22, "SearchTerms",
+ CellID->164665866]
+}, Open  ]],
+Cell[153659, 3245, 31, 0, 141, "RelatedLinksSection"],
+Cell[CellGroupData[{
+Cell[153715, 3249, 25, 0, 129, "AuthorSection"],
+Cell[153743, 3251, 434, 12, 22, "Author"],
+Cell[154180, 3265, 1208, 33, 22, "Author",
+ CellID->656061828],
+Cell[155391, 3300, 330, 8, 22, "Author",
+ CellID->1250099498]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
